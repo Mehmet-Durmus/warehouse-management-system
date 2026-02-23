@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="WHMS.Api/WHMS.Api.csproj" />
+  <Project Path="WHMS.Application/WHMS.Application.csproj" />
+  <Project Path="WHMS.Domain/WHMS.Domain.csproj" />
+  <Project Path="WHMS.Infrastructure/WHMS.Infrastructure.csproj" />
+  <Project Path="WHMS.Persistence/WHMS.Persistence.csproj" />
+</Solution>
