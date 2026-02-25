@@ -12,6 +12,8 @@ using WHMS.Application.Asbstractions.Infrastructure;
 using WHMS.Infrastructure.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
+using WHMS.Application.Asbstractions.Persistence;
+using WHMS.Persistence.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +27,7 @@ options.UseNpgsql(
 builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection("SeedSettings"));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<JwtSettings>>().Value);
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
