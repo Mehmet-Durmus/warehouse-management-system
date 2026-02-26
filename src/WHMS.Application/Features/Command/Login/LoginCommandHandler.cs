@@ -38,6 +38,5 @@ public class LoginCommandHandler : IRequestHandler<LoginCommandRequest, LoginCom
             AccessToken = tokenResult.AccessToken,
             Expiration = tokenResult.Expiration
         };
-        
     }
 }

@@ -14,6 +14,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using WHMS.Application.Asbstractions.Persistence;
 using WHMS.Persistence.Services;
+using WHMS.Application.Validators.Auth;
+using MediatR;
+using WHMS.Application.Behaviors;
+using FluentValidation;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +35,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
+
+builder.Services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 {
