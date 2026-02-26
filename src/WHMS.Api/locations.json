@@ -1,0 +1,91 @@
+{
+    "Cities": [
+        {
+            "Name": "İstabbul",
+            "Districts": [
+                {
+                    "Name": "Adalar",
+                    "Neighborhoods": [
+                        {"Name":"Burgazada"},
+                        {"Name":"Heybeliada"},
+                        {"Name":"Kınalıada"}
+                    ]
+                },
+                {
+                    "Name": "Başakşehir",
+                    "Neighborhoods": [
+                        {"Name":"Altınşehir"},
+                        {"Name":"Başak"},
+                        {"Name":"Güvercintepe"}
+                    ]
+                },
+                {
+                    "Name": "Çatalca",
+                    "Neighborhoods": [
+                        {"Name":"Akalan"},
+                        {"Name":"Belgrat"},
+                        {"Name":"Çakıl"}
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "Ankara",
+            "Districts": [
+                {
+                    "Name": "Altındağ",
+                    "Neighborhoods": [
+                        {"Name":"Doğantepe"},
+                        {"Name":"Hacı Bayram"},
+                        {"Name":"Kavaklı"}
+                    ]
+                },
+                {
+                    "Name": "Çankaya",
+                    "Neighborhoods": [
+                        {"Name":"Akarlar"},
+                        {"Name":"Bahçelievler"},
+                        {"Name":"Cebeci"}
+                    ]
+                },
+                {
+                    "Name": "Gölbaşı",
+                    "Neighborhoods": [
+                        {"Name":"Bezirhane"},
+                        {"Name":"Dikilitaş"},
+                        {"Name":"Hacılar"}
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "Karabük",
+            "Districts": [
+                {
+                    "Name": "Karabük",
+                    "Neighborhoods": [
+                        {"Name":"Atatürk"},
+                        {"Name":"Bayır"},
+                        {"Name":"Kurtuluş"}
+                    ]
+                },
+                {
+                    "Name": "Safranbolu",
+                    "Neighborhoods": [
+                        {"Name":"Babasultan"},
+                        {"Name":"Barış"},
+                        {"Name":"İsmetpaşa"}
+                    ]
+                },
+                {
+                    "Name": "Yenice",
+                    "Neighborhoods": [
+                        {"Name":"Karşıyaka"},
+                        {"Name":"Özal"},
+                        {"Name":"Sipahiler"}
+                    ]
+                }
+            ]
+        }
+    ]
+}

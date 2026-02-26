@@ -12,8 +12,8 @@ using WHMS.Persistence.Contexts;
 namespace WHMS.Persistence.Migrations
 {
     [DbContext(typeof(WHMSDbContext))]
-    [Migration("20260225011727_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260226212409_mig1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -238,15 +238,79 @@ namespace WHMS.Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("WHMS.Domain.Entities.City", b =>
+                {
+                    b.Property<Guid>("CityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("CityId");
+
+                    b.ToTable("Cities");
+                });
+
+            modelBuilder.Entity("WHMS.Domain.Entities.District", b =>
+                {
+                    b.Property<Guid>("DistrictId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("DistrictId");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("Districts");
+                });
+
+            modelBuilder.Entity("WHMS.Domain.Entities.Neighborhood", b =>
+                {
+                    b.Property<Guid>("NeighborhoodId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DistrictId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("NeighborhoodId");
+
+                    b.HasIndex("DistrictId");
+
+                    b.ToTable("Neighborhoods");
+                });
+
             modelBuilder.Entity("WHMS.Domain.Entities.Warehouse", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Warehouse");
+                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -308,6 +372,76 @@ namespace WHMS.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("WHMS.Domain.Entities.District", b =>
+                {
+                    b.HasOne("WHMS.Domain.Entities.City", "City")
+                        .WithMany("Districts")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+                });
+
+            modelBuilder.Entity("WHMS.Domain.Entities.Neighborhood", b =>
+                {
+                    b.HasOne("WHMS.Domain.Entities.District", "District")
+                        .WithMany("Neighborhoods")
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("District");
+                });
+
+            modelBuilder.Entity("WHMS.Domain.Entities.Warehouse", b =>
+                {
+                    b.OwnsOne("WHMS.Domain.ValueObjects.Address", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("WarehouseId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("AddressLine")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)");
+
+                            b1.Property<Guid>("CityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("DistrictId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("NeighborhoodId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("PostalCode")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("character varying(10)");
+
+                            b1.HasKey("WarehouseId");
+
+                            b1.ToTable("Warehouses");
+
+                            b1.WithOwner()
+                                .HasForeignKey("WarehouseId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WHMS.Domain.Entities.City", b =>
+                {
+                    b.Navigation("Districts");
+                });
+
+            modelBuilder.Entity("WHMS.Domain.Entities.District", b =>
+                {
+                    b.Navigation("Neighborhoods");
                 });
 
             modelBuilder.Entity("WHMS.Domain.Entities.Warehouse", b =>

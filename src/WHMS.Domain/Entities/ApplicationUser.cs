@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
+using WHMS.Domain.Entities.Abstractions;
 
 namespace WHMS.Domain.Entities;
 
-public class ApplicationUser : IdentityUser<Guid>
+public class ApplicationUser : IdentityUser<Guid>, IAuditable, ISoftDeletable
 {
     public required string FullName { get; set; }
     public Guid? WarehouseId { get; set; }

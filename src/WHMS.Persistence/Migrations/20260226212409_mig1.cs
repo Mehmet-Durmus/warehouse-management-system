@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WHMS.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class mig1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,14 +27,34 @@ namespace WHMS.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Warehouse",
+                name: "Cities",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false)
+                    CityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Warehouse", x => x.Id);
+                    table.PrimaryKey("PK_Cities", x => x.CityId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Warehouses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Address_CityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Address_DistrictId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Address_NeighborhoodId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Address_PostalCode = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Address_AddressLine = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Warehouses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,6 +75,25 @@ namespace WHMS.Persistence.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Districts",
+                columns: table => new
+                {
+                    DistrictId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    CityId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Districts", x => x.DistrictId);
+                    table.ForeignKey(
+                        name: "FK_Districts_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -87,11 +126,30 @@ namespace WHMS.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Warehouse_WarehouseId",
+                        name: "FK_AspNetUsers_Warehouses_WarehouseId",
                         column: x => x.WarehouseId,
-                        principalTable: "Warehouse",
+                        principalTable: "Warehouses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Neighborhoods",
+                columns: table => new
+                {
+                    NeighborhoodId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    DistrictId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Neighborhoods", x => x.NeighborhoodId);
+                    table.ForeignKey(
+                        name: "FK_Neighborhoods_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "DistrictId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,6 +278,16 @@ namespace WHMS.Persistence.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Districts_CityId",
+                table: "Districts",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Neighborhoods_DistrictId",
+                table: "Neighborhoods",
+                column: "DistrictId");
         }
 
         /// <inheritdoc />
@@ -241,13 +309,22 @@ namespace WHMS.Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Neighborhoods");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Warehouse");
+                name: "Districts");
+
+            migrationBuilder.DropTable(
+                name: "Warehouses");
+
+            migrationBuilder.DropTable(
+                name: "Cities");
         }
     }
 }

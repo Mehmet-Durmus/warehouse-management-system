@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,5 +51,42 @@ public static class SeedData
                 throw new Exception("Director oluşturulamadı: " +
                     string.Join(",", result.Errors.Select(e => e.Description)));
         }
+
+        // Locations Data
+        if (!context.Cities.Any())
+        {
+            var json = await File.ReadAllTextAsync("locations.json");
+            var root = JsonNode.Parse(json);
+            if (root != null)
+            {
+                foreach (var city in root["Cities"]!.AsArray())
+                {
+                    var cityEntity = new City {Name = city["Name"]!.ToString()};
+                    await context.Cities.AddAsync(cityEntity);
+
+                    foreach (var district in city["Districts"]!.AsArray())
+                    {
+                        var districtEntity = new District 
+                        {
+                            Name = district["Name"]!.ToString(),
+                            City = cityEntity
+                        };
+                        await context.Districts.AddAsync(districtEntity);
+
+                        foreach (var neighborhood in district["Neighborhoods"]!.AsArray())
+                        {
+                            var neighborhoodEntity = new Neighborhood
+                            {
+                                Name = neighborhood["Name"]!.ToString(),
+                                District = districtEntity
+                            };
+                            await context.Neighborhoods.AddAsync(neighborhoodEntity);
+                        }
+                    }
+                }
+                await context.SaveChangesAsync();
+            }
+        }
+        
     }
 }
