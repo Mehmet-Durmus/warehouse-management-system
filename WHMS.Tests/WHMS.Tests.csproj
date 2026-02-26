@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WHMS.Application\WHMS.Application.csproj" />
+    <ProjectReference Include="..\WHMS.Application\WHMS.Application.csproj" />
   </ItemGroup>
 
 </Project>
