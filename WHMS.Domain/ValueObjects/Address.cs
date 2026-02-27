@@ -7,4 +7,5 @@ public sealed record Address
     public Guid NeighborhoodId { get; init; }
     public required string PostalCode { get; init; } 
     public required string AddressLine { get; init; }
+
 }

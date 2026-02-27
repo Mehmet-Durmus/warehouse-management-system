@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Warehouse.CreateWarehouse;
+using WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
 using WHMS.Application.Features.Queries.Warehouse.GetAllWarehouses;
 
 namespace WHMS.Api.Controllers;
@@ -28,5 +29,10 @@ public class WarehouseController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]
     public async Task<IActionResult> CreateWarehouse(CreateWarehouseCommandRequest request)
+        => Ok(await _mediator.Send(request));
+
+    [Authorize(Policy = "LogisticDirector")]
+    [HttpPut]
+    public async Task<IActionResult> UpdateWarehouse(UpdateWarehouseCommandRequest request)
         => Ok(await _mediator.Send(request));
 }
