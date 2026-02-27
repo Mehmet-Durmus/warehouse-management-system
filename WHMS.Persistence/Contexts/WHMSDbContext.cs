@@ -1,8 +1,10 @@
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WHMS.Domain.Entities;
 using WHMS.Domain.Entities.Abstractions;
+using WHMS.Persistence.Extensions;
 
 namespace WHMS.Persistence.Contexts;
 
@@ -29,6 +31,9 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
             builder.Entity(auditableType.ClrType).Property(nameof(IAuditable.UpdatedAt))
                 .HasColumnType("timestamp without time zone");
         }
+
+        builder.AddSoftDeleteQueryFilter();
+            
 
         builder.Entity<ApplicationUser>()
             .HasOne(u => u.Warehouse)

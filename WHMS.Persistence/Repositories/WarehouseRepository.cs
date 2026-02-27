@@ -20,12 +20,12 @@ public class WarehouseRepository : IWarehouseRepository
     public async Task<List<Warehouse>> GetAllWarehouses()
         => await _whmsContext.Warehouses.ToListAsync();
 
-    public async Task<Warehouse> GetWarehouse(Guid warehouseId)
-        => await _whmsContext.Warehouses.FindAsync(warehouseId);
+    public async Task<Warehouse>? GetWarehouse(Guid warehouseId)
+        => await _whmsContext.Warehouses.FirstOrDefaultAsync(w => w.Id == warehouseId);
 
     public async Task SoftDelete(Guid warehouseId)
     {
-        Warehouse warehouse = await GetWarehouse(warehouseId);
+        Warehouse? warehouse = await GetWarehouse(warehouseId);
         warehouse.IsActive = false;
         UpdateWarehouse(warehouse);
     }

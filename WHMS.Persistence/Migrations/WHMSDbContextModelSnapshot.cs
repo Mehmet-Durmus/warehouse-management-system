@@ -247,7 +247,7 @@ namespace WHMS.Persistence.Migrations
 
                     b.HasKey("CityId");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("WHMS.Domain.Entities.District", b =>
@@ -267,7 +267,7 @@ namespace WHMS.Persistence.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("Districts");
+                    b.ToTable("Districts", (string)null);
                 });
 
             modelBuilder.Entity("WHMS.Domain.Entities.Neighborhood", b =>
@@ -287,7 +287,7 @@ namespace WHMS.Persistence.Migrations
 
                     b.HasIndex("DistrictId");
 
-                    b.ToTable("Neighborhoods");
+                    b.ToTable("Neighborhoods", (string)null);
                 });
 
             modelBuilder.Entity("WHMS.Domain.Entities.Warehouse", b =>
@@ -307,7 +307,7 @@ namespace WHMS.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Warehouses");
+                    b.ToTable("Warehouses", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -421,7 +421,7 @@ namespace WHMS.Persistence.Migrations
 
                             b1.HasKey("WarehouseId");
 
-                            b1.ToTable("Warehouses");
+                            b1.ToTable("Warehouses", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("WarehouseId");
