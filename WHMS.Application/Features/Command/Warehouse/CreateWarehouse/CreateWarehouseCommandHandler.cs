@@ -26,7 +26,7 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
             PostalCode = request.PostalCode
         };
 
-        WHMS.Domain.Entities.Warehouse warehouse = new Domain.Entities.Warehouse { Address = address };
+        Domain.Entities.Warehouse warehouse = new Domain.Entities.Warehouse { Address = address };
         await _warehouseRepository.CreateWarehouse(warehouse);
         await _unitOfWork.CommitAsync();
         return new();

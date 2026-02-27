@@ -66,7 +66,7 @@ public class LoginCommandValidatorTests
     }
 
   [Fact]
-  public void Validate_ValidCredantials_NotException()
+  public void Validate_ValidCredantials_NoException()
   {
     // Arrange
     var command = new LoginCommandRequest { UserName = "user", Password = "1234"};
