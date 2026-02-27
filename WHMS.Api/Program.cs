@@ -18,6 +18,9 @@ using WHMS.Application.Validators.Auth;
 using MediatR;
 using WHMS.Application.Behaviors;
 using FluentValidation;
+using WHMS.Application.Abstractions.Persistence;
+using WHMS.Persistence.Repositories;
+using WHMS.Persistence.UnitOfWork;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +38,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
