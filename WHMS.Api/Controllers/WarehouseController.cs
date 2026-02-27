@@ -8,6 +8,7 @@ using WHMS.Application.Features.Command.Warehouse.CreateWarehouse;
 using WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
 using WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
 using WHMS.Application.Features.Queries.Warehouse.GetAllWarehouses;
+using WHMS.Application.Features.Queries.Warehouse.GetWarehouse;
 
 namespace WHMS.Api.Controllers;
 
@@ -25,6 +26,11 @@ public class WarehouseController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet]
     public async Task<IActionResult> GetAllWarehouses([FromQuery] GetAllWarehousesQueryRequest request)
+        => Ok(await _mediator.Send(request));
+
+    [Authorize(Policy = "LogisticDirector")]
+    [HttpGet("{WarehouseId}")]
+    public async Task<IActionResult> GetWarehouse([FromRoute] GetWarehouseQueryRequest request)
         => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
