@@ -1,12 +1,15 @@
 using FluentValidation;
-using WHMS.Application.Features.Command.Warehouse.CreateWarehouse;
+using WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
 
 namespace WHMS.Application.Validators.Warehose;
 
-public class CreateWarehouseCommandValidator : AbstractValidator<CreateWarehouseCommandRequest>
+public class UpdateWarehouseCommandValidator : AbstractValidator<UpdateWarehouseCommandRequest>
 {
-    public CreateWarehouseCommandValidator()
+    public UpdateWarehouseCommandValidator()
     {
+        RuleFor(x => x.WarehouseId)
+            .NotEmpty().WithMessage("Provice a warehouse.")
+            .Must(x => Guid.TryParse(x, out _)).WithMessage("WarehouseId must be a valid GUID.");
         RuleFor(x => x.CityId)
             .NotEmpty().WithMessage("Provice a city.")
             .Must(x => Guid.TryParse(x, out _)).WithMessage("CityId must be a valid GUID.");

@@ -19,7 +19,7 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
 
     public async Task<UpdateWarehouseCommandResponse> Handle(UpdateWarehouseCommandRequest request, CancellationToken cancellationToken)
     {
-        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId));
+        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId))!;
         
         if (warehouse is null)
             throw new Exception("Warehouse not found.");
