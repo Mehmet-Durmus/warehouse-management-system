@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
 namespace WHMS.Persistence.Repositories;
@@ -54,5 +55,15 @@ public class LocationRepository : ILocationRepository
     public Task<List<string>> GetNeighborhoodsByDistrict(Guid districtId)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<bool> IsDistrictBelongsToCity(Guid districtId, Guid cityId)
+    {
+        return await _whmsContext.Districts.Select(d => d.DistrictId == districtId && d.CityId == cityId).AnyAsync();
+    }
+
+    public async Task<bool> IsNeighborhoodBelongsToDistrict(Guid neighborhoodId, Guid districtId)
+    {
+        return await _whmsContext.Neighborhoods.Select(n => n.NeighborhoodId == neighborhoodId && n.DistrictId == districtId).AnyAsync();
     }
 }
