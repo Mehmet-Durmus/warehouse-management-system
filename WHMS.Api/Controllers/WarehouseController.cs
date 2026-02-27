@@ -35,4 +35,5 @@ public class WarehouseController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateWarehouse(UpdateWarehouseCommandRequest request)
         => Ok(await _mediator.Send(request));
+
 }
