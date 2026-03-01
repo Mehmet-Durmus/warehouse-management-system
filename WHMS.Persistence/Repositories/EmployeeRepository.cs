@@ -60,6 +60,22 @@ public class EmployeeRepository : IEmployeeRepository
             
     }
 
+    public async Task<ApplicationUser> GetStaffMember(Guid staffMemberId)
+    {
+        var roleId = await _context.Roles
+            .Where(r => r.Name == "WarehouseStaff")
+            .Select(r => r.Id)
+            .SingleAsync();
+
+        var staffMember = await _context.Users
+            .Where(u => u.Id == staffMemberId)
+            .Where(u => _context.UserRoles
+                .Any(ur => ur.UserId == u.Id && ur.RoleId == roleId))
+            .SingleOrDefaultAsync();
+        
+        return staffMember!;
+    }
+
     public async Task<bool> HasWarehouseAnyManager(Guid warehouseId)
     {
         return await _context.Users.AnyAsync(u => u.WarehouseId == warehouseId);
