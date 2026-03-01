@@ -7,6 +7,7 @@ public interface IEmployeeRepository
 {
     Task<List<ApplicationUser>> GetManagers();
     Task<ApplicationUser> GetManager(Guid managerId);
+    Task<List<ApplicationUser>> GetStaff();
     Task<ApplicationUser> GetStaffMember(Guid staffMemberId);
     void Update(ApplicationUser employee);
     Task<bool> HasWarehouseAnyManager(Guid warehouseId);

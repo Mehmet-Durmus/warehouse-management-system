@@ -32,10 +32,7 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task<ApplicationUser> GetManager(Guid managerId)
     {
-        var roleId = await _context.Roles
-            .Where(r => r.Name == "WarehouseManager")
-            .Select(r => r.Id)
-            .SingleAsync();
+        var roleId = await GetRoleId("WarehouseManager");
 
         var manager = await _context.Users
             .Where(u => u.Id == managerId)
@@ -48,10 +45,7 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task<List<ApplicationUser>> GetManagers()
     {
-        var roleId = await _context.Roles
-            .Where(r => r.Name == "WarehouseManager")
-            .Select(r => r.Id)
-            .SingleAsync();
+        var roleId = await GetRoleId("WarehouseManager");
 
         return await _context.Users
             .Where(u => _context.UserRoles
@@ -60,12 +54,19 @@ public class EmployeeRepository : IEmployeeRepository
             
     }
 
+    public async Task<List<ApplicationUser>> GetStaff()
+    {
+        var roleId = await GetRoleId("WarehouseStaff");
+
+        return await _context.Users
+            .Where(u => _context.UserRoles
+                .Any(ur => ur.UserId == u.Id && ur.RoleId == roleId))
+            .ToListAsync();
+    }
+
     public async Task<ApplicationUser> GetStaffMember(Guid staffMemberId)
     {
-        var roleId = await _context.Roles
-            .Where(r => r.Name == "WarehouseStaff")
-            .Select(r => r.Id)
-            .SingleAsync();
+        var roleId = await GetRoleId("WarehouseStaff");
 
         var staffMember = await _context.Users
             .Where(u => u.Id == staffMemberId)
@@ -84,5 +85,13 @@ public class EmployeeRepository : IEmployeeRepository
     public void Update(ApplicationUser employee)
     {
         _context.Update(employee);
+    }
+
+    private async Task<Guid> GetRoleId(string roleName)
+    {
+        return await _context.Roles
+            .Where(r => r.Name == roleName)
+            .Select(r => r.Id)
+            .SingleAsync();
     }
 }

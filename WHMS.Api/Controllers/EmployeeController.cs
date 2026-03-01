@@ -6,6 +6,7 @@ using WHMS.Application.Features.Command.Employee.CreateStaffMember;
 using WHMS.Application.Features.Command.Employee.UpdateManager;
 using WHMS.Application.Features.Command.Employee.UpdateStaffMember;
 using WHMS.Application.Features.Queries.Employee.GetManagers;
+using WHMS.Application.Features.Queries.Employee.GetStaff;
 
 namespace WHMS.Api.Controllers;
 
@@ -27,8 +28,8 @@ public class EmployeeController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("staff")]
-    public async Task<IActionResult> GetStaff()
-        => Ok();
+    public async Task<IActionResult> GetStaff([FromQuery] GetStaffQueryRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("managers/{id}")]
