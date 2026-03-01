@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Employee.CreateEmployee;
 using WHMS.Application.Features.Command.Employee.CreateStaffMember;
+using WHMS.Application.Features.Command.Employee.UpdateManager;
 using WHMS.Application.Features.Queries.Employee.GetManagers;
 
 namespace WHMS.Api.Controllers;
@@ -49,8 +50,13 @@ public class EmployeeController : ControllerBase
         => Ok(await _mediator.Send(request));
     
     [Authorize(Policy = "LogisticDirector")]
-    [HttpPut]
-    public async Task<IActionResult> UpdateEmployee()
+    [HttpPut("manager")]
+    public async Task<IActionResult> UpdateManager(UpdateManagerCommandRequest request)
+        => Ok(await _mediator.Send(request));
+    
+    [Authorize(Policy = "LogisticDirector")]
+    [HttpPut("staff-member")]
+    public async Task<IActionResult> UpdateStaffMember()
         => Ok();
     
     [Authorize(Policy = "LogisticDirector")]
