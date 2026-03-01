@@ -6,6 +6,7 @@ using WHMS.Application.Features.Command.Employee.CreateStaffMember;
 using WHMS.Application.Features.Command.Employee.DeleteEmployee;
 using WHMS.Application.Features.Command.Employee.UpdateManager;
 using WHMS.Application.Features.Command.Employee.UpdateStaffMember;
+using WHMS.Application.Features.Queries.Employee.GetManager;
 using WHMS.Application.Features.Queries.Employee.GetManagers;
 using WHMS.Application.Features.Queries.Employee.GetStaff;
 
@@ -24,18 +25,18 @@ public class EmployeeController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("managers")]
-    public async Task<IActionResult> GetManagers([FromQuery] GetManagersQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    public async Task<IActionResult> GetManagers()
+        => Ok(await _mediator.Send(new GetManagersQueryRequest()));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("staff")]
-    public async Task<IActionResult> GetStaff([FromQuery] GetStaffQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    public async Task<IActionResult> GetStaff()
+        => Ok(await _mediator.Send(new GetStaffQueryRequest()));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("managers/{id}")]
-    public async Task<IActionResult> GetManager()
-        => Ok();
+    public async Task<IActionResult> GetManager(string id)
+        => Ok(await _mediator.Send(new GetManagerQueryRequest {ManagerId = id}));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("staff/{id}")]
