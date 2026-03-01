@@ -2,6 +2,7 @@ namespace WHMS.Application.DTOs.Warehouse;
 
 public class WarehouseDto
 {
+    public string? WarehouseName { get; set; }
     public string? Id { get; set; }
     public string? City { get; set; }
     public string? District { get; set; }

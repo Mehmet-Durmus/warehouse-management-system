@@ -22,6 +22,7 @@ public class GetAllWarehousesQueryHandler : IRequestHandler<GetAllWarehousesQuer
         foreach (var warehouse in warehouses)
             result.Warehouses.Add(new WarehouseDto
             {
+                WarehouseName = warehouse.WarehouseName,
                 Id = warehouse.Id.ToString(),
                 City = await _locationRepository.GetCityName(warehouse.Address.CityId),
                 District = await _locationRepository.GetDistrictName(warehouse.Address.DistrictId),

@@ -2,6 +2,7 @@ namespace WHMS.Application.Features.Queries.Warehouse.GetWarehouse;
 
 public class GetWarehouseQueryResponse
 {
+    public string? WarehouseName { get; set; }
     public string? Id { get; set; }
     public string? City { get; set; }
     public string? District { get; set; }

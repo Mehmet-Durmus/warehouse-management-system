@@ -23,7 +23,7 @@ public class GetManagersQueryHandler : IRequestHandler<GetManagersQueryRequest, 
             result.Employees.Add(new UserDto
             {
                 FullName = manager.FullName,
-                Warehouse = manager.Warehouse,
+                WarehouseId = manager.WarehouseId.ToString(),
                 CreatedAt = manager.CreatedAt,
                 UpdatedAt = manager.UpdatedAt
             });

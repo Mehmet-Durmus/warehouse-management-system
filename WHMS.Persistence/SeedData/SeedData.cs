@@ -33,7 +33,7 @@ public static class SeedData
         var directorSettings = seedOptions.Value.LogisticDirectorData;
         const string directorRoleName = "LogisticDirector";
 
-        var existingDirector = await userManager.FindByNameAsync(directorSettings.UserName);
+        var existingDirector = await userManager.FindByNameAsync(directorSettings!.UserName!);
         if (existingDirector == null)
         {
             var user = new ApplicationUser 
@@ -44,11 +44,11 @@ public static class SeedData
                 EmailConfirmed = true
             };
 
-            var result = await userManager.CreateAsync(user, directorSettings.Password);
+            var result = await userManager.CreateAsync(user, directorSettings.Password!);
             if (result.Succeeded)
                 await userManager.AddToRoleAsync(user, directorRoleName);
             else
-                throw new Exception("Director oluşturulamadı: " +
+                throw new Exception("Director could not be created: " +
                     string.Join(",", result.Errors.Select(e => e.Description)));
         }
 
@@ -61,14 +61,14 @@ public static class SeedData
             {
                 foreach (var city in root["Cities"]!.AsArray())
                 {
-                    var cityEntity = new City {Name = city["Name"]!.ToString()};
+                    var cityEntity = new City {Name = city!["Name"]!.ToString()};
                     await context.Cities.AddAsync(cityEntity);
 
                     foreach (var district in city["Districts"]!.AsArray())
                     {
                         var districtEntity = new District 
                         {
-                            Name = district["Name"]!.ToString(),
+                            Name = district!["Name"]!.ToString(),
                             City = cityEntity
                         };
                         await context.Districts.AddAsync(districtEntity);
@@ -77,7 +77,7 @@ public static class SeedData
                         {
                             var neighborhoodEntity = new Neighborhood
                             {
-                                Name = neighborhood["Name"]!.ToString(),
+                                Name = neighborhood!["Name"]!.ToString(),
                                 District = districtEntity
                             };
                             await context.Neighborhoods.AddAsync(neighborhoodEntity);

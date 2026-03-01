@@ -32,4 +32,9 @@ public class WarehouseRepository : IWarehouseRepository
 
     public void UpdateWarehouse(Warehouse warehouse)
         => _whmsContext.Warehouses.Update(warehouse);
+
+    public async Task<bool> WarehouseExists(Guid warehouseId)
+    {
+        return await _whmsContext.Warehouses.AnyAsync(w => w.Id == warehouseId);
+    }
 }

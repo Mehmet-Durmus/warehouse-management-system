@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WHMS.Application.Features.Command.Employee.CreateEmployee;
 using WHMS.Application.Features.Queries.Employee.GetManagers;
 
 namespace WHMS.Api.Controllers;
@@ -37,8 +38,13 @@ public class EmployeeController : ControllerBase
         => Ok();
 
     [Authorize(Policy = "LogisticDirector")]
-    [HttpPost]
-    public async Task<IActionResult> CreateEmployee()
+    [HttpPost("manager")]
+    public async Task<IActionResult> CreateManager(CreateManagerCommandRequest request) 
+        => Ok(await _mediator.Send(request));
+    
+    [Authorize(Policy = "LogisticDirector")]
+    [HttpPost("staff-member")]
+    public async Task<IActionResult> CreateStaffMember() 
         => Ok();
     
     [Authorize(Policy = "LogisticDirector")]

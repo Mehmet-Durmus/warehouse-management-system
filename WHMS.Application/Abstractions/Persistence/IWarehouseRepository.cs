@@ -9,4 +9,5 @@ public interface IWarehouseRepository
     Task CreateWarehouse(Warehouse warehouse);
     void UpdateWarehouse(Warehouse warehouse);
     Task SoftDelete(Guid warehouseId);
+    Task<bool> WarehouseExists(Guid warehouseId);
 }

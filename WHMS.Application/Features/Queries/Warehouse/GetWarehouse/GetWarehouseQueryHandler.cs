@@ -23,6 +23,7 @@ public class GetWarehouseQueryHandler : IRequestHandler<GetWarehouseQueryRequest
         
         return new GetWarehouseQueryResponse
         {
+            WarehouseName = warehouse.WarehouseName,
             Id = warehouse.Id.ToString(),
             City = await _locationRepository.GetCityName(warehouse.Address.CityId),
             District = await _locationRepository.GetDistrictName(warehouse.Address.DistrictId),

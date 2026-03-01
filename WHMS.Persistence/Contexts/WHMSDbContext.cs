@@ -33,6 +33,9 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
         }
 
         builder.AddSoftDeleteQueryFilter();
+
+        builder.HasSequence<int>("WarehouseManagerSequence").StartsAt(1);
+        builder.HasSequence<int>("WarehouseStaffSequence").StartsAt(1);
             
 
         builder.Entity<ApplicationUser>()
