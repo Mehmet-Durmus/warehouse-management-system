@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Employee.CreateEmployee;
 using WHMS.Application.Features.Command.Employee.CreateStaffMember;
+using WHMS.Application.Features.Command.Employee.DeleteEmployee;
 using WHMS.Application.Features.Command.Employee.UpdateManager;
 using WHMS.Application.Features.Command.Employee.UpdateStaffMember;
 using WHMS.Application.Features.Queries.Employee.GetManagers;
@@ -63,6 +64,6 @@ public class EmployeeController : ControllerBase
     
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete]
-    public async Task<IActionResult> DeleteEmployee()
-        => Ok();
+    public async Task<IActionResult> DeleteEmployee(DeleteEmployeeCommandRequest request)
+        => Ok(await _mediator.Send(request));
 }
