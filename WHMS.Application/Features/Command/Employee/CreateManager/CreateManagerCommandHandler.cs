@@ -11,15 +11,13 @@ namespace WHMS.Application.Features.Command.Employee.CreateManager;
 public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommandRequest, CreateManagerCommandResponse>
 {
     private readonly IEmployeeRepository _employeeRepository;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IPasswordCreator _passwordCreator;
     private readonly IWarehouseRepository _warehouseRepository;
 
-    public CreateManagerCommandHandler(IEmployeeRepository employeeRepository, IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IPasswordCreator passwordCreator, IWarehouseRepository warehouseRepository)
+    public CreateManagerCommandHandler(IEmployeeRepository employeeRepository, UserManager<ApplicationUser> userManager, IPasswordCreator passwordCreator, IWarehouseRepository warehouseRepository)
     {
         _employeeRepository = employeeRepository;
-        _unitOfWork = unitOfWork;
         _userManager = userManager;
         _passwordCreator = passwordCreator;
         _warehouseRepository = warehouseRepository;

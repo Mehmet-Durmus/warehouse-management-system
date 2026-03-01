@@ -25,7 +25,7 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<string> GenerateWarehouseStaffUserName()
     {
         var seq = await _context.Database
-            .SqlQuery<int>($"SELECT last_value FROM \"WarehouseStaffSequence\"")
+            .SqlQuery<int>($"SELECT nextval('\"WarehouseStaffSequence\"') AS \"Value\"")
             .SingleAsync();
         return "WHS_"+seq.ToString("D4");
     }
