@@ -9,6 +9,7 @@ using WHMS.Application.Features.Command.Employee.UpdateStaffMember;
 using WHMS.Application.Features.Queries.Employee.GetManager;
 using WHMS.Application.Features.Queries.Employee.GetManagers;
 using WHMS.Application.Features.Queries.Employee.GetStaff;
+using WHMS.Application.Features.Queries.Employee.GetStaffMember;
 
 namespace WHMS.Api.Controllers;
 
@@ -40,8 +41,8 @@ public class EmployeeController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("staff/{id}")]
-    public async Task<IActionResult> GetStaffMember()
-        => Ok();
+    public async Task<IActionResult> GetStaffMember(string id)
+        => Ok(await _mediator.Send(new GetStaffMemberQueryRequest {StaffMemberId = id}));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("manager")]
