@@ -9,6 +9,6 @@ public class GetWarehouseQueryValidator : AbstractValidator<GetWarehouseQueryReq
     {
         RuleFor(x => x.WarehouseId)
             .NotEmpty().WithMessage("Valid a warehouse")
-            .Must(x => Guid.TryParse(x, out _)).WithMessage("WarehouseId must be a valid GUID.");
+            .Must(x => Guid.TryParse(x, out _)).WithMessage("WarehouseId must be a valid GUID.");   
     }
 }
