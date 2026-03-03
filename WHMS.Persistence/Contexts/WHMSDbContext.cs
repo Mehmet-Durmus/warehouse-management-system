@@ -16,6 +16,8 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
     public DbSet<District> Districts { get; set; }
     public DbSet<Neighborhood> Neighborhoods { get; set; }
     public DbSet<Warehouse> Warehouses { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<SKU> SKUs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -67,6 +69,17 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
             .WithMany(c => c.Districts)
             .HasForeignKey(d => d.CityId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Category>()
+            .Property(c => c.CategoryName).HasMaxLength(50);
+        
+        builder.Entity<SKU>(sku =>
+        {
+            sku.Property(s => s.SKUName).HasMaxLength(50);
+            sku.Property(s => s.Barcode).HasMaxLength(100);
+            sku.Property(s => s.UnitPrice).HasColumnType("numeric(5,2)");
+        });
+            
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

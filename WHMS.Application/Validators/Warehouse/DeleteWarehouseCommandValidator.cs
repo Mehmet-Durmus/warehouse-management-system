@@ -8,7 +8,7 @@ public class DeleteWarehouseCommandValidator : AbstractValidator<DeleteWarehouse
     public DeleteWarehouseCommandValidator()
     {
         RuleFor(x => x.WarehouseId)
-            .NotEmpty().WithMessage("WarehouseId is required")
+            .NotEmpty().WithMessage("WarehouseId is required.")
             .Must(x => Guid.TryParse(x, out _)).WithMessage("WarehouseId must be a valid GUID.");
     }
 }
