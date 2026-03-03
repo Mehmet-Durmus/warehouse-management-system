@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using WHMS.Application.Asbstractions.Persistence;
+using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Persistence.Services;

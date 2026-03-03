@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using WHMS.Application.Asbstractions.Infrastructure;
-using WHMS.Application.Asbstractions.Persistence;
+using WHMS.Application.Abstractions.Infrastructure;
+using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Configurations;
 using WHMS.Application.DTOs;
 using WHMS.Domain.Entities;

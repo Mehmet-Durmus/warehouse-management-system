@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using WHMS.Application.Asbstractions.Infrastructure;
-using WHMS.Application.Asbstractions.Persistence;
+using WHMS.Application.Abstractions.Infrastructure;
+using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Configurations;
 using WHMS.Application.Features.Command.Login;
 using WHMS.Domain.Entities;
