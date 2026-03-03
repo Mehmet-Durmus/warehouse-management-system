@@ -6,6 +6,7 @@ public class SKU : IAuditable, ISoftDeletable
 {
     public Guid Id { get; set; }
     public required string SKUName { get; set; }
+    public required string NormalizedSKUName { get; set; }
     public required string Barcode { get; set; }
     public decimal UnitPrice { get; set; }
     public Guid CategoryId { get; set; }

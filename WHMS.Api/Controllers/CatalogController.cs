@@ -1,6 +1,8 @@
 using System.Drawing;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WHMS.Application.Features.Command.Catalog;
 
 namespace WHMS.Api.Controllers;
 
@@ -8,6 +10,13 @@ namespace WHMS.Api.Controllers;
 [ApiController]
 public class CatalogController : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public CatalogController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     [Authorize(Policy = "DirectorOrManager")]
     [HttpGet("categories")]
     public async Task<IActionResult> GetCategories()
@@ -20,8 +29,8 @@ public class CatalogController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("category")]
-    public async Task<IActionResult> CreateCategory()
-        => Ok();
+    public async Task<IActionResult> CreateCategory(CreateCategoryCommandRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut("category")]

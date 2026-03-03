@@ -6,6 +6,7 @@ public interface ICatalogRepository
 {
     Task<List<Category>> GetCategories();
     Task<Category> GetCategory(Guid categoryId);
+    Task<bool> IsCategoryNameExists(string normalizedCategoryName);
     Task AddCategory(Category category);
     void UpdateCategory(Category category);
     Task DeleteCategory(Guid categoryId);

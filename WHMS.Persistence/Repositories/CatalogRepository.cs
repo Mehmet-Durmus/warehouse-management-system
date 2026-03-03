@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
@@ -60,4 +61,7 @@ public class CatalogRepository : ICatalogRepository
 
     public void UpdateSku(SKU sku)
         => _context.Update(sku);
+
+    public async Task<bool> IsCategoryNameExists(string normalizedCategoryName)
+        => await _context.Categories.AnyAsync(c => c.NormalizedCategoryName == normalizedCategoryName);
 }
