@@ -86,7 +86,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("LogisticDirector", p => p.RequireRole("LogisticDirector"));
     options.AddPolicy("WarehouseManager", p => p.RequireRole("WarehouseManager"));
     options.AddPolicy("WarehouseStaff", p => p.RequireRole("WarehouseStaff"));
+    options.AddPolicy("DirectorOrManager", p => p.RequireRole("LogisticDirector", "WarehouseManager"));
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

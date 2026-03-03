@@ -22,11 +22,11 @@ public class LoginCommandHandler : IRequestHandler<LoginCommandRequest, LoginCom
 
     public async Task<LoginCommandResponse> Handle(LoginCommandRequest request, CancellationToken cancellationToken)
     {
-        ApplicationUser? user = await _authService.FindByNameAsync(request.UserName);
+        ApplicationUser? user = await _authService.FindByNameAsync(request.UserName!);
         if (user == null)
             throw new Exception("Invalid credantials!");
         
-        SignInResult result = await _authService.CheckPasswordSignInAsync(user, request.Password, false);
+        SignInResult result = await _authService.CheckPasswordSignInAsync(user, request.Password!, false);
         if (!result.Succeeded)
             throw new Exception("Invalid credantials!");
 
