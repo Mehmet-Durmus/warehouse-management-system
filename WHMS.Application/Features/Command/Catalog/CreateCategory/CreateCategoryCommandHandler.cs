@@ -19,22 +19,22 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
     public async Task<CreateCategoryCommandResponse> Handle(CreateCategoryCommandRequest request, CancellationToken cancellationToken)
     {
         var normalizedCategoryName = request.CategoryName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
-        var IsCategoryNameExists = await _catalogRepository.IsCategoryNameExists(normalizedCategoryName);
-        if (IsCategoryNameExists)
+        bool isCategoryNameExists = await _catalogRepository.IsCategoryNameExists(normalizedCategoryName);
+        if (isCategoryNameExists)
             throw new Exception("Category already exists.");
         
-        var newCategory = new Category
+        var category = new Category
         {
            CategoryName = request.CategoryName!,
            NormalizedCategoryName = normalizedCategoryName
         };
-        await _catalogRepository.AddCategory(newCategory);
+        await _catalogRepository.AddCategory(category);
         await _unitOfWork.CommitAsync();
 
         return new()
         {
-            CategoryId = newCategory.Id.ToString(),
-            CategoryName = newCategory.CategoryName
+            CategoryId = category.Id.ToString(),
+            CategoryName = category.CategoryName
         };
     }
 }

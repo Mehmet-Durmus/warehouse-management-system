@@ -77,7 +77,7 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
         {
             sku.Property(s => s.SKUName).HasMaxLength(50);
             sku.Property(s => s.Barcode).HasMaxLength(100);
-            sku.Property(s => s.UnitPrice).HasColumnType("numeric(5,2)");
+            sku.Property(s => s.UnitPrice).HasColumnType("numeric(7,2)");
         });
             
     }

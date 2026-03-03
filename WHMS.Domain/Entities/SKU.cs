@@ -10,7 +10,7 @@ public class SKU : IAuditable, ISoftDeletable
     public required string Barcode { get; set; }
     public decimal UnitPrice { get; set; }
     public Guid CategoryId { get; set; }
-    public required Category Category { get; set; }
+    public Category Category { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public bool IsActive { get; set; }

@@ -12,6 +12,7 @@ public interface ICatalogRepository
     Task DeleteCategory(Guid categoryId);
     Task<List<SKU>> GetSkus();
     Task<SKU> GetSku(Guid skuId);
+    Task<bool> IsSkuNameExists(string normalizedSkuName);
     Task<List<SKU>> GetSkusByCategory(Guid categoryId);
     Task AddSku(SKU sku);
     void UpdateSku(SKU sku);

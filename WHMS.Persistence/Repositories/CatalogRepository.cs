@@ -64,4 +64,7 @@ public class CatalogRepository : ICatalogRepository
 
     public async Task<bool> IsCategoryNameExists(string normalizedCategoryName)
         => await _context.Categories.AnyAsync(c => c.NormalizedCategoryName == normalizedCategoryName);
+
+    public async Task<bool> IsSkuNameExists(string normalizedSkuName)
+        => await _context.SKUs.AnyAsync(s => s.NormalizedSKUName == normalizedSkuName);
 }

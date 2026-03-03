@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Catalog;
+using WHMS.Application.Features.Command.Catalog.CreateSku;
 
 namespace WHMS.Api.Controllers;
 
@@ -54,8 +55,8 @@ public class CatalogController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("sku")]
-    public async Task<IActionResult> CreateSku()
-        => Ok();
+    public async Task<IActionResult> CreateSku(CreateSkuCommandRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut("sku")]
