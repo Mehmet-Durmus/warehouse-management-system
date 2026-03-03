@@ -1,7 +1,7 @@
 using WHMS.Application.DTOs;
 using WHMS.Domain.Entities;
 
-namespace WHMS.Application.Asbstractions.Infrastructure;
+namespace WHMS.Application.Abstractions.Infrastructure;
 
 public interface ITokenService
 {

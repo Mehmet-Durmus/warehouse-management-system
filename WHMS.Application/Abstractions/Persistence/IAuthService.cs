@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using WHMS.Domain.Entities;
 
-namespace WHMS.Application.Asbstractions.Persistence;
+namespace WHMS.Application.Abstractions.Persistence;
 
 public interface IAuthService
 {
