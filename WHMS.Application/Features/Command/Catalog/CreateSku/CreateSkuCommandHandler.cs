@@ -23,13 +23,17 @@ public class CreateSkuCommandHandler : IRequestHandler<CreateSkuCommandRequest, 
         if(isSkuNameExists)
             throw new Exception("Sku already exists.");
         
+        var category = await _catalogRepository.GetCategory(Guid.Parse(request.CategoryId!));
+        if (category is null)
+            throw new Exception("Category not found.");
+
         var sku = new SKU
         {
             SKUName = request.SkuName,
             NormalizedSKUName = normalizedSkuName,
             Barcode = request.Barcode!,
             UnitPrice = request.UnitPrice,
-            CategoryId = Guid.Parse(request.CategoryId!)
+            CategoryId = category.Id
         };
 
         _catalogRepository.UpdateSku(sku);
