@@ -17,4 +17,5 @@ public interface ICatalogRepository
     Task AddSku(SKU sku);
     void UpdateSku(SKU sku);
     Task DeleteSku(Guid skuId);
+    Task DeleteSkusByCategory(Guid categoryId);
 }

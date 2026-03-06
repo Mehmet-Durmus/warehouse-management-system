@@ -67,4 +67,14 @@ public class CatalogRepository : ICatalogRepository
 
     public async Task<bool> IsSkuNameExists(string normalizedSkuName)
         => await _context.SKUs.AnyAsync(s => s.NormalizedSKUName == normalizedSkuName);
+
+    public async Task DeleteSkusByCategory(Guid categoryId)
+    {
+        var skus = await GetSkusByCategory(categoryId);
+        foreach (var sku in skus)
+        {
+            sku.IsActive = false;
+            UpdateSku(sku);
+        }
+    }
 }
