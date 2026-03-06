@@ -1,5 +1,6 @@
 using FluentValidation;
 using WHMS.Application.Features.Command.Catalog;
+using WHMS.Application.Features.Command.Catalog.CreateCategory;
 
 namespace WHMS.Application.Validators.Catalog;
 

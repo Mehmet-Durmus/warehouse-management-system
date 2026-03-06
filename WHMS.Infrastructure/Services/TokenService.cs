@@ -25,7 +25,7 @@ public class TokenService : ITokenService
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.FullName),
-            new Claim("UserName", user.UserName)
+            new Claim("UserName", user.UserName!)
         };
 
         foreach (var role in roles)

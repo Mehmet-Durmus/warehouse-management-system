@@ -2,8 +2,9 @@ using System.Drawing;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WHMS.Application.Features.Command.Catalog;
+using WHMS.Application.Features.Command.Catalog.CreateCategory;
 using WHMS.Application.Features.Command.Catalog.CreateSku;
+using WHMS.Application.Features.Command.Catalog.UpdateCategory;
 
 namespace WHMS.Api.Controllers;
 
@@ -35,8 +36,8 @@ public class CatalogController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut("category")]
-    public async Task<IActionResult> UpdateCategory()
-        => Ok();
+    public async Task<IActionResult> UpdateCategory(UpdateCategoryCommandRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("category/{id}")]

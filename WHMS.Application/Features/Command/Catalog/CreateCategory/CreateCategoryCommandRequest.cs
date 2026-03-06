@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace WHMS.Application.Features.Command.Catalog;
+namespace WHMS.Application.Features.Command.Catalog.CreateCategory;
 
 public class CreateCategoryCommandRequest : IRequest<CreateCategoryCommandResponse>
 {

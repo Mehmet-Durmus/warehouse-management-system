@@ -1,4 +1,4 @@
-namespace WHMS.Application.Features.Command.Catalog;
+namespace WHMS.Application.Features.Command.Catalog.CreateCategory;
 
 public class CreateCategoryCommandResponse
 {
