@@ -6,6 +6,7 @@ using WHMS.Application.Features.Command.Catalog.CreateCategory;
 using WHMS.Application.Features.Command.Catalog.CreateSku;
 using WHMS.Application.Features.Command.Catalog.DeleteCategory;
 using WHMS.Application.Features.Command.Catalog.UpdateCategory;
+using WHMS.Application.Features.Command.Catalog.UpdateSku;
 
 namespace WHMS.Api.Controllers;
 
@@ -62,8 +63,8 @@ public class CatalogController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut("sku")]
-    public async Task<IActionResult> UpdateSku()
-        => Ok();
+    public async Task<IActionResult> UpdateSku(UpdateSkuCommandRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("sku/{id}")]
