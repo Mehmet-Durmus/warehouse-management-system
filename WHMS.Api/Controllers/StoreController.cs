@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Store.CreateStore;
+using WHMS.Application.Features.Command.Store.DeleteStore;
 using WHMS.Application.Features.Command.Store.UpdateStore;
 
 namespace WHMS.Api.Controllers;
@@ -38,7 +39,7 @@ public class StoreController : ControllerBase
         => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
-    [HttpDelete]
-    public async Task<IActionResult> DeleteStore()
-        => Ok();
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteStore(string id)
+        => Ok(await _mediator.Send(new DeleteStoreCommandRequest {StoreId = id}));
 }

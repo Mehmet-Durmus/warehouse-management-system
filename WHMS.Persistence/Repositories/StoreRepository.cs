@@ -27,9 +27,11 @@ public class StoreRepository : IStoreRepository
         throw new NotImplementedException();
     }
 
-    public Task SoftDelete(Guid storeId)
+    public async Task SoftDelete(Guid storeId)
     {
-        throw new NotImplementedException();
+        var store = await GetStore(storeId);
+        store.IsActive = false;
+        Update(store);
     }
 
     public void Update(Store store)
