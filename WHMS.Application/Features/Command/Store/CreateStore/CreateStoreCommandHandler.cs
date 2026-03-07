@@ -1,38 +1,34 @@
+using System.Security.Cryptography.X509Certificates;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.ValueObjects;
+using WHMS.Domain.Entities;
 
-namespace WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
+namespace WHMS.Application.Features.Command.Store.CreateStore;
 
-public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseCommandRequest, UpdateWarehouseCommandResponse>
+public class CreateStoreCommandHandler : IRequestHandler<CreateStoreCommandRequest, CreateStoreCommandResponse>
 {
-    private readonly IWarehouseRepository _warehouseRepository;
+    private readonly IStoreRepository _storeRepository;
     private readonly ILocationRepository _locationRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateWarehouseCommandHandler(IWarehouseRepository warehouseRepository, IUnitOfWork unitOfWork, ILocationRepository locationRepository)
+    public CreateStoreCommandHandler(IStoreRepository storeRepository, IUnitOfWork unitOfWork, ILocationRepository locationRepository)
     {
-        _warehouseRepository = warehouseRepository;
+        _storeRepository = storeRepository;
         _unitOfWork = unitOfWork;
         _locationRepository = locationRepository;
     }
 
-    public async Task<UpdateWarehouseCommandResponse> Handle(UpdateWarehouseCommandRequest request, CancellationToken cancellationToken)
+    public async Task<CreateStoreCommandResponse> Handle(CreateStoreCommandRequest request, CancellationToken cancellationToken)
     {
-        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
-        
-        if (warehouse is null)
-            throw new Exception("Warehouse not found.");
-
         bool isAddressValid = await _locationRepository.IsAddressValid(
             Guid.Parse(request.CityId!),
             Guid.Parse(request.DistrictId!),
             Guid.Parse(request.NeighborhoodId!));
-        if (isAddressValid)
+        if (!isAddressValid)
             throw new Exception("Address data is invalid.");
 
-        // Mapping
-        warehouse.Address = new Address
+        Address address = new()
         {
             CityId = Guid.Parse(request.CityId!),
             DistrictId = Guid.Parse(request.DistrictId!),
@@ -41,8 +37,11 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
             PostalCode = request.PostalCode!
         };
 
-        _warehouseRepository.UpdateWarehouse(warehouse);
+        WHMS.Domain.Entities.Store store = new() { StoreName = request.StoreName!, Address = address};
+
+        await _storeRepository.CreateStore(store);
         await _unitOfWork.CommitAsync();
+
         return new();
     }
 }

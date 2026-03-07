@@ -19,8 +19,10 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
 
     public async Task<CreateWarehouseCommandResponse> Handle(CreateWarehouseCommandRequest request, CancellationToken cancellationToken)
     {
-        bool isAddressValid = await _locationRepository.IsDistrictBelongsToCity(Guid.Parse(request.DistrictId!), Guid.Parse(request.CityId!))
-            && await _locationRepository.IsNeighborhoodBelongsToDistrict(Guid.Parse(request.NeighborhoodId!), Guid.Parse(request.DistrictId!));
+        bool isAddressValid = await _locationRepository.IsAddressValid(
+            Guid.Parse(request.CityId!),
+            Guid.Parse(request.DistrictId!),
+            Guid.Parse(request.NeighborhoodId!));
         if (!isAddressValid)
             throw new Exception("Address data is invalid.");
         

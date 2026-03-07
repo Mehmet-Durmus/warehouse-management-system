@@ -1,14 +1,20 @@
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
+using WHMS.Persistence.Contexts;
 
 namespace WHMS.Persistence.Repositories;
 
 public class StoreRepository : IStoreRepository
 {
-    public Task CreateStore(Store store)
+    private readonly WHMSDbContext _context;
+
+    public StoreRepository(WHMSDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
+
+    public async Task CreateStore(Store store)
+        => await _context.Stores.AddAsync(store);
 
     public Task<Store> GetStore(Guid storeId)
     {

@@ -57,13 +57,11 @@ public class LocationRepository : ILocationRepository
         throw new NotImplementedException();
     }
 
-    public async Task<bool> IsDistrictBelongsToCity(Guid districtId, Guid cityId)
+    public async Task<bool> IsAddressValid(Guid cityId, Guid districtId, Guid neighborhoodId)
     {
-        return await _whmsContext.Districts.Select(d => d.DistrictId == districtId && d.CityId == cityId).AnyAsync();
-    }
-
-    public async Task<bool> IsNeighborhoodBelongsToDistrict(Guid neighborhoodId, Guid districtId)
-    {
-        return await _whmsContext.Neighborhoods.Select(n => n.NeighborhoodId == neighborhoodId && n.DistrictId == districtId).AnyAsync();
+        return await _whmsContext.Neighborhoods
+            .AnyAsync(n => n.NeighborhoodId == neighborhoodId
+            && n.DistrictId == districtId
+            && n.District.CityId == cityId);
     }
 }
