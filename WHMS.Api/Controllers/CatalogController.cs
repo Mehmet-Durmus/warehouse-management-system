@@ -9,6 +9,7 @@ using WHMS.Application.Features.Command.Catalog.DeleteSku;
 using WHMS.Application.Features.Command.Catalog.UpdateCategory;
 using WHMS.Application.Features.Command.Catalog.UpdateSku;
 using WHMS.Application.Features.Queries.Catalog.GetCategories;
+using WHMS.Application.Features.Queries.Catalog.GetCategory;
 using WHMS.Application.Features.Queries.Catalog.GetSku;
 using WHMS.Application.Features.Queries.Catalog.GetSkus;
 
@@ -28,12 +29,12 @@ public class CatalogController : ControllerBase
     [Authorize(Policy = "DirectorOrManager")]
     [HttpGet("categories")]
     public async Task<IActionResult> GetCategories()
-        => Ok(await _mediator.Send(new GetCategoriesQueryRequest())); // Eager-loading
+        => Ok(await _mediator.Send(new GetCategoriesQueryRequest()));
 
     [Authorize(Policy = "DirectorOrManager")]
     [HttpGet("categories7{id}")]
     public async Task<IActionResult> GetCategory(string id)
-        => Ok(); // Eager-loading
+        => Ok(await _mediator.Send(new GetCategoryQueryRequest {CategoryId = id}));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("category")]

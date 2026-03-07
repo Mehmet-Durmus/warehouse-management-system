@@ -40,7 +40,7 @@ public class CatalogRepository : ICatalogRepository
 
     public async Task<Category> GetCategory(Guid categoryId)
     {
-        var category = await _context.Categories.FindAsync(categoryId);
+        var category = await _context.Categories.Include(c => c.Skus).SingleOrDefaultAsync(c => c.Id == categoryId);
         return category!;
     }
 
