@@ -16,7 +16,7 @@ public class GetWarehouseQueryHandler : IRequestHandler<GetWarehouseQueryRequest
 
     public async Task<GetWarehouseQueryResponse> Handle(GetWarehouseQueryRequest request, CancellationToken cancellationToken)
     {
-        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId))!;
+        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
 
         if (warehouse is null)
             throw new Exception("Warehouse not found.");

@@ -18,6 +18,7 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
     public DbSet<Warehouse> Warehouses { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<SKU> SKUs { get; set; }
+    public DbSet<Store> Stores { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -79,7 +80,19 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
             sku.Property(s => s.Barcode).HasMaxLength(100);
             sku.Property(s => s.UnitPrice).HasColumnType("numeric(7,2)");
         });
-            
+        
+        builder.Entity<Store>(e =>
+        {
+            e.Property(s => s.StoreName).HasMaxLength(50);
+            e.OwnsOne(w => w.Address, a =>
+            {
+                a.Property( p => p.CityId).IsRequired();
+                a.Property( p => p.DistrictId).IsRequired();
+                a.Property( p => p.NeighborhoodId).IsRequired();
+                a.Property( p => p.PostalCode).HasMaxLength(10);
+                a.Property( p => p.AddressLine).HasMaxLength(500);
+            });
+        });
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
