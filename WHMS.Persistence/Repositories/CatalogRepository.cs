@@ -36,7 +36,7 @@ public class CatalogRepository : ICatalogRepository
     }
 
     public async Task<List<Category>> GetCategories()
-        => await _context.Categories.ToListAsync();
+        => await _context.Categories.Include(c => c.Skus).ToListAsync();
 
     public async Task<Category> GetCategory(Guid categoryId)
     {
