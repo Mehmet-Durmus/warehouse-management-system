@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Catalog.CreateCategory;
 using WHMS.Application.Features.Command.Catalog.CreateSku;
 using WHMS.Application.Features.Command.Catalog.DeleteCategory;
+using WHMS.Application.Features.Command.Catalog.DeleteSku;
 using WHMS.Application.Features.Command.Catalog.UpdateCategory;
 using WHMS.Application.Features.Command.Catalog.UpdateSku;
 
@@ -69,5 +70,5 @@ public class CatalogController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("sku/{id}")]
     public async Task<IActionResult> DeleteSku(string id)
-        => Ok();
+        => Ok(await _mediator.Send(new DeleteSkuCommandRequest {SkuId = id}));
 }
