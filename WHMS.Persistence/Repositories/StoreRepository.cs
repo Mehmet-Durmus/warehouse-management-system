@@ -16,9 +16,10 @@ public class StoreRepository : IStoreRepository
     public async Task CreateStore(Store store)
         => await _context.Stores.AddAsync(store);
 
-    public Task<Store> GetStore(Guid storeId)
+    public async Task<Store> GetStore(Guid storeId)
     {
-        throw new NotImplementedException();
+        var store = await _context.Stores.FindAsync(storeId);
+        return store!;
     }
 
     public Task<List<Store>> GetStores()
@@ -32,7 +33,5 @@ public class StoreRepository : IStoreRepository
     }
 
     public void Update(Store store)
-    {
-        throw new NotImplementedException();
-    }
+        => _context.Stores.Update(store);
 }

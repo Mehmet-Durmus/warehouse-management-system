@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Store.CreateStore;
+using WHMS.Application.Features.Command.Store.UpdateStore;
 
 namespace WHMS.Api.Controllers;
 
@@ -33,8 +34,8 @@ public class StoreController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
-    public async Task<IActionResult> UpdateStore()
-        => Ok();
+    public async Task<IActionResult> UpdateStore(UpdateStoreCommandRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete]
