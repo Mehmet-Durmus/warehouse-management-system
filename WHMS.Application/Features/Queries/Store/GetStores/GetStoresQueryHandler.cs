@@ -19,24 +19,17 @@ public class GetStoresQueryHandler : IRequestHandler<GetStoresQueryRequest, GetS
 
     public async Task<GetStoresQueryResponse> Handle(GetStoresQueryRequest request, CancellationToken cancellationToken)
     {
+        StoreFilter filter = new StoreFilter
+        {
+            CityId = request.CityId,
+            DistrictId = request.DistrictId,
+            Page = request.Page,
+            PageSize = request.PageSize
+        };
 
-        var stores = await _storeRepository.GetStores(
-            new StoreFilter
-            {
-                CityId = request.CityId,
-                DistrictId = request.DistrictId,
-                Page = request.Page,
-                PageSize = request.PageSize
-            }
-        );
+        var stores = await _storeRepository.GetStores(filter);
 
-        int count = await _storeRepository.GetStoresCount(
-            new StoreFilter
-            {
-                CityId = request.CityId,
-                DistrictId = request.DistrictId
-            }
-        );
+        int count = await _storeRepository.GetStoresCount(filter);
 
         GetStoresQueryResponse response = new() 
         {
@@ -45,6 +38,7 @@ public class GetStoresQueryHandler : IRequestHandler<GetStoresQueryRequest, GetS
             TotalPage = (int)Math.Ceiling((double)count / request.PageSize),
             Stores = []
         };
+        
         foreach (var store in stores)
             response.Stores.Add(new StoreDto
             {

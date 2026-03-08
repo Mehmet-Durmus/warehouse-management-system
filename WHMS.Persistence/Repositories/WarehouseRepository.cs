@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Extensions;
+using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -17,15 +19,40 @@ public class WarehouseRepository : IWarehouseRepository
     public async Task CreateWarehouse(Warehouse warehouse)
         => await _whmsContext.Warehouses.AddAsync(warehouse);
 
-    public async Task<List<Warehouse>> GetAllWarehouses()
-        => await _whmsContext.Warehouses.ToListAsync();
+    public async Task<List<Warehouse>> GetAllWarehouses(WarehouseFilter filter)
+    {
+        var query = _whmsContext.Warehouses.AsQueryable();
+
+        query = query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.CityId), w => w.Address.CityId == Guid.Parse(filter.CityId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.DistrictId), w => w.Address.DistrictId == Guid.Parse(filter.DistrictId!));
+            
+        return await query
+            .Skip((filter.Page - 1) * filter.PageSize)
+            .Take(filter.PageSize)
+            .ToListAsync();
+    }
 
     public async Task<Warehouse>? GetWarehouse(Guid warehouseId)
-        => await _whmsContext.Warehouses.FirstOrDefaultAsync(w => w.Id == warehouseId);
+    { 
+        var warehouse = await _whmsContext.Warehouses.FirstOrDefaultAsync(w => w.Id == warehouseId);
+        return warehouse!;    
+    }
+
+    public async Task<int> GetWarehousesCount(WarehouseFilter filter)
+    {
+        var query = _whmsContext.Warehouses.AsQueryable();
+
+        query = query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.CityId), w => w.Address.CityId == Guid.Parse(filter.CityId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.DistrictId), w => w.Address.DistrictId == Guid.Parse(filter.DistrictId!));
+        
+        return await query.CountAsync();
+    }
 
     public async Task SoftDelete(Guid warehouseId)
     {
-        Warehouse? warehouse = await GetWarehouse(warehouseId);
+        var warehouse = await GetWarehouse(warehouseId)!;
         warehouse.IsActive = false;
         UpdateWarehouse(warehouse);
     }

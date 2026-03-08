@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.DTOs.Warehouse;
+using WHMS.Application.Filters;
 
 namespace WHMS.Application.Features.Queries.Warehouse.GetAllWarehouses;
 
@@ -17,8 +18,25 @@ public class GetAllWarehousesQueryHandler : IRequestHandler<GetAllWarehousesQuer
 
     public async Task<GetAllWarehousesQueryResponse> Handle(GetAllWarehousesQueryRequest request, CancellationToken cancellationToken)
     {
-        List<WHMS.Domain.Entities.Warehouse> warehouses = await _warehouseRepository.GetAllWarehouses();
-        var result = new GetAllWarehousesQueryResponse {Warehouses = []};
+        WarehouseFilter filter = new WarehouseFilter
+        {
+            CityId = request.CityId,
+            DistrictId = request.DistrictId,
+            Page = request.Page,
+            PageSize = request.PageSize
+        };
+
+        var warehouses = await _warehouseRepository.GetAllWarehouses(filter);
+        int count = await _warehouseRepository.GetWarehousesCount(filter);
+        
+        var result = new GetAllWarehousesQueryResponse 
+        {
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalPage = (int)Math.Ceiling((double)count / request.PageSize),
+            Warehouses = []
+        };
+
         foreach (var warehouse in warehouses)
             result.Warehouses.Add(new WarehouseDto
             {
