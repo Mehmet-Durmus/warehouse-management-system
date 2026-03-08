@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Store.CreateStore;
 using WHMS.Application.Features.Command.Store.DeleteStore;
 using WHMS.Application.Features.Command.Store.UpdateStore;
+using WHMS.Application.Features.Queries.Store.GetStore;
 
 namespace WHMS.Api.Controllers;
 
@@ -26,7 +27,7 @@ public class StoreController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetStore(string id)
-        => Ok();
+        => Ok(await _mediator.Send(new GetStoreQueryRequest {StoreId = id}));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]
