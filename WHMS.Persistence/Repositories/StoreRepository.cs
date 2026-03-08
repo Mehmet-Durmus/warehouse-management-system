@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
@@ -22,10 +23,8 @@ public class StoreRepository : IStoreRepository
         return store!;
     }
 
-    public Task<List<Store>> GetStores()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<Store>> GetStores()
+        => await _context.Stores.ToListAsync();
 
     public async Task SoftDelete(Guid storeId)
     {
