@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Domain.Entities;
 using WHMS.Domain.Entities.Abstractions;
 using WHMS.Persistence.Extensions;
@@ -10,7 +11,11 @@ namespace WHMS.Persistence.Contexts;
 
 public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
-    public WHMSDbContext(DbContextOptions options) : base (options) {}
+    private readonly ICurrentUserService? _currentUserService;
+    public WHMSDbContext(DbContextOptions options, ICurrentUserService currentUserService) : base(options)
+    {
+        _currentUserService = currentUserService;
+    }
 
     public DbSet<City> Cities { get; set; }
     public DbSet<District> Districts { get; set; }
@@ -46,6 +51,7 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
             .WithMany(w => w.ApplicationUsers)
             .HasForeignKey(u => u.WarehouseId)
             .OnDelete(DeleteBehavior.Restrict);
+
 
         builder.Entity<Warehouse>(e =>
         {
@@ -104,10 +110,19 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
                 {
                     case EntityState.Added:
                         auditable.Entity.CreatedAt = DateTime.Now;
+                        auditable.Entity.CreatedById = _currentUserService!.UserId!;
+                        auditable.Entity.CreatedByName = _currentUserService.FullName!;
+                        auditable.Entity.CreatedByUserName = _currentUserService.UserName!;
                         auditable.Entity.UpdatedAt = DateTime.Now;
+                        auditable.Entity.UpdatedById = _currentUserService.UserId;
+                        auditable.Entity.UpdatedByName = _currentUserService.FullName!;
+                        auditable.Entity.UpdatedByUserName = _currentUserService.UserName!;
                         break;
                     case EntityState.Modified:
                         auditable.Entity.UpdatedAt = DateTime.Now;
+                        auditable.Entity.UpdatedById = _currentUserService!.UserId;
+                        auditable.Entity.UpdatedByName = _currentUserService.FullName!;
+                        auditable.Entity.UpdatedByUserName = _currentUserService.UserName!;
                         break;
                 }
         }

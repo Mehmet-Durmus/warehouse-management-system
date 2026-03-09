@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WHMS.Persistence.Contexts;
@@ -11,9 +12,11 @@ using WHMS.Persistence.Contexts;
 namespace WHMS.Persistence.Migrations
 {
     [DbContext(typeof(WHMSDbContext))]
-    partial class WHMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260308235943_mig8")]
+    partial class mig8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,19 +229,19 @@ namespace WHMS.Persistence.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("UpdateByName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UpdateByUserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("UpdatedById")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("UpdatedByName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UpdatedByUserName")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -293,19 +296,19 @@ namespace WHMS.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("UpdateByName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UpdateByUserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("UpdatedById")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("UpdatedByName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UpdatedByUserName")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -410,19 +413,19 @@ namespace WHMS.Persistence.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("numeric(7,2)");
 
+                    b.Property<string>("UpdateByName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UpdateByUserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("UpdatedById")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("UpdatedByName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UpdatedByUserName")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -459,19 +462,19 @@ namespace WHMS.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<string>("UpdateByName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UpdateByUserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("UpdatedById")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("UpdatedByName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UpdatedByUserName")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -501,19 +504,19 @@ namespace WHMS.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("UpdateByName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UpdateByUserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("UpdatedById")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("UpdatedByName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UpdatedByUserName")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("WarehouseName")
                         .IsRequired()

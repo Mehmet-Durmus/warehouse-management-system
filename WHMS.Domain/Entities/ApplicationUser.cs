@@ -10,5 +10,11 @@ public class ApplicationUser : IdentityUser<Guid>, IAuditable, ISoftDeletable
     public Warehouse? Warehouse { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
+    public Guid? CreatedById { get; set; }
+    public string CreatedByName { get; set; } = null!;
+    public string CreatedByUserName { get; set; } = null!;
     public DateTime UpdatedAt { get; set; }
+    public Guid? UpdatedById { get; set; }
+    public string UpdatedByName { get; set; } = null!;
+    public string UpdatedByUserName { get; set; } = null!;
 }

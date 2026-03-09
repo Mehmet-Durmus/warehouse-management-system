@@ -12,6 +12,12 @@ public class SKU : IAuditable, ISoftDeletable
     public Guid CategoryId { get; set; }
     public Category Category { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
+    public Guid? CreatedById { get; set; }
+    public string CreatedByName { get; set; } = null!;
+    public string CreatedByUserName { get; set; } = null!;
     public DateTime UpdatedAt { get; set; }
+    public Guid? UpdatedById { get; set; }
+    public string UpdatedByName { get; set; } = null!;
+    public string UpdatedByUserName { get; set; } = null!;
     public bool IsActive { get; set; }
 }

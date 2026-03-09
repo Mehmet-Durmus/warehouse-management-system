@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using WHMS.Domain.Entities;
 using WHMS.Domain.Entities.Abstractions;
 
 namespace WHMS.Persistence.Extensions;

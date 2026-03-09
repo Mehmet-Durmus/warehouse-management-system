@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using WHMS.Application.Abstractions.Infrastructure;
 
 namespace WHMS.Persistence.Contexts.Factories;
 
@@ -23,6 +24,17 @@ public class WHMSDbContextFactory : IDesignTimeDbContextFactory<WHMSDbContext>
         var connectionString = configuration.GetConnectionString("PostgreSQL");
         optionsBuilder.UseNpgsql(connectionString);
 
-        return new WHMSDbContext(optionsBuilder.Options);
+        var nullCurrentUserService = new NullCurrnetUserService(); 
+
+        return new WHMSDbContext(optionsBuilder.Options, nullCurrentUserService);
+    }
+
+    public class NullCurrnetUserService : ICurrentUserService
+    {
+        public Guid? UserId => null;
+
+        public string? FullName => null;
+
+        public string? UserName => null;
     }
 }
