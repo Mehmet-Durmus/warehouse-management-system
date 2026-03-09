@@ -24,6 +24,8 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
     public DbSet<Category> Categories { get; set; }
     public DbSet<SKU> SKUs { get; set; }
     public DbSet<Store> Stores { get; set; }
+    public DbSet<Delivery> Deliveries { get; set; }
+    public DbSet<DeliveryItem> DeliveryItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

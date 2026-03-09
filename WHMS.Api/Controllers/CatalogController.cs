@@ -32,7 +32,7 @@ public class CatalogController : ControllerBase
         => Ok(await _mediator.Send(new GetCategoriesQueryRequest()));
 
     [Authorize(Policy = "DirectorOrManager")]
-    [HttpGet("categories7{id}")]
+    [HttpGet("categories/{id}")]
     public async Task<IActionResult> GetCategory(string id)
         => Ok(await _mediator.Send(new GetCategoryQueryRequest {CategoryId = id}));
 
