@@ -13,10 +13,8 @@ public class DeliveryRepository : IDeliveryRepository
         _context = context;
     }
 
-    public Task AddDeliveryItem(Guid deliveryId, DeliveryItem deliveryItem)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task AddDeliveryItem(DeliveryItem deliveryItem)
+        => await _context.DeliveryItems.AddAsync(deliveryItem);
 
     public async Task CreateDelivery(Delivery delivery)
         => await _context.Deliveries.AddAsync(delivery);

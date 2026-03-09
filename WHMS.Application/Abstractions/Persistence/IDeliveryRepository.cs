@@ -5,7 +5,7 @@ namespace WHMS.Application.Abstractions.Persistence;
 public interface IDeliveryRepository
 {
     Task CreateDelivery(Delivery delivery);
-    Task AddDeliveryItem(Guid deliveryId, DeliveryItem deliveryItem);
+    Task AddDeliveryItem(DeliveryItem deliveryItem);
     void UpdateDelivery(Delivery delivery);
     void UpdateDeliveryItem(DeliveryItem deliveryItem);
     Task DeleteDelivery(Guid deliveryId);
