@@ -1,5 +1,7 @@
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WHMS.Application.Features.Command.Delivery.CreateDelivery;
 
 namespace WHMS.Api.Controllers;
 
@@ -7,6 +9,13 @@ namespace WHMS.Api.Controllers;
 [ApiController]
 public class DeliveryController : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public DeliveryController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetDeliveries()
         => Ok();
@@ -28,8 +37,8 @@ public class DeliveryController : ControllerBase
         => Ok();
 
     [HttpPost]
-    public async Task<IActionResult> CreateDelivery()
-        => Ok();
+    public async Task<IActionResult> CreateDelivery(CreateDeliveryCommandRequest request)
+        => Ok(await _mediator.Send(request));
 
     [HttpPost("delivery-item")]
     public async Task<IActionResult> CreateDeliveryItem()

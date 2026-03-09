@@ -1,19 +1,25 @@
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
+using WHMS.Persistence.Contexts;
 
 namespace WHMS.Persistence.Repositories;
 
 public class DeliveryRepository : IDeliveryRepository
 {
+    private readonly WHMSDbContext _context;
+
+    public DeliveryRepository(WHMSDbContext context)
+    {
+        _context = context;
+    }
+
     public Task AddDeliveryItem(Guid deliveryId, DeliveryItem deliveryItem)
     {
         throw new NotImplementedException();
     }
 
-    public Task CreateDelivery(Delivery delivery)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task CreateDelivery(Delivery delivery)
+        => await _context.Deliveries.AddAsync(delivery);
 
     public Task DeleteDelivery(Guid deliveryId)
     {
