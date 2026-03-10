@@ -1,5 +1,6 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Filters;
 
 namespace WHMS.Application.Features.Queries.Delivery.GetDeliveries;
 
@@ -14,8 +15,24 @@ public class GetDeliveriesQueryHandler : IRequestHandler<GetDeliveriesQueryReque
 
     public async Task<GetDeliveriesQueryResponse> Handle(GetDeliveriesQueryRequest request, CancellationToken cancellationToken)
     {
-        var deliveries = await _deliveryRepository.GetDeliveries();
-        GetDeliveriesQueryResponse response = new() { Deliveries = [] };
+        DeliveryFilter filter = new()
+        {
+            WarehouseId = request.WarehouseId,
+            CityId = request.CityId,
+            DistrictId = request.DistrictId,
+            IsReceived = request.IsReceived,
+            Page = request.Page,
+            PageSize = request.PageSize
+        };
+        var deliveries = await _deliveryRepository.GetDeliveries(filter);
+        int count = await _deliveryRepository.GetDeliveriesCount(filter);
+        GetDeliveriesQueryResponse response = new()
+        {
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalPage = (int)Math.Ceiling((double)count / request.PageSize),
+            Deliveries = [] 
+        };
 
         foreach (var delivery in deliveries)
         {

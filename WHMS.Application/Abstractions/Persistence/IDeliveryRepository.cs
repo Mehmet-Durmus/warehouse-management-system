@@ -1,3 +1,4 @@
+using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Abstractions.Persistence;
@@ -10,7 +11,8 @@ public interface IDeliveryRepository
     void UpdateDeliveryItem(DeliveryItem deliveryItem);
     Task DeleteDelivery(Guid deliveryId);
     Task DeleteDeliveryItem(Guid deliveryItemId);
-    Task<List<Delivery>> GetDeliveries();
+    Task<List<Delivery>> GetDeliveries(DeliveryFilter filter);
+    Task<int> GetDeliveriesCount(DeliveryFilter filter);
     Task<Delivery> GetDelivery(Guid deliveryId);
     Task<List<DeliveryItem>> GetDeliveryItems();
     Task<DeliveryItem> GetDeliveryItem(Guid deliveryItem);

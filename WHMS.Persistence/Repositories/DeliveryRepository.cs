@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Extensions;
+using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -30,14 +32,19 @@ public class DeliveryRepository : IDeliveryRepository
         throw new NotImplementedException();
     }
 
-    public async Task<List<Delivery>> GetDeliveries()
-    {
-        var deliveries = await _context.Deliveries
+    public async Task<List<Delivery>> GetDeliveries(DeliveryFilter filter)
+        => await _context.Deliveries
+            .ApplyDeliveryFilter(filter)
             .Include(d => d.DeliveryItems)!
             .ThenInclude(i => i.Sku)
             .ToListAsync();
-        return deliveries;
-    }
+
+    public async Task<int> GetDeliveriesCount(DeliveryFilter filter)
+        => await _context.Deliveries
+            .ApplyDeliveryFilter(filter, false)
+            .Include(d => d.DeliveryItems)!
+            .ThenInclude(i => i.Sku)
+            .CountAsync();
 
     public Task<Delivery> GetDelivery(Guid deliveryId)
     {

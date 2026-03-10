@@ -101,6 +101,12 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
                 a.Property( p => p.AddressLine).HasMaxLength(500);
             });
         });
+
+        builder.Entity<Delivery>()
+            .HasOne(d => d.Warehouse)
+            .WithMany(w => w.Deliveries)
+            .HasForeignKey(d => d.WarehouseId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

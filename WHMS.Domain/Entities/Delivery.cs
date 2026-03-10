@@ -6,6 +6,7 @@ public class Delivery : IAuditable, ISoftDeletable
 {
     public Guid Id { get; set; }
     public Guid WarehouseId { get; set; }
+    public Warehouse? Warehouse { get; set; }
     public List<DeliveryItem>? DeliveryItems { get; set; }
     public DateTime? ReceivedAt { get; set; }
     public Guid? ReceivedById { get; set; }

@@ -19,8 +19,8 @@ public class DeliveryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetDeliveries()
-        => Ok(await _mediator.Send(new GetDeliveriesQueryRequest()));
+    public async Task<IActionResult> GetDeliveries([FromQuery] GetDeliveriesQueryRequest request)
+        => Ok(await _mediator.Send(request));
 
     [HttpGet("{deliveryId}")]
     public async Task<IActionResult> GetDelivery(string deliveryId)

@@ -6,6 +6,30 @@ namespace WHMS.Application.Extensions;
 
 public static class QueryableExtensions
 {
+    public static IQueryable<Delivery> ApplyDeliveryFilter(
+        this IQueryable<Delivery> query,
+        DeliveryFilter filter,
+        bool withPagination = true
+    )
+    {
+        query = query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.WarehouseId), d => d.WarehouseId == Guid.Parse(filter.WarehouseId!))
+            .WhereIf(string.IsNullOrWhiteSpace(filter.WarehouseId)
+                && !string.IsNullOrWhiteSpace(filter.CityId),
+                d => d.Warehouse!.Address.CityId == Guid.Parse(filter.CityId!))
+            .WhereIf(string.IsNullOrWhiteSpace(filter.WarehouseId)
+                && !string.IsNullOrWhiteSpace(filter.DistrictId),
+                d => d.Warehouse!.Address.DistrictId == Guid.Parse(filter.DistrictId!))
+            .WhereIf(filter.IsReceived.HasValue && filter.IsReceived == true, d => d.ReceivedAt != null)
+            .WhereIf(filter.IsReceived.HasValue && filter.IsReceived == false, d => d.ReceivedAt == null);
+
+        if (withPagination)
+            query = query
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize);
+
+        return query;
+    }
 
     public static IQueryable<Store> ApplyStoreFilter(
         this IQueryable<Store> query,
