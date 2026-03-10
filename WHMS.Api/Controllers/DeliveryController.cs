@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Delivery.CreateDelivery;
 using WHMS.Application.Features.Command.Delivery.CreateDeliveryItem;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveries;
+using WHMS.Application.Features.Queries.Delivery.GetDelivery;
 
 namespace WHMS.Api.Controllers;
 
@@ -24,7 +25,7 @@ public class DeliveryController : ControllerBase
 
     [HttpGet("{deliveryId}")]
     public async Task<IActionResult> GetDelivery(string deliveryId)
-        => Ok();
+        => Ok(await _mediator.Send(new GetDeliveryQueryRequet {DeliveryId = deliveryId}));
 
     [HttpGet("delivery-items")]
     public async Task<IActionResult> GetDeliveryItems()

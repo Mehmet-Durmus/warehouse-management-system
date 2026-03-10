@@ -46,9 +46,14 @@ public class DeliveryRepository : IDeliveryRepository
             .ThenInclude(i => i.Sku)
             .CountAsync();
 
-    public Task<Delivery> GetDelivery(Guid deliveryId)
+    public async Task<Delivery> GetDelivery(Guid deliveryId)
     {
-        throw new NotImplementedException();
+        var delivery = await _context.Deliveries
+            .Where(d => d.Id == deliveryId)
+            .Include(d => d.DeliveryItems)!
+            .ThenInclude(i => i.Sku)
+            .SingleOrDefaultAsync();
+        return delivery!;
     }
 
     public Task<DeliveryItem> GetDeliveryItem(Guid deliveryItem)
