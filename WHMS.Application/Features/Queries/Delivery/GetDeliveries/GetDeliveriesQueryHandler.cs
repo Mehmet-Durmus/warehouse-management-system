@@ -23,7 +23,6 @@ public class GetDeliveriesQueryHandler : IRequestHandler<GetDeliveriesQueryReque
             {
                 DeliveryId = delivery.Id.ToString(),
                 WarehouseId = delivery.WarehouseId.ToString(),
-                StoreId = delivery.StoreId.ToString(),
                 DeliveryItems = [],
                 ReceivedAt = delivery.ReceivedAt,
                 ReceivedById = delivery.ReceivedById.ToString(),

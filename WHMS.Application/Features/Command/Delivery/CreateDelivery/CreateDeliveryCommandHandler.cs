@@ -18,8 +18,7 @@ public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryComman
     {
         var delivery = new Domain.Entities.Delivery
         {
-            WarehouseId = Guid.Parse(request.WarehouseId!),
-            StoreId = Guid.Parse(request.StoreId!)
+            WarehouseId = Guid.Parse(request.WarehouseId!)
         };
         await _deliveryRepository.CreateDelivery(delivery);
         await _unitOfWork.CommitAsync();
@@ -27,7 +26,6 @@ public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryComman
         {
             Id = delivery.Id.ToString(),
             WarehouseId = delivery.WarehouseId.ToString(),
-            StoreId = delivery.StoreId.ToString(),
             CreatedByUserName = delivery.CreatedByUserName
         };
     }
