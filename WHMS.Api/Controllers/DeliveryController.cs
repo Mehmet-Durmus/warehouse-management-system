@@ -5,6 +5,7 @@ using WHMS.Application.Features.Command.Delivery.CreateDelivery;
 using WHMS.Application.Features.Command.Delivery.CreateDeliveryItem;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveries;
 using WHMS.Application.Features.Queries.Delivery.GetDelivery;
+using WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
 
 namespace WHMS.Api.Controllers;
 
@@ -28,15 +29,11 @@ public class DeliveryController : ControllerBase
         => Ok(await _mediator.Send(new GetDeliveryQueryRequet {DeliveryId = deliveryId}));
 
     [HttpGet("delivery-items")]
-    public async Task<IActionResult> GetDeliveryItems()
-        => Ok();
+    public async Task<IActionResult> GetDeliveryItems([FromQuery] GetDeliveryItemsQueryRequest request)
+        => Ok(await _mediator.Send(request));
 
     [HttpGet("delivery-items/{deliveryItemId}")]
     public async Task<IActionResult> GetDeliveryItem(string deliveryItemId)
-        => Ok();
-    
-    [HttpGet("delivery-items/by-delivery/{deliveryId}")]
-    public async Task<IActionResult> GetDeliveryItemsByDelivery(string deliveryId)
         => Ok();
 
     [HttpPost]

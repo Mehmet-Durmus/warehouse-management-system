@@ -14,7 +14,7 @@ public interface IDeliveryRepository
     Task<List<Delivery>> GetDeliveries(DeliveryFilter filter);
     Task<int> GetDeliveriesCount(DeliveryFilter filter);
     Task<Delivery> GetDelivery(Guid deliveryId);
-    Task<List<DeliveryItem>> GetDeliveryItems();
+    Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter);
+    Task<int> GetDeliveryItemsCount(DeliveryItemFilter filter);
     Task<DeliveryItem> GetDeliveryItem(Guid deliveryItem);
-    Task<List<DeliveryItem>> GetDeliveryItemsByDelivery(Guid deliveryId);
 }

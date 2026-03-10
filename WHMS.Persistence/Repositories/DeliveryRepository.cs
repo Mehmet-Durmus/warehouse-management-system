@@ -61,15 +61,17 @@ public class DeliveryRepository : IDeliveryRepository
         throw new NotImplementedException();
     }
 
-    public Task<List<DeliveryItem>> GetDeliveryItems()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter)
+        => await _context.DeliveryItems
+            .ApplyDeliveryItemFilter(filter)
+            .Include(i => i.Sku)
+            .ToListAsync();
 
-    public Task<List<DeliveryItem>> GetDeliveryItemsByDelivery(Guid deliveryId)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<int> GetDeliveryItemsCount(DeliveryItemFilter filter)
+        => await _context.DeliveryItems
+            .ApplyDeliveryItemFilter(filter)
+            .Include(i => i.Sku)
+            .CountAsync();
 
     public void UpdateDelivery(Delivery delivery)
     {

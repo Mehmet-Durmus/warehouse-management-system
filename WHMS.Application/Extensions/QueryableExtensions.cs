@@ -6,6 +6,26 @@ namespace WHMS.Application.Extensions;
 
 public static class QueryableExtensions
 {
+    public static IQueryable<DeliveryItem> ApplyDeliveryItemFilter(
+        this IQueryable<DeliveryItem> query,
+        DeliveryItemFilter filter,
+        bool withValidation = true
+    )
+    {
+        query = query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.DeliveryId), d => d.DeliveryId == Guid.Parse(filter.DeliveryId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.SkuId), d => d.SkuId == Guid.Parse(filter.SkuId!))
+            .WhereIf(filter.MinQuantity.HasValue, d => d.Quantity >= filter.MinQuantity)
+            .WhereIf(filter.MaxQuantity.HasValue, d => d.Quantity <= filter.MaxQuantity);
+
+        if (withValidation)
+            query = query
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize);
+        
+        return query;
+    }
+
     public static IQueryable<Delivery> ApplyDeliveryFilter(
         this IQueryable<Delivery> query,
         DeliveryFilter filter,
