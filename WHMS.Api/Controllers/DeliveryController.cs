@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Delivery.CreateDelivery;
 using WHMS.Application.Features.Command.Delivery.CreateDeliveryItem;
+using WHMS.Application.Features.Queries.Delivery.GetDeliveries;
 
 namespace WHMS.Api.Controllers;
 
@@ -19,7 +20,7 @@ public class DeliveryController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetDeliveries()
-        => Ok();
+        => Ok(await _mediator.Send(new GetDeliveriesQueryRequest()));
 
     [HttpGet("{deliveryId}")]
     public async Task<IActionResult> GetDelivery(string deliveryId)

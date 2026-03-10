@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
@@ -29,9 +30,13 @@ public class DeliveryRepository : IDeliveryRepository
         throw new NotImplementedException();
     }
 
-    public Task<List<Delivery>> GetDeliveries()
+    public async Task<List<Delivery>> GetDeliveries()
     {
-        throw new NotImplementedException();
+        var deliveries = await _context.Deliveries
+            .Include(d => d.DeliveryItems)!
+            .ThenInclude(i => i.Sku)
+            .ToListAsync();
+        return deliveries;
     }
 
     public Task<Delivery> GetDelivery(Guid deliveryId)
