@@ -26,27 +26,10 @@ public class StoreRepository : IStoreRepository
     }
 
     public async Task<List<Store>> GetStores(StoreFilter filter)
-    {
-        var query = _context.Stores.AsQueryable();
-        query = query
-            .WhereIf(!string.IsNullOrWhiteSpace(filter.CityId), s => s.Address.CityId == Guid.Parse(filter.CityId!))
-            .WhereIf(!string.IsNullOrWhiteSpace(filter.DistrictId), s => s.Address.DistrictId == Guid.Parse(filter.DistrictId!));
-
-        return await query
-            .Skip((filter.Page - 1) * filter.PageSize)
-            .Take(filter.PageSize)
-            .ToListAsync();
-    }
+        => await _context.Stores.AsQueryable().ApplyStoreFilter(filter).ToListAsync();
 
     public async Task<int> GetStoresCount(StoreFilter filter)
-    {
-        var query = _context.Stores.AsQueryable();
-        query = query
-            .WhereIf(!string.IsNullOrWhiteSpace(filter.CityId), s => s.Address.CityId == Guid.Parse(filter.CityId!))
-            .WhereIf(!string.IsNullOrWhiteSpace(filter.DistrictId), s => s.Address.DistrictId == Guid.Parse(filter.DistrictId!));
-        
-        return await query.CountAsync();
-    }
+     => await _context.Stores.AsQueryable().ApplyStoreFilter(filter, false).CountAsync();
 
     public async Task SoftDelete(Guid storeId)
     {

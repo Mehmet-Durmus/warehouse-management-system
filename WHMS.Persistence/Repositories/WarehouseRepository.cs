@@ -20,18 +20,7 @@ public class WarehouseRepository : IWarehouseRepository
         => await _whmsContext.Warehouses.AddAsync(warehouse);
 
     public async Task<List<Warehouse>> GetAllWarehouses(WarehouseFilter filter)
-    {
-        var query = _whmsContext.Warehouses.AsQueryable();
-
-        query = query
-            .WhereIf(!string.IsNullOrWhiteSpace(filter.CityId), w => w.Address.CityId == Guid.Parse(filter.CityId!))
-            .WhereIf(!string.IsNullOrWhiteSpace(filter.DistrictId), w => w.Address.DistrictId == Guid.Parse(filter.DistrictId!));
-            
-        return await query
-            .Skip((filter.Page - 1) * filter.PageSize)
-            .Take(filter.PageSize)
-            .ToListAsync();
-    }
+        => await _whmsContext.Warehouses.AsQueryable().ApplyWarehouseFilter(filter).ToListAsync();
 
     public async Task<Warehouse>? GetWarehouse(Guid warehouseId)
     { 
@@ -40,15 +29,7 @@ public class WarehouseRepository : IWarehouseRepository
     }
 
     public async Task<int> GetWarehousesCount(WarehouseFilter filter)
-    {
-        var query = _whmsContext.Warehouses.AsQueryable();
-
-        query = query
-            .WhereIf(!string.IsNullOrWhiteSpace(filter.CityId), w => w.Address.CityId == Guid.Parse(filter.CityId!))
-            .WhereIf(!string.IsNullOrWhiteSpace(filter.DistrictId), w => w.Address.DistrictId == Guid.Parse(filter.DistrictId!));
-        
-        return await query.CountAsync();
-    }
+        => await _whmsContext.Warehouses.AsQueryable().ApplyWarehouseFilter(filter, false).CountAsync();
 
     public async Task SoftDelete(Guid warehouseId)
     {
