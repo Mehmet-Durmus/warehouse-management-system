@@ -7,6 +7,7 @@ using WHMS.Application.Features.Command.Delivery.DeleteDelivery;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveries;
 using WHMS.Application.Features.Queries.Delivery.GetDelivery;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
+using WHMS.Application.Features.Queries.GetDeliveryItem;
 
 namespace WHMS.Api.Controllers;
 
@@ -35,7 +36,7 @@ public class DeliveryController : ControllerBase
 
     [HttpGet("delivery-items/{deliveryItemId}")]
     public async Task<IActionResult> GetDeliveryItem(string deliveryItemId)
-        => Ok();
+        => Ok(await _mediator.Send(new GetDeliveryItemQueryRequest {DeliveryItemId = deliveryItemId}));
 
     [HttpPost]
     public async Task<IActionResult> CreateDelivery(CreateDeliveryCommandRequest request)

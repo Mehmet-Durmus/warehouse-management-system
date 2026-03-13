@@ -12,11 +12,11 @@ public class Warehouse : IAuditable, ISoftDeletable
     public List<Delivery>? Deliveries { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }
-    public string CreatedByName { get; set; } = null!;
-    public string CreatedByUserName { get; set; } = null!;
+    public string? CreatedByName { get; set; }
+    public string? CreatedByUserName { get; set; }
     public DateTime UpdatedAt { get; set; }
     public Guid? UpdatedById { get; set; }
-    public string UpdatedByName { get; set; } = null!;
-    public string UpdatedByUserName { get; set; } = null!;
+    public string? UpdatedByName { get; set; }
+    public string? UpdatedByUserName { get; set; }
     public bool IsActive { get; set; }
 }

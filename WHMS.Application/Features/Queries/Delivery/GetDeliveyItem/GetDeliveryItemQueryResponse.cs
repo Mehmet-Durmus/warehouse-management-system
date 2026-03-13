@@ -1,13 +1,13 @@
-using WHMS.Domain.Entities.Abstractions;
-using WHMS.Domain.ValueObjects;
+using WHMS.Application.DTOs.Catalog;
 
-namespace WHMS.Domain.Entities;
+namespace WHMS.Application.Features.Queries.GetDeliveryItem;
 
-public class Store : IAuditable, ISoftDeletable
+public class GetDeliveryItemQueryResponse
 {
-    public Guid Id { get; set; }
-    public required string StoreName { get; set; }
-    public required Address Address { get; set; }
+    public string? DeliveryId { get; set; }
+    public string? SkuId { get; set; }
+    public string? SKUName { get; set; }
+    public int Quantity { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }
     public string? CreatedByName { get; set; }
@@ -16,5 +16,4 @@ public class Store : IAuditable, ISoftDeletable
     public Guid? UpdatedById { get; set; }
     public string? UpdatedByName { get; set; }
     public string? UpdatedByUserName { get; set; }
-    public bool IsActive { get; set; }
 }
