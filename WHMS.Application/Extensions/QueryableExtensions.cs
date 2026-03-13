@@ -9,7 +9,7 @@ public static class QueryableExtensions
     public static IQueryable<DeliveryItem> ApplyDeliveryItemFilter(
         this IQueryable<DeliveryItem> query,
         DeliveryItemFilter filter,
-        bool withValidation = true
+        bool withPagination = true
     )
     {
         query = query
@@ -18,7 +18,7 @@ public static class QueryableExtensions
             .WhereIf(filter.MinQuantity.HasValue, d => d.Quantity >= filter.MinQuantity)
             .WhereIf(filter.MaxQuantity.HasValue, d => d.Quantity <= filter.MaxQuantity);
 
-        if (withValidation)
+        if (withPagination)
             query = query
                 .Skip((filter.Page - 1) * filter.PageSize)
                 .Take(filter.PageSize);

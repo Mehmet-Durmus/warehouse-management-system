@@ -27,7 +27,7 @@ public class GetDeliveryItemsQueryHandler : IRequestHandler<GetDeliveryItemsQuer
             PageSize = request.PageSize
         };
 
-        var deliveryItems = await _deliveryRepository.GetDeliveryItems(filter);
+        var deliveryItems = await _deliveryRepository.GetDeliveryItems(filter, true);
         int count = await _deliveryRepository.GetDeliveryItemsCount(filter);
 
         GetDeliveryItemsQueryResponse response = new()

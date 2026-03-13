@@ -11,10 +11,10 @@ public interface IDeliveryRepository
     void UpdateDeliveryItem(DeliveryItem deliveryItem);
     Task DeleteDelivery(Guid deliveryId);
     Task DeleteDeliveryItem(Guid deliveryItemId);
-    Task<List<Delivery>> GetDeliveries(DeliveryFilter filter);
+    Task<List<Delivery>> GetDeliveries(DeliveryFilter filter, bool withPagination);
     Task<int> GetDeliveriesCount(DeliveryFilter filter);
     Task<Delivery> GetDelivery(Guid deliveryId);
-    Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter);
+    Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter, bool withPagination);
     Task<int> GetDeliveryItemsCount(DeliveryItemFilter filter);
-    Task<DeliveryItem> GetDeliveryItem(Guid deliveryItem);
+    Task<DeliveryItem> GetDeliveryItem(Guid deliveryItemId);
 }

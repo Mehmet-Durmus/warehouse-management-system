@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WHMS.Persistence.Contexts;
@@ -11,9 +12,11 @@ using WHMS.Persistence.Contexts;
 namespace WHMS.Persistence.Migrations
 {
     [DbContext(typeof(WHMSDbContext))]
-    partial class WHMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260313192011_mig12")]
+    partial class mig12
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,9 +179,11 @@ namespace WHMS.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedByName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("CreatedByUserName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -231,9 +236,11 @@ namespace WHMS.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("UpdatedByName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UpdatedByUserName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UserName")
@@ -275,9 +282,11 @@ namespace WHMS.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedByName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("CreatedByUserName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -294,9 +303,11 @@ namespace WHMS.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("UpdatedByName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UpdatedByUserName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -332,13 +343,12 @@ namespace WHMS.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedByName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("CreatedByUserName")
+                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("ExpectedArrivalDate")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -356,9 +366,11 @@ namespace WHMS.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("UpdatedByName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UpdatedByUserName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("WarehouseId")
@@ -384,9 +396,11 @@ namespace WHMS.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedByName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("CreatedByUserName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("DeliveryId")
@@ -408,9 +422,11 @@ namespace WHMS.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("UpdatedByName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UpdatedByUserName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");

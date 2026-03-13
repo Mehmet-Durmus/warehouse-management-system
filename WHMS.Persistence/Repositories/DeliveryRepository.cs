@@ -22,19 +22,23 @@ public class DeliveryRepository : IDeliveryRepository
     public async Task CreateDelivery(Delivery delivery)
         => await _context.Deliveries.AddAsync(delivery);
 
-    public Task DeleteDelivery(Guid deliveryId)
+    public async Task DeleteDelivery(Guid deliveryId)
     {
-        throw new NotImplementedException();
+        var delivery = await GetDelivery(deliveryId);
+        delivery.IsActive = false;
+        UpdateDelivery(delivery);
     }
 
-    public Task DeleteDeliveryItem(Guid deliveryItemId)
+    public async Task DeleteDeliveryItem(Guid deliveryItemId)
     {
-        throw new NotImplementedException();
+       var deliveryItem = await GetDeliveryItem(deliveryItemId);
+       deliveryItem.IsActive = false;
+       UpdateDeliveryItem(deliveryItem);
     }
 
-    public async Task<List<Delivery>> GetDeliveries(DeliveryFilter filter)
+    public async Task<List<Delivery>> GetDeliveries(DeliveryFilter filter, bool withPagination)
         => await _context.Deliveries
-            .ApplyDeliveryFilter(filter)
+            .ApplyDeliveryFilter(filter, withPagination)
             .Include(d => d.DeliveryItems)!
             .ThenInclude(i => i.Sku)
             .ToListAsync();
@@ -56,30 +60,30 @@ public class DeliveryRepository : IDeliveryRepository
         return delivery!;
     }
 
-    public Task<DeliveryItem> GetDeliveryItem(Guid deliveryItem)
+    public async Task<DeliveryItem> GetDeliveryItem(Guid deliveryItemId)
     {
-        throw new NotImplementedException();
+        var deliveryItem = await _context.DeliveryItems
+            .Where(i => i.Id == deliveryItemId)
+            .Include(i => i.Sku)
+            .SingleOrDefaultAsync();
+        return deliveryItem!;
     }
 
-    public async Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter)
+    public async Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter, bool withPagination)
         => await _context.DeliveryItems
-            .ApplyDeliveryItemFilter(filter)
+            .ApplyDeliveryItemFilter(filter, withPagination)
             .Include(i => i.Sku)
             .ToListAsync();
 
     public async Task<int> GetDeliveryItemsCount(DeliveryItemFilter filter)
         => await _context.DeliveryItems
-            .ApplyDeliveryItemFilter(filter)
+            .ApplyDeliveryItemFilter(filter, false)
             .Include(i => i.Sku)
             .CountAsync();
 
     public void UpdateDelivery(Delivery delivery)
-    {
-        throw new NotImplementedException();
-    }
+        => _context.Deliveries.Update(delivery);
 
     public void UpdateDeliveryItem(DeliveryItem deliveryItem)
-    {
-        throw new NotImplementedException();
-    }
+        => _context.DeliveryItems.Update(deliveryItem);
 }

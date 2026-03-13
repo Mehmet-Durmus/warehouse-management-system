@@ -8,16 +8,17 @@ public class Delivery : IAuditable, ISoftDeletable
     public Guid WarehouseId { get; set; }
     public Warehouse? Warehouse { get; set; }
     public List<DeliveryItem>? DeliveryItems { get; set; }
+    public DateTime ExpectedArrivalDate { get; set; }
     public DateTime? ReceivedAt { get; set; }
     public Guid? ReceivedById { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }
-    public string CreatedByName { get; set; } = null!;
-    public string CreatedByUserName { get; set; } = null!;
+    public string? CreatedByName { get; set; }
+    public string? CreatedByUserName { get; set; }
     public DateTime UpdatedAt { get; set; }
     public Guid? UpdatedById { get; set; }
-    public string UpdatedByName { get; set; } = null!;
-    public string UpdatedByUserName { get; set; } = null!;
+    public string? UpdatedByName { get; set; }
+    public string? UpdatedByUserName { get; set; }
     public bool IsActive { get; set; }
     
 }

@@ -11,8 +11,9 @@ public class CreateDeliveryCommandValidator : AbstractValidator<CreateDeliveryCo
             .NotEmpty().WithMessage("The WarehouseId is required.")
             .Must(x => Guid.TryParse(x, out _)).WithMessage("The WarehouseId must be a valid GUID.");
 
-        RuleFor(x => x.StoreId)
-            .NotEmpty().WithMessage("The StoreId is required.")
-            .Must(x => Guid.TryParse(x, out _)).WithMessage("The StoreId must be a valid GUID.");
+        RuleFor(x => x.ExpectedArrivalDate)
+            .NotNull().WithMessage("Expected arrival date is required.")
+            .Must(date => date.Date >= DateTime.Now.Date)
+            .WithMessage("Expected arrival date cannot be in the past.");
     }
 }

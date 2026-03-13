@@ -18,7 +18,8 @@ public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryComman
     {
         var delivery = new Domain.Entities.Delivery
         {
-            WarehouseId = Guid.Parse(request.WarehouseId!)
+            WarehouseId = Guid.Parse(request.WarehouseId!),
+            ExpectedArrivalDate = request.ExpectedArrivalDate
         };
         await _deliveryRepository.CreateDelivery(delivery);
         await _unitOfWork.CommitAsync();
