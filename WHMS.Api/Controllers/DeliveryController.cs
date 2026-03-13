@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Delivery.CreateDelivery;
 using WHMS.Application.Features.Command.Delivery.CreateDeliveryItem;
 using WHMS.Application.Features.Command.Delivery.DeleteDelivery;
+using WHMS.Application.Features.Command.Delivery.UpdateDelivery;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveries;
 using WHMS.Application.Features.Queries.Delivery.GetDelivery;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
@@ -47,8 +48,8 @@ public class DeliveryController : ControllerBase
         => Ok(await _mediator.Send(request));
 
     [HttpPut]
-    public async Task<IActionResult> UpdateDelivery()
-        => Ok();
+    public async Task<IActionResult> UpdateDelivery(UpdateDeliveryCommandRequest request)
+        => Ok(await _mediator.Send(request));
 
     [HttpPut("delivery-item")]
     public async Task<IActionResult> UpdateDeliveryItem()
