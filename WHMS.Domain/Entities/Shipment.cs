@@ -8,6 +8,7 @@ public class Shipment : IAuditable, ISoftDeletable
     public Guid WarehouseId { get; set; }
     public Guid StoreId { get; set; }
     public List<ShipmentItem>? ShipmentItems { get; set; }
+    public DateTime ExpectedSendingDate { get; set; }
     public DateTime SendingDate { get; set; }
     public Guid? SendById { get; set; }
     public DateTime CreatedAt { get; set; }

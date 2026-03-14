@@ -115,8 +115,12 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        builder.Entity<Shipment>()
-            .Property(s => s.SendingDate).HasColumnType("timestamp without time zone");
+        builder.Entity<Shipment>(e =>
+        {
+            e.Property(s => s.ExpectedSendingDate).HasColumnType("timestamp without time zone");
+            e.Property(s => s.SendingDate).HasColumnType("timestamp without time zone");
+        });
+            
             
     }
 
