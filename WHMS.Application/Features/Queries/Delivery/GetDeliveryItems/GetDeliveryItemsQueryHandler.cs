@@ -41,7 +41,7 @@ public class GetDeliveryItemsQueryHandler : IRequestHandler<GetDeliveryItemsQuer
         foreach (var item in deliveryItems)
             response.DeliveryItems.Add(new DeliveryItemDto
             {
-                DeliveryItemId = item.DeliveryId.ToString(),
+                DeliveryItemId = item.Id.ToString(),
                 Sku = new SkuDto
                 {
                     Id = item.Sku.Id.ToString(),
