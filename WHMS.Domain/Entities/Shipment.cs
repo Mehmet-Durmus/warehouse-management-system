@@ -12,7 +12,7 @@ public class Shipment : IAuditable, ISoftDeletable
     public List<ShipmentItem>? ShipmentItems { get; set; }
     public DateTime ExpectedSendingDate { get; set; }
     public DateTime? SendingDate { get; set; }
-    public Guid? SendById { get; set; }
+    public Guid? SentById { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }
     public string? CreatedByName { get; set; }

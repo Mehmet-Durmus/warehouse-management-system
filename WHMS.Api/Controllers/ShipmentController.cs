@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Shipment.CreateShipment;
 using WHMS.Application.Features.Command.Shipment.CreateShipmentItem;
+using WHMS.Application.Features.Queries.Shipment.GetShipment;
 using WHMS.Application.Features.Queries.Shipment.GetShipments;
 
 namespace WHMS.Api.Controllers;
@@ -25,8 +26,8 @@ public class ShipmentController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{shipmentId}")]
-    public async Task<IActionResult> GetShipment()
-        => Ok();
+    public async Task<IActionResult> GetShipment(string shipmentId)
+        => Ok(await _mediator.Send(new GetShipmentQueryRequest {ShipmentId = shipmentId}));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("shipment-items")]

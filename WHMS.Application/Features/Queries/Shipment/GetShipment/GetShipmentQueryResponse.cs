@@ -1,8 +1,9 @@
-namespace WHMS.Application.DTOs.Shipment;
+using WHMS.Application.DTOs.Shipment;
 
-public class ShipmentDto
+namespace WHMS.Application.Features.Queries.Shipment.GetShipment;
+
+public class GetShipmentQueryResponse
 {
-    public string ShipmentId { get; set; } = null!;
     public string WarehouseId { get; set; } = null!;
     public string StoreId { get; set; } = null!;
     public DateTime ExpectedSendingDate { get; set; }

@@ -32,9 +32,17 @@ public class ShipmentRepository : IShipmentRepository
         throw new NotImplementedException();
     }
 
-    public Task<Shipment> GetShipment(Guid shipmentId)
+    public async Task<Shipment> GetShipment(Guid shipmentId)
     {
-        throw new NotImplementedException();
+        var shipment = await _context.Shipments
+            .Where(s => s.Id == shipmentId)
+            .Include(s => s.Warehouse)
+            .Include(s => s.Store)
+            .Include(s => s.ShipmentItems)!
+            .ThenInclude(i => i.SKU)
+            .SingleOrDefaultAsync();
+        
+        return shipment!;
     }
 
     public Task<ShipmentItem> GetShipmentItem(Guid shipmentItemId)
