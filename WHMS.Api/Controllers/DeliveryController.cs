@@ -51,7 +51,7 @@ public class DeliveryController : ControllerBase
         => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
-    [HttpPost("delivery-item")]
+    [HttpPost("delivery-items")]
     public async Task<IActionResult> CreateDeliveryItem(CreateDeliveryItemCommandRequest request)
         => Ok(await _mediator.Send(request));
 

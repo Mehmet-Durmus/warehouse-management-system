@@ -26,6 +26,10 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
     public DbSet<Store> Stores { get; set; }
     public DbSet<Delivery> Deliveries { get; set; }
     public DbSet<DeliveryItem> DeliveryItems { get; set; }
+    
+    public DbSet<Shipment> Shipments { get; set; }
+    public DbSet<ShipmentItem> ShipmentItems { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -110,6 +114,9 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
                 .HasForeignKey(d => d.WarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+
+        builder.Entity<Shipment>()
+            .Property(s => s.SendingDate).HasColumnType("timestamp without time zone");
             
     }
 
