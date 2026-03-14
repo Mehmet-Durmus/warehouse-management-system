@@ -25,42 +25,52 @@ public class DeliveryController : ControllerBase
         _mediator = mediator;
     }
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpGet]
     public async Task<IActionResult> GetDeliveries([FromQuery] GetDeliveriesQueryRequest request)
         => Ok(await _mediator.Send(request));
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{deliveryId}")]
     public async Task<IActionResult> GetDelivery(string deliveryId)
         => Ok(await _mediator.Send(new GetDeliveryQueryRequet {DeliveryId = deliveryId}));
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpGet("delivery-items")]
     public async Task<IActionResult> GetDeliveryItems([FromQuery] GetDeliveryItemsQueryRequest request)
         => Ok(await _mediator.Send(request));
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpGet("delivery-items/{deliveryItemId}")]
     public async Task<IActionResult> GetDeliveryItem(string deliveryItemId)
         => Ok(await _mediator.Send(new GetDeliveryItemQueryRequest {DeliveryItemId = deliveryItemId}));
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpPost]
     public async Task<IActionResult> CreateDelivery(CreateDeliveryCommandRequest request)
         => Ok(await _mediator.Send(request));
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpPost("delivery-item")]
     public async Task<IActionResult> CreateDeliveryItem(CreateDeliveryItemCommandRequest request)
         => Ok(await _mediator.Send(request));
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
     public async Task<IActionResult> UpdateDelivery(UpdateDeliveryCommandRequest request)
         => Ok(await _mediator.Send(request));
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpPut("delivery-item")]
     public async Task<IActionResult> UpdateDeliveryItem(UpdateDeliveryItemCommandRequest request)
         => Ok(await _mediator.Send(request));
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("{deliveryId}")]
     public async Task<IActionResult> DeleteDelivery(string deliveryId)
         => Ok(await _mediator.Send(new DeleteDeliveryCommandRequest {DeliveryId = deliveryId}));
 
+    [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("delivery-item/{deliveryItemId}")]
     public async Task<IActionResult> DeleteDeliveryItem(string deliveryItemId)
         => Ok(await _mediator.Send(new DeleteDeliveryItemCommandRequest {DeliveryItemId = deliveryItemId}));
