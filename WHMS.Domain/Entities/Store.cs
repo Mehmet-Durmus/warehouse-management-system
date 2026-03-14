@@ -8,6 +8,7 @@ public class Store : IAuditable, ISoftDeletable
     public Guid Id { get; set; }
     public required string StoreName { get; set; }
     public required Address Address { get; set; }
+    public List<Shipment>? Shipments { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }
     public string? CreatedByName { get; set; }

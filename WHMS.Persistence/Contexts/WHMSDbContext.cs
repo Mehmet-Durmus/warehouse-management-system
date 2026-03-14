@@ -119,6 +119,14 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
         {
             e.Property(s => s.ExpectedSendingDate).HasColumnType("timestamp without time zone");
             e.Property(s => s.SendingDate).HasColumnType("timestamp without time zone");
+            e.HasOne(s => s.Warehouse)
+                .WithMany(w => w.Shipments)
+                .HasForeignKey(s => s.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(s => s.Store)
+                .WithMany(st => st.Shipments)
+                .HasForeignKey(s => s.StoreId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
             
             

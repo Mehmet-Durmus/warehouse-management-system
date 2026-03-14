@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Extensions;
+using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -49,15 +52,19 @@ public class ShipmentRepository : IShipmentRepository
         throw new NotImplementedException();
     }
 
-    public Task<List<Shipment>> GetShipments()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<Shipment>> GetShipments(ShipmentFilter filter, bool withPagination)
+        => await _context.Shipments
+            .ApplyShipmentFilter(filter, withPagination)
+            .Include(s => s.Warehouse)
+            .Include(s => s.Store)
+            .Include(s => s.ShipmentItems)!
+            .ThenInclude(i => i.SKU)
+            .ToListAsync();
 
-    public Task<int> GetShipmentsCount()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<int> GetShipmentsCount(ShipmentFilter filter)
+        => await _context.Shipments
+            .ApplyShipmentFilter(filter, false)
+            .CountAsync();
 
     public void UpdateShipment(Shipment shipment)
     {

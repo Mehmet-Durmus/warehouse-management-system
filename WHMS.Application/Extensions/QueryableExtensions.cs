@@ -6,6 +6,38 @@ namespace WHMS.Application.Extensions;
 
 public static class QueryableExtensions
 {
+    public static IQueryable<Shipment> ApplyShipmentFilter(
+        this IQueryable<Shipment> query,
+        ShipmentFilter filter,
+        bool withPagination = true
+    )
+    {
+        query = query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.WarehouseId), s => s.WarehouseId == Guid.Parse(filter.WarehouseId!))
+            .WhereIf(string.IsNullOrWhiteSpace(filter.WarehouseId) &&
+                !string.IsNullOrWhiteSpace(filter.WarehouseCityId),
+                s => s.Warehouse!.Address.CityId == Guid.Parse(filter.WarehouseCityId!))
+            .WhereIf(string.IsNullOrWhiteSpace(filter.WarehouseId) &&
+                !string.IsNullOrWhiteSpace(filter.WarehouseDistrictId),
+                s => s.Warehouse!.Address.DistrictId == Guid.Parse(filter.WarehouseDistrictId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.StoreId), s => s.StoreId == Guid.Parse(filter.StoreId!))
+            .WhereIf(string.IsNullOrWhiteSpace(filter.StoreId) &&
+                !string.IsNullOrWhiteSpace(filter.StoreCityId),
+                s => s.Store!.Address.CityId == Guid.Parse(filter.StoreCityId!))
+            .WhereIf(string.IsNullOrWhiteSpace(filter.StoreId) &&
+                !string.IsNullOrWhiteSpace(filter.StoreDistrictId),
+                s => s.Store!.Address.DistrictId == Guid.Parse(filter.StoreDistrictId!))
+            .WhereIf(filter.IsSent.HasValue && filter.IsSent == true, s => s.SendingDate.HasValue)
+            .WhereIf(filter.IsSent.HasValue && filter.IsSent == false, s => !s.SendingDate.HasValue);
+        
+        if (withPagination)
+            query = query
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize);
+        
+        return query;    
+    }
+
     public static IQueryable<DeliveryItem> ApplyDeliveryItemFilter(
         this IQueryable<DeliveryItem> query,
         DeliveryItemFilter filter,
