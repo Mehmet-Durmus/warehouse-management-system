@@ -13,10 +13,8 @@ public class ShipmentRepository : IShipmentRepository
         _context = context;
     }
 
-    public Task AddShipmentItem(ShipmentItem shipmentItem)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task AddShipmentItem(ShipmentItem shipmentItem)
+        => await _context.ShipmentItems.AddAsync(shipmentItem);
 
     public async Task CreateShipment(Shipment shipment)
         => await _context.Shipments.AddAsync(shipment);
