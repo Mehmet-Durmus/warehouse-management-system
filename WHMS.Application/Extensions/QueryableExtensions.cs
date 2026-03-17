@@ -6,6 +6,26 @@ namespace WHMS.Application.Extensions;
 
 public static class QueryableExtensions
 {
+    public static IQueryable<ShipmentItem> ApplyShipmentItemFilter(
+        this IQueryable<ShipmentItem> query,
+        ShipmentItemFilter filter,
+        bool withPagination = true
+    )
+    {
+        query = query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.ShipmentId), i => i.ShipmentId == Guid.Parse(filter.ShipmentId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.SkuId), i => i.SkuId == Guid.Parse(filter.SkuId!))
+            .WhereIf(filter.MinQuantity.HasValue, i => i.Quantity >= filter.MinQuantity)
+            .WhereIf(filter.MaxQuantity.HasValue, i => i.Quantity <= filter.MaxQuantity);
+
+        if (withPagination)
+            query = query
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize);
+        
+        return query;   
+    }
+
     public static IQueryable<Shipment> ApplyShipmentFilter(
         this IQueryable<Shipment> query,
         ShipmentFilter filter,
@@ -127,4 +147,5 @@ public static class QueryableExtensions
     {
         return condition ? query.Where(predicate) : query;
     }
+
 }

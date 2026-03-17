@@ -50,15 +50,16 @@ public class ShipmentRepository : IShipmentRepository
         throw new NotImplementedException();
     }
 
-    public Task<List<ShipmentItem>> GetShipmentItems()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<ShipmentItem>> GetShipmentItems(ShipmentItemFilter filter, bool withPagination)
+        => await _context.ShipmentItems
+            .ApplyShipmentItemFilter(filter, withPagination)
+            .Include(i => i.SKU)
+            .ToListAsync();
 
-    public Task<int> GetShipmentItemsCount()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<int> GetShipmentItemsCount(ShipmentItemFilter filter)
+        => await _context.ShipmentItems
+            .ApplyShipmentItemFilter(filter, withPagination: false)
+            .CountAsync();
 
     public async Task<List<Shipment>> GetShipments(ShipmentFilter filter, bool withPagination)
         => await _context.Shipments

@@ -14,7 +14,7 @@ public interface IShipmentRepository
     Task<List<Shipment>> GetShipments(ShipmentFilter filter, bool withPagination);
     Task<int> GetShipmentsCount(ShipmentFilter filter);
     Task<Shipment> GetShipment(Guid shipmentId);
-    Task<List<ShipmentItem>> GetShipmentItems();
-    Task<int> GetShipmentItemsCount();
+    Task<List<ShipmentItem>> GetShipmentItems(ShipmentItemFilter filter, bool withPagination);
+    Task<int> GetShipmentItemsCount(ShipmentItemFilter filter);
     Task<ShipmentItem> GetShipmentItem(Guid shipmentItemId);        
 }

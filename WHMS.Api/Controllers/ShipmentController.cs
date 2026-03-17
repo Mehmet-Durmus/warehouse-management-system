@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Shipment.CreateShipment;
 using WHMS.Application.Features.Command.Shipment.CreateShipmentItem;
 using WHMS.Application.Features.Queries.Shipment.GetShipment;
+using WHMS.Application.Features.Queries.Shipment.GetShipmentItems;
 using WHMS.Application.Features.Queries.Shipment.GetShipments;
 
 namespace WHMS.Api.Controllers;
@@ -31,8 +32,8 @@ public class ShipmentController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("shipment-items")]
-    public async Task<IActionResult> GetShipmentItems()
-        => Ok();
+    public async Task<IActionResult> GetShipmentItems([FromQuery] GetShipmentItemsQueryRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("shipment-items/{shipmentItemId}")]
