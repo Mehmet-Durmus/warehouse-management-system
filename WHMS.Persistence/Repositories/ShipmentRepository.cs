@@ -81,9 +81,7 @@ public class ShipmentRepository : IShipmentRepository
             .CountAsync();
 
     public void UpdateShipment(Shipment shipment)
-    {
-        throw new NotImplementedException();
-    }
+        => _context.Update(shipment);
 
     public void UpdateShipmentItem(ShipmentItem shipmentItem)
     {
