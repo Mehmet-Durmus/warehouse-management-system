@@ -45,9 +45,14 @@ public class ShipmentRepository : IShipmentRepository
         return shipment!;
     }
 
-    public Task<ShipmentItem> GetShipmentItem(Guid shipmentItemId)
+    public async Task<ShipmentItem> GetShipmentItem(Guid shipmentItemId)
     {
-        throw new NotImplementedException();
+        var item = await _context.ShipmentItems
+            .Where(i => i.Id == shipmentItemId)
+            .Include(i => i.SKU)
+            .SingleOrDefaultAsync();
+
+        return item!;
     }
 
     public async Task<List<ShipmentItem>> GetShipmentItems(ShipmentItemFilter filter, bool withPagination)

@@ -1,7 +1,7 @@
 using FluentValidation;
 using WHMS.Application.Features.Queries.Shipment.GetShipmentItems;
 
-namespace WHMS.Application.Validators;
+namespace WHMS.Application.Validators.Shipment;
 
 public class GetShipmentItemsQueryValidator : AbstractValidator<GetShipmentItemsQueryRequest>
 {

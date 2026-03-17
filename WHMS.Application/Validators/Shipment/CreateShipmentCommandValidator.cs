@@ -1,7 +1,7 @@
 using FluentValidation;
 using WHMS.Application.Features.Command.Shipment.CreateShipment;
 
-namespace WHMS.Application.Validators;
+namespace WHMS.Application.Validators.Shipment;
 
 public class CreateShipmentCommandValidator : AbstractValidator<CreateShipmentCommandRequest>
 {

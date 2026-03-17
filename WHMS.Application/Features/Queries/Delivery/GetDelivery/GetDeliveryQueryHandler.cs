@@ -26,12 +26,12 @@ public class GetDeliveryQueryHandler : IRequestHandler<GetDeliveryQueryRequet, G
             ReceivedById = delivery.ReceivedById.ToString(),
             CreatedAt = delivery.CreatedAt,
             CreatedById = delivery.CreatedById.ToString(),
-            CreatedByName = delivery.CreatedByName,
-            CreatedByUserName = delivery.CreatedByUserName,
+            CreatedByName = delivery.CreatedByName!,
+           CreatedByUserName = delivery.CreatedByUserName!,
             UpdatedAt = delivery.UpdatedAt,
             UpdatedById = delivery.UpdatedById.ToString(),
-            UpdatedByName = delivery.UpdatedByName,
-            UpdatedByUserName = delivery.UpdatedByUserName,
+            UpdatedByName = delivery.UpdatedByName!,
+            UpdatedByUserName = delivery.UpdatedByUserName!,
         };
 
         foreach (var item in delivery.DeliveryItems!)
