@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Shipment.CreateShipment;
 using WHMS.Application.Features.Command.Shipment.CreateShipmentItem;
 using WHMS.Application.Features.Command.Shipment.UpdateShipment;
+using WHMS.Application.Features.Command.Shipment.UpdateShipmentItem;
 using WHMS.Application.Features.Queries.Shipment.GetShipment;
 using WHMS.Application.Features.Queries.Shipment.GetShipmentItem;
 using WHMS.Application.Features.Queries.Shipment.GetShipmentItems;
@@ -59,8 +60,8 @@ public class ShipmentController : ControllerBase
     
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut("shipment-items")]
-    public async Task<IActionResult> UpdateShipmentItem()
-        => Ok();
+    public async Task<IActionResult> UpdateShipmentItem(UpdateShipmentItemCommandRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete]
