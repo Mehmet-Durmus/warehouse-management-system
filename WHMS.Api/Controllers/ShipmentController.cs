@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Shipment.CreateShipment;
 using WHMS.Application.Features.Command.Shipment.CreateShipmentItem;
+using WHMS.Application.Features.Command.Shipment.DeleteShipment;
 using WHMS.Application.Features.Command.Shipment.UpdateShipment;
 using WHMS.Application.Features.Command.Shipment.UpdateShipmentItem;
 using WHMS.Application.Features.Queries.Shipment.GetShipment;
@@ -64,9 +65,9 @@ public class ShipmentController : ControllerBase
         => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
-    [HttpDelete]
-    public async Task<IActionResult> DeleteShipment()
-        => Ok();
+    [HttpDelete("{shipmentId}")]
+    public async Task<IActionResult> DeleteShipment(string shipmentId)
+        => Ok(await _mediator.Send(new DeleteShipmentCommandRequest {ShipmentId = shipmentId}));
     
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("shipment-items")]

@@ -22,14 +22,16 @@ public class ShipmentRepository : IShipmentRepository
     public async Task CreateShipment(Shipment shipment)
         => await _context.Shipments.AddAsync(shipment);
 
-    public Task DeleteShipment(Guid shipmentId)
+    public async Task DeleteShipment(Guid shipmentId)
     {
-        throw new NotImplementedException();
+        var shipment = await GetShipment(shipmentId);
+        shipment.IsActive = false;
     }
 
-    public Task DeleteShipmentItem(Guid shipmentItemId)
+    public async Task DeleteShipmentItem(Guid shipmentItemId)
     {
-        throw new NotImplementedException();
+        var shipmentItem = await GetShipmentItem(shipmentItemId);
+        shipmentItem.IsActive = false;
     }
 
     public async Task<Shipment> GetShipment(Guid shipmentId)
