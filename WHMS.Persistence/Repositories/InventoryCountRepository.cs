@@ -23,10 +23,8 @@ public class InventoryCountRepository : IInventoryCountRepository
         throw new NotImplementedException();
     }
 
-    public Task CreateInventoryCounLine(InventoryCountLine inventoryCountLine)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task CreateInventoryCounLine(InventoryCountLine inventoryCountLine)
+        => await _context.InventoryCountLines.AddAsync(inventoryCountLine);
 
     public async Task CreateInventoryCount(InventoryCount inventoryCount)
         => await _context.InventoryCounts.AddAsync(inventoryCount);

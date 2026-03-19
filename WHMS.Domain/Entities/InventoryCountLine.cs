@@ -5,6 +5,7 @@ namespace WHMS.Domain.Entities;
 public class InventoryCountLine : IAuditable, ISoftDeletable
 {
     public Guid Id { get; set; }
+    public Guid InventoryCountId { get; set; }
     public Guid SkuId { get; set; }
     public int Quantity { get; set; }
     public DateTime CreatedAt { get; set; }

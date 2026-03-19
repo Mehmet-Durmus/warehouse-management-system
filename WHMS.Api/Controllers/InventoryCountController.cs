@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCount;
+using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCountLine;
 
 namespace WHMS.Api.Controllers;
 
@@ -44,8 +45,8 @@ public class InventoryCountController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("inventory-count-line")]
-    public async Task<IActionResult> CreateInventoryCountLine()
-        => Ok();
+    public async Task<IActionResult> CreateInventoryCountLine(CreateInventoryCountLineCommandRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
