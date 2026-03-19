@@ -1,10 +1,18 @@
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
+using WHMS.Persistence.Contexts;
 
 namespace WHMS.Persistence.Repositories;
 
 public class InventoryCountRepository : IInventoryCountRepository
 {
+    private readonly WHMSDbContext _context;
+
+    public InventoryCountRepository(WHMSDbContext context)
+    {
+        _context = context;
+    }
+
     public Task<int> CountInventoryCountLines()
     {
         throw new NotImplementedException();
@@ -20,10 +28,8 @@ public class InventoryCountRepository : IInventoryCountRepository
         throw new NotImplementedException();
     }
 
-    public Task CreateInventoryCount(InventoryCount inventoryCount)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task CreateInventoryCount(InventoryCount inventoryCount)
+        => await _context.InventoryCounts.AddAsync(inventoryCount);
 
     public Task DeleteInventoryCount(Guid inventoryCountId)
     {
