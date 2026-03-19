@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCount;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCountLine;
 using WHMS.Application.Features.Command.InventoryCount.DeleteInventoryCount;
+using WHMS.Application.Features.Command.InventoryCount.DeleteInventoryCountLine;
 using WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCount;
 using WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCountLine;
 using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCount;
@@ -73,6 +74,6 @@ public class InventoryCountController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("inventory-count-line/{inventoryCountLineId}")]
     public async Task<IActionResult> DeleteInventoryCountLine(string inventoryCountLineId)
-        => Ok();
+        => Ok(await _mediator.Send(new DeleteInventoryCountLineCommandRequest { InventoryCountLineId = inventoryCountLineId }));
 
 }
