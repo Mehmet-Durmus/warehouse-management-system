@@ -130,7 +130,7 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
                 .OnDelete(DeleteBehavior.Restrict);
         });
             
-            
+        
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

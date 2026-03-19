@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Extensions;
+using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -19,10 +21,10 @@ public class InventoryCountRepository : IInventoryCountRepository
         throw new NotImplementedException();
     }
 
-    public Task<int> CountInventoryCounts()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<int> CountInventoryCounts(InventoryCountFilter filter)
+        => await _context.InventoryCounts
+            .ApplyInventoryCountFilter(filter, false)
+            .CountAsync();
 
     public async Task CreateInventoryCounLine(InventoryCountLine inventoryCountLine)
         => await _context.InventoryCountLines.AddAsync(inventoryCountLine);
@@ -56,10 +58,12 @@ public class InventoryCountRepository : IInventoryCountRepository
         throw new NotImplementedException();
     }
 
-    public Task<List<InventoryCount>> GetInventoryCounts()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<InventoryCount>> GetInventoryCounts(InventoryCountFilter filter, bool withPagination)
+        => await _context.InventoryCounts
+            .ApplyInventoryCountFilter(filter, withPagination)
+            .Include(i => i.InventoryCountLines)!
+                .ThenInclude(l => l.Sku)
+            .ToListAsync();
 
     public void UpdateInventoryCount(InventoryCount inventoryCount)
         => _context.InventoryCounts.Update(inventoryCount);

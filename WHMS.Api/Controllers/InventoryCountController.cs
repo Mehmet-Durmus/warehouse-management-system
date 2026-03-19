@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCount;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCountLine;
 using WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCount;
+using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCounts;
 
 namespace WHMS.Api.Controllers;
 
@@ -21,8 +22,8 @@ public class InventoryCountController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet]
-    public async Task<IActionResult> GetInventoryCounts()
-        => Ok();
+    public async Task<IActionResult> GetInventoryCounts([FromQuery] GetInventoryCountsQueryRequest request)
+        => Ok(await _mediator.Send(request));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{inventoryCountId}")]
