@@ -1,0 +1,3 @@
+namespace WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCountLine;
+
+public class UpdateInventoryCountLineCommandResponse {}
