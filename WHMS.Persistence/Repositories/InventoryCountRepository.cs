@@ -33,19 +33,20 @@ public class InventoryCountRepository : IInventoryCountRepository
     public async Task CreateInventoryCount(InventoryCount inventoryCount)
         => await _context.InventoryCounts.AddAsync(inventoryCount);
 
-    public Task DeleteInventoryCount(Guid inventoryCountId)
-    {
-        throw new NotImplementedException();
-    }
+    public void DeleteInventoryCount(InventoryCount inventoryCount)
+        => inventoryCount.IsActive = false;
 
-    public Task DeleteInventoryCountLine(Guid inventoryCountLineId)
-    {
-        throw new NotImplementedException();
-    }
+    public void DeleteInventoryCountLine(InventoryCountLine inventoryCountLine)
+        => inventoryCountLine.IsActive = false;
 
     public async Task<InventoryCount> GetInventoryCount(Guid inventoryCountId)
     {
-        var inventoryCount = await _context.InventoryCounts.FindAsync(inventoryCountId);
+        var inventoryCount = await _context.InventoryCounts
+            .Where(i => i.Id == inventoryCountId)
+            .Include(i => i.InventoryCountLines)!
+            .ThenInclude(l => l.Sku)
+            .SingleOrDefaultAsync();
+
         return inventoryCount!;
     }
 

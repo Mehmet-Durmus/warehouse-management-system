@@ -15,6 +15,6 @@ public interface IInventoryCountRepository
     Task<InventoryCountLine> GetInventoryCountLine(Guid inventoryCountLineId);
     void UpdateInventoryCount(InventoryCount inventoryCount);
     void UpdateInventoryCountLine(InventoryCountLine inventoryCountLine);
-    Task DeleteInventoryCount(Guid inventoryCountId);
-    Task DeleteInventoryCountLine(Guid inventoryCountLineId);
+    void DeleteInventoryCount(InventoryCount inventoryCount);
+    void DeleteInventoryCountLine(InventoryCountLine inventoryCountLine);
 }
