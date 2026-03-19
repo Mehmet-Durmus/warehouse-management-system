@@ -12,7 +12,7 @@ public interface IInventoryCountRepository
     Task<InventoryCount> GetInventoryCount(Guid inventoryCountId);
     Task<List<InventoryCountLine>> GetInventoryCountLines(InventoryCountLineFilter filter, bool withPagination);
     Task<int> CountInventoryCountLines(InventoryCountLineFilter filter);
-    Task<InventoryCountLine> GetInventoryCountLine();
+    Task<InventoryCountLine> GetInventoryCountLine(Guid inventoryCountLineId);
     void UpdateInventoryCount(InventoryCount inventoryCount);
     void UpdateInventoryCountLine(InventoryCountLine inventoryCountLine);
     Task DeleteInventoryCount(Guid inventoryCountId);

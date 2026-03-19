@@ -5,6 +5,7 @@ using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCount;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCountLine;
 using WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCount;
 using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCount;
+using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCountLine;
 using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCountLines;
 using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCounts;
 
@@ -40,7 +41,7 @@ public class InventoryCountController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("inventory-count-line/{inventoryCountLineId}")]
     public async Task<IActionResult> GetInventoryCountLine(string inventoryCountLineId)
-        => Ok();
+        => Ok(await _mediator.Send(new GetInventoryCountLineQueryRequest { InventoryCountLineId = inventoryCountLineId }));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]

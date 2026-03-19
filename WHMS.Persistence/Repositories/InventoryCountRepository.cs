@@ -49,9 +49,10 @@ public class InventoryCountRepository : IInventoryCountRepository
         return inventoryCount!;
     }
 
-    public async Task<InventoryCountLine> GetInventoryCountLine()
+    public async Task<InventoryCountLine> GetInventoryCountLine(Guid inventoryCountLineId)
     {
-        throw new NotImplementedException();
+        var inventoryCountLine = await _context.InventoryCountLines.FindAsync(inventoryCountLineId);
+        return inventoryCountLine!;
     }
 
     public async Task<List<InventoryCountLine>> GetInventoryCountLines(InventoryCountLineFilter filter, bool withPagination)
