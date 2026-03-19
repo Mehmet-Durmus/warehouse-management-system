@@ -10,8 +10,8 @@ public interface IInventoryCountRepository
     Task<List<InventoryCount>> GetInventoryCounts(InventoryCountFilter filter, bool withPagination);
     Task<int> CountInventoryCounts(InventoryCountFilter filter);
     Task<InventoryCount> GetInventoryCount(Guid inventoryCountId);
-    Task<List<InventoryCountLine>> GetInventoryCountLines();
-    Task<int> CountInventoryCountLines();
+    Task<List<InventoryCountLine>> GetInventoryCountLines(InventoryCountLineFilter filter, bool withPagination);
+    Task<int> CountInventoryCountLines(InventoryCountLineFilter filter);
     Task<InventoryCountLine> GetInventoryCountLine();
     void UpdateInventoryCount(InventoryCount inventoryCount);
     void UpdateInventoryCountLine(InventoryCountLine inventoryCountLine);

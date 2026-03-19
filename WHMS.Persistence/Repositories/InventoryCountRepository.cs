@@ -16,10 +16,11 @@ public class InventoryCountRepository : IInventoryCountRepository
         _context = context;
     }
 
-    public Task<int> CountInventoryCountLines()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<int> CountInventoryCountLines(InventoryCountLineFilter filter)
+        => await _context.InventoryCountLines   
+            .ApplyInventoryCountLineFilter(filter, withPagination: false)
+            .CountAsync();
+    
 
     public async Task<int> CountInventoryCounts(InventoryCountFilter filter)
         => await _context.InventoryCounts
@@ -48,15 +49,16 @@ public class InventoryCountRepository : IInventoryCountRepository
         return inventoryCount!;
     }
 
-    public Task<InventoryCountLine> GetInventoryCountLine()
+    public async Task<InventoryCountLine> GetInventoryCountLine()
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<InventoryCountLine>> GetInventoryCountLines()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<InventoryCountLine>> GetInventoryCountLines(InventoryCountLineFilter filter, bool withPagination)
+        => await _context.InventoryCountLines
+            .ApplyInventoryCountLineFilter(filter, withPagination)
+            .Include(l => l.Sku)
+            .ToListAsync();
 
     public async Task<List<InventoryCount>> GetInventoryCounts(InventoryCountFilter filter, bool withPagination)
         => await _context.InventoryCounts

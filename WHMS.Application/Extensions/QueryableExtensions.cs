@@ -6,6 +6,26 @@ namespace WHMS.Application.Extensions;
 
 public static class QueryableExtensions
 {
+    public static IQueryable<InventoryCountLine> ApplyInventoryCountLineFilter(
+        this IQueryable<InventoryCountLine> query,
+        InventoryCountLineFilter filter,
+        bool withPagination = true
+    )
+    {
+        query = query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.InventoryCountId), l => l.InventoryCountId == Guid.Parse(filter.InventoryCountId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.SkuId), l => l.SkuId == Guid.Parse(filter.SkuId!))
+            .WhereIf(filter.MinQuantity.HasValue, l => l.Quantity >= filter.MinQuantity)
+            .WhereIf(filter.MaxQuantity.HasValue, l => l.Quantity <= filter.MaxQuantity);
+
+        if (withPagination)
+            query = query
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize);
+        
+        return query; 
+    }
+
     public static IQueryable<InventoryCount> ApplyInventoryCountFilter(
         this IQueryable<InventoryCount> query,
         InventoryCountFilter filter,
