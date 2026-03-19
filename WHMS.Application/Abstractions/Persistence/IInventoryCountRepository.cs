@@ -8,7 +8,7 @@ public interface IInventoryCountRepository
     Task CreateInventoryCounLine(InventoryCountLine inventoryCountLine);
     Task<List<InventoryCount>> GetInventoryCounts();
     Task<int> CountInventoryCounts();
-    Task<InventoryCount> GetInventoryCount();
+    Task<InventoryCount> GetInventoryCount(Guid inventoryCountId);
     Task<List<InventoryCountLine>> GetInventoryCountLines();
     Task<int> CountInventoryCountLines();
     Task<InventoryCountLine> GetInventoryCountLine();

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
@@ -39,9 +40,10 @@ public class InventoryCountRepository : IInventoryCountRepository
         throw new NotImplementedException();
     }
 
-    public Task<InventoryCount> GetInventoryCount()
+    public async Task<InventoryCount> GetInventoryCount(Guid inventoryCountId)
     {
-        throw new NotImplementedException();
+        var inventoryCount = await _context.InventoryCounts.FindAsync(inventoryCountId);
+        return inventoryCount!;
     }
 
     public Task<InventoryCountLine> GetInventoryCountLine()
@@ -60,9 +62,7 @@ public class InventoryCountRepository : IInventoryCountRepository
     }
 
     public void UpdateInventoryCount(InventoryCount inventoryCount)
-    {
-        throw new NotImplementedException();
-    }
+        => _context.InventoryCounts.Update(inventoryCount);
 
     public void UpdateInventoryCountLine(InventoryCountLine inventoryCountLine)
     {
