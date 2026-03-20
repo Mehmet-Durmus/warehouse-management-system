@@ -30,7 +30,7 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
     public DbSet<ShipmentItem> ShipmentItems { get; set; }
     public DbSet<InventoryCount> InventoryCounts { get; set; }
     public DbSet<InventoryCountLine> InventoryCountLines { get; set; }
-
+    public DbSet<WasteRecord> WasteRecords { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
