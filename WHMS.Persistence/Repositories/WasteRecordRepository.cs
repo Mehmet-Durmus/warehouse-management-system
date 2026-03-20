@@ -1,14 +1,20 @@
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
+using WHMS.Persistence.Contexts;
 
 namespace WHMS.Persistence.Repositories;
 
 public class WasteRecordRepository : IWasteRecordRepository
 {
-    public Task CreateWasteRecord(WasteRecord wasteRecord)
+    private readonly WHMSDbContext _context;
+
+    public WasteRecordRepository(WHMSDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
+
+    public async Task CreateWasteRecord(WasteRecord wasteRecord)
+        => await _context.WasteRecords.AddAsync(wasteRecord);
 
     public void Delete(WasteRecord wasteRecord)
     {

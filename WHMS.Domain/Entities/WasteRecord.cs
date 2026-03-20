@@ -9,7 +9,7 @@ public class WasteRecord : IAuditable, ISoftDeletable
     public Guid SkuId { get; set; }
     public SKU? Sku { get; set; }
     public int Quantity { get; set; }
-    public string? Desctiption { get; set; }
+    public string? Description { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }
     public string? CreatedByName { get; set; }
