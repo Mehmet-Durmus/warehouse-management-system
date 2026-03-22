@@ -6,6 +6,27 @@ namespace WHMS.Application.Extensions;
 
 public static class QueryableExtensions
 {
+
+    public static IQueryable<WasteRecord> ApplyWasteRecordFilter(
+        this IQueryable<WasteRecord> query,
+        WasteRecordFilter filter,
+        bool withPagination = true
+    )
+    {
+        query = query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.WarehouseId), w => w.WarehouseId == Guid.Parse(filter.WarehouseId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.SkuId), w => w.SkuId == Guid.Parse(filter.SkuId!))
+            .WhereIf(filter.MinQuantity.HasValue, w => w.Quantity >= filter.MinQuantity)
+            .WhereIf(filter.MaxQuantity.HasValue, w => w.Quantity <= filter.MaxQuantity);
+
+        if (withPagination)
+            query = query
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize);
+        
+        return query; 
+    }
+
     public static IQueryable<InventoryCountLine> ApplyInventoryCountLineFilter(
         this IQueryable<InventoryCountLine> query,
         InventoryCountLineFilter filter,
