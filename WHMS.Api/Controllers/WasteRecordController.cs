@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.WasteRecord.CreateWasteRecord;
+using WHMS.Application.Features.Command.WasteRecord.UpdateWasteRecord;
 using WHMS.Application.Features.Queries.WasteRecord.GetWasteRecord;
 using WHMS.Application.Features.Queries.WasteRecord.GetWasteRecords;
 
@@ -35,8 +36,8 @@ public class WasteRecordController : ControllerBase
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
-    public async Task<IActionResult> UpdateWasteRecords()
-        => Ok();
+    public async Task<IActionResult> UpdateWasteRecords(UpdateWasteRecordCommandRequest request)
+        => Ok(await _mediator.Send(request));
     
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete]
