@@ -24,9 +24,10 @@ public class WasteRecordRepository : IWasteRecordRepository
         throw new NotImplementedException();
     }
 
-    public Task<WasteRecord> GetWasteRecord(Guid wasteRecordId)
+    public async Task<WasteRecord> GetWasteRecord(Guid wasteRecordId)
     {
-        throw new NotImplementedException();
+        var wasteRecord = await _context.WasteRecords.FindAsync(wasteRecordId);
+        return wasteRecord!;
     }
 
     public async Task<int> GetWasteRecordCount(WasteRecordFilter filter)

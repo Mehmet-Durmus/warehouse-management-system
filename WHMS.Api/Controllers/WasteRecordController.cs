@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.WasteRecord.CreateWasteRecord;
+using WHMS.Application.Features.Queries.WasteRecord.GetWasteRecord;
 using WHMS.Application.Features.Queries.WasteRecord.GetWasteRecords;
 
 namespace WHMS.Api.Controllers;
@@ -30,7 +31,7 @@ public class WasteRecordController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{wasteRecordId}")]
     public async Task<IActionResult> GetWasteRecord(string wasteRecordId)
-        => Ok();
+        => Ok(await _mediator.Send(new GetWasteRecordQueryRequest { WasteRecordId = wasteRecordId }));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
