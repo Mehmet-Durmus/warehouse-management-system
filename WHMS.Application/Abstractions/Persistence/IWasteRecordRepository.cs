@@ -9,5 +9,5 @@ public interface IWasteRecordRepository
     Task<List<WasteRecord>> GetWasteRecords(WasteRecordFilter filter, bool withPagination);
     Task<int> GetWasteRecordCount(WasteRecordFilter filter);
     Task<WasteRecord> GetWasteRecord(Guid wasteRecordId);
-    void Delete(WasteRecord wasteRecord);
+    Task Delete(Guid wasteRecordId);
 }

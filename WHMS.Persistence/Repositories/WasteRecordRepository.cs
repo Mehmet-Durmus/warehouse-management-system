@@ -19,9 +19,10 @@ public class WasteRecordRepository : IWasteRecordRepository
     public async Task CreateWasteRecord(WasteRecord wasteRecord)
         => await _context.WasteRecords.AddAsync(wasteRecord);
 
-    public void Delete(WasteRecord wasteRecord)
+    public async Task Delete(Guid wasteRecordId)
     {
-        throw new NotImplementedException();
+        var wasteRecord = await GetWasteRecord(wasteRecordId);
+        wasteRecord.IsActive = false;
     }
 
     public async Task<WasteRecord> GetWasteRecord(Guid wasteRecordId)
