@@ -31,6 +31,7 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
     public DbSet<InventoryCount> InventoryCounts { get; set; }
     public DbSet<InventoryCountLine> InventoryCountLines { get; set; }
     public DbSet<WasteRecord> WasteRecords { get; set; }
+    public DbSet<StockState> StockStates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -132,7 +133,8 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
                 .OnDelete(DeleteBehavior.Restrict);
         });
             
-        
+        builder.Entity<StockState>()
+            .HasKey(s => new {s.WarehouseId, s.SkuId});
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
