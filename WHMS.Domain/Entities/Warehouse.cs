@@ -7,6 +7,7 @@ public class Warehouse : IAuditable, ISoftDeletable
 {
     public Guid Id { get; set; }
     public required string WarehouseName { get; set; }
+    public string NormalizedName { get; set; } = null!;
     public required Address Address { get; set; }
     public List<ApplicationUser>? ApplicationUsers { get; set; }
     public List<Delivery>? Deliveries { get; set; }

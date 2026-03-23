@@ -1,3 +1,4 @@
+using System.Globalization;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.ValueObjects;
@@ -28,10 +29,10 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
             Guid.Parse(request.CityId!),
             Guid.Parse(request.DistrictId!),
             Guid.Parse(request.NeighborhoodId!));
-        if (isAddressValid)
+        if (!isAddressValid)
             throw new Exception("Address data is invalid.");
 
-        // Mapping
+        var normalizedName = request.WarehouseName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
         warehouse.Address = new Address
         {
             CityId = Guid.Parse(request.CityId!),
@@ -40,6 +41,8 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
             AddressLine = request.AddressLine!,
             PostalCode = request.PostalCode!
         };
+        warehouse.NormalizedName = normalizedName;
+        warehouse.WarehouseName = request.WarehouseName;
 
         _warehouseRepository.UpdateWarehouse(warehouse);
         await _unitOfWork.CommitAsync();

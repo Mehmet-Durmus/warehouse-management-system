@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
-using WHMS.Application.Extensions;
-using WHMS.Application.Filters;
+using WHMS.Application.Common.Filtering.Extensions;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -20,7 +20,7 @@ public class WarehouseRepository : IWarehouseRepository
         => await _whmsContext.Warehouses.AddAsync(warehouse);
 
     public async Task<List<Warehouse>> GetAllWarehouses(WarehouseFilter filter)
-        => await _whmsContext.Warehouses.AsQueryable().ApplyWarehouseFilter(filter).ToListAsync();
+        => await _whmsContext.Warehouses.AsQueryable().Apply(filter).ToListAsync();
 
     public async Task<Warehouse>? GetWarehouse(Guid warehouseId)
     { 
@@ -29,7 +29,7 @@ public class WarehouseRepository : IWarehouseRepository
     }
 
     public async Task<int> GetWarehousesCount(WarehouseFilter filter)
-        => await _whmsContext.Warehouses.AsQueryable().ApplyWarehouseFilter(filter, false).CountAsync();
+        => await _whmsContext.Warehouses.AsQueryable().Apply(filter, false).CountAsync();
 
     public async Task SoftDelete(Guid warehouseId)
     {

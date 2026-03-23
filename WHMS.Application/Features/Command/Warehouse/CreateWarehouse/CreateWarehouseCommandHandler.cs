@@ -1,3 +1,4 @@
+using System.Globalization;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.ValueObjects;
@@ -35,7 +36,14 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
             PostalCode = request.PostalCode!
         };
 
-        Domain.Entities.Warehouse warehouse = new Domain.Entities.Warehouse { Address = address, WarehouseName = request.WarehouseName! };
+        var normalizedName = request.WarehouseName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
+
+        Domain.Entities.Warehouse warehouse = new Domain.Entities.Warehouse 
+        { 
+            Address = address,
+            WarehouseName = request.WarehouseName!,
+            NormalizedName = normalizedName
+        };
         await _warehouseRepository.CreateWarehouse(warehouse);
         await _unitOfWork.CommitAsync();
         return new();

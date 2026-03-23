@@ -84,8 +84,10 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
             .HasForeignKey(d => d.CityId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<Category>()
-            .Property(c => c.CategoryName).HasMaxLength(50);
+        builder.Entity<Category>(c =>
+        {
+            c.Property(c => c.CategoryName).HasMaxLength(50);
+        });
         
         builder.Entity<SKU>(sku =>
         {

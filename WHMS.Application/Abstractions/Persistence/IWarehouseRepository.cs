@@ -1,4 +1,4 @@
-using WHMS.Application.Filters;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Abstractions.Persistence;

@@ -1,7 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.DTOs.Warehouse;
-using WHMS.Application.Filters;
 
 namespace WHMS.Application.Features.Queries.Warehouse.GetAllWarehouses;
 
@@ -20,10 +20,16 @@ public class GetAllWarehousesQueryHandler : IRequestHandler<GetAllWarehousesQuer
     {
         WarehouseFilter filter = new WarehouseFilter
         {
+            Name = request.Name,
             CityId = request.CityId,
             DistrictId = request.DistrictId,
+            NeighborhoodId = request.DistrictId,
             Page = request.Page,
-            PageSize = request.PageSize
+            PageSize = request.PageSize,
+            CreatedAfter = request.CreatedAfter,
+            CreatedBefore = request.CreatedBefore,
+            UpdatedAfter = request.UpdatedAfter,
+            UpdatedBefore = request.UpdatedBefore
         };
 
         var warehouses = await _warehouseRepository.GetAllWarehouses(filter);
