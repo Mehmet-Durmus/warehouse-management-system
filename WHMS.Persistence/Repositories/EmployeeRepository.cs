@@ -30,6 +30,12 @@ public class EmployeeRepository : IEmployeeRepository
         return "WHS_"+seq.ToString("D4");
     }
 
+    public async Task<Guid?> GetEmployeeWarehouseId(Guid? employeeId)
+        => await _context.Users
+            .Where(u => u.Id == employeeId)
+            .Select(u => u.WarehouseId)
+            .SingleOrDefaultAsync();
+
     public async Task<ApplicationUser> GetManager(Guid managerId)
     {
         var roleId = await GetRoleId("WarehouseManager");

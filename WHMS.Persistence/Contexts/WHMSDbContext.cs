@@ -113,6 +113,7 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
         builder.Entity<Delivery>(e =>
         {
             e.Property(d => d.ExpectedArrivalDate).HasColumnType("timestamp without time zone");
+            e.Property(d => d.ReceivedAt).HasColumnType("timestamp without time zone");
             e.HasOne(d => d.Warehouse)
                 .WithMany(w => w.Deliveries)
                 .HasForeignKey(d => d.WarehouseId)

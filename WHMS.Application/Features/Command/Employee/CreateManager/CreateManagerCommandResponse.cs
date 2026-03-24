@@ -5,4 +5,5 @@ public class CreateManagerCommandResponse
     public string? UserName { get; set; }
     public string? FullName { get; set; }
     public string? WarehouseId { get; set; }
+    public string TempPassword { get; set; } = null!;
 }

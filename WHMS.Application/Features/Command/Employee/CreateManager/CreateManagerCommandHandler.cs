@@ -52,7 +52,8 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommandR
         {
             UserName = manager.UserName,
             FullName = manager.FullName,
-            WarehouseId = manager.WarehouseId.ToString()
+            WarehouseId = manager.WarehouseId.ToString(),
+            TempPassword = tempPassword
         };
     }
 }

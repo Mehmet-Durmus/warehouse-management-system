@@ -5,6 +5,7 @@ using WHMS.Application.Features.Command.Delivery.CreateDelivery;
 using WHMS.Application.Features.Command.Delivery.CreateDeliveryItem;
 using WHMS.Application.Features.Command.Delivery.DeleteDelivery;
 using WHMS.Application.Features.Command.Delivery.DeleteDeliveryItem;
+using WHMS.Application.Features.Command.Delivery.ReceiveDelivery;
 using WHMS.Application.Features.Command.Delivery.UpdateDelivery;
 using WHMS.Application.Features.Command.Delivery.UpdateDeliveryItem;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveries;
@@ -74,4 +75,9 @@ public class DeliveryController : ControllerBase
     [HttpDelete("delivery-item/{deliveryItemId}")]
     public async Task<IActionResult> DeleteDeliveryItem(string deliveryItemId)
         => Ok(await _mediator.Send(new DeleteDeliveryItemCommandRequest {DeliveryItemId = deliveryItemId}));
+
+    [Authorize(Policy = "ManagerOrStaff")]
+    [HttpPost("receive-delivery")]
+    public async Task<IActionResult> ReceiveDelivery(ReceiveDeliveryCommandRequest request)
+        => Ok(await _mediator.Send(request));
 }

@@ -16,9 +16,10 @@ public class StockStateRepository : IStockStateRepository
 
     public async Task<int> SetQuantity(Guid warehouseId, Guid skuId, int delta)
         => await _context.Database.ExecuteSqlInterpolatedAsync(
-            $@"UPDATE ""StockStates"" 
-            SET ""Quantity"" = ""Quantity"" + {delta}
-            WHERE ""WarehouseId"" = {warehouseId} 
-                AND ""SkuId"" = {skuId}
-                AND ""Quantity"" + {delta} >= 0");
+            $@"INSERT INTO ""StockStates"" (""WarehouseId"", ""SkuId"", ""Quantity"")
+       VALUES ({warehouseId}, {skuId}, {delta})
+       ON CONFLICT (""WarehouseId"", ""SkuId"")
+       DO UPDATE SET ""Quantity"" = ""StockStates"".""Quantity"" + {delta}
+       WHERE ""StockStates"".""Quantity"" + {delta} >= 0");
+
 }
