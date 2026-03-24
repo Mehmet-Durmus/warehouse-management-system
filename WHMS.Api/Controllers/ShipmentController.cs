@@ -5,6 +5,7 @@ using WHMS.Application.Features.Command.Shipment.CreateShipment;
 using WHMS.Application.Features.Command.Shipment.CreateShipmentItem;
 using WHMS.Application.Features.Command.Shipment.DeleteShipment;
 using WHMS.Application.Features.Command.Shipment.DeleteShipmentItem;
+using WHMS.Application.Features.Command.Shipment.SendShipment;
 using WHMS.Application.Features.Command.Shipment.UpdateShipment;
 using WHMS.Application.Features.Command.Shipment.UpdateShipmentItem;
 using WHMS.Application.Features.Queries.Shipment.GetShipment;
@@ -74,5 +75,15 @@ public class ShipmentController : ControllerBase
     [HttpDelete("shipment-items/{shipmentItemId}")]
     public async Task<IActionResult> DeleteShipmentItem(string shipmentItemId)
         => Ok(await _mediator.Send(new DeleteShipmentItemCommandRequest {ShipmentItemId = shipmentItemId}));
+
+    [Authorize(Policy = "ManagerOrStaff")]
+    [HttpPost("send-shipment")]
+    public async Task<IActionResult> SendShipment(SendShipmentCommandRequest request)
+    {
+        var result = await _mediator.Send(request);
+        if (result.Errors is null)
+            return NoContent();
+        return Ok(result);
+    }
     
 }

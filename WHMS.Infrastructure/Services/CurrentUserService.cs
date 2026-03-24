@@ -34,4 +34,11 @@ public class CurrentUserService : ICurrentUserService
         get => _httpContextAccessor.HttpContext?
             .User.FindFirstValue("UserName");
     }
+
+    public string? WarehouseId 
+    { 
+        get => _httpContextAccessor.HttpContext?
+            .User.FindFirstValue("Warehouse");
+    }
+    
 }
