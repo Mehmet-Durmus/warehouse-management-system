@@ -11,20 +11,18 @@ public class ReceiveDeliveryCommandHandler : IRequestHandler<ReceiveDeliveryComm
     private readonly IStockStateRepository _stockStateRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
-    private readonly IEmployeeRepository _employeeRepository;
 
-    public ReceiveDeliveryCommandHandler(IDeliveryRepository deliveryRepository, IStockStateRepository stockStateRepository, IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IEmployeeRepository employeeRepository)
+    public ReceiveDeliveryCommandHandler(IDeliveryRepository deliveryRepository, IStockStateRepository stockStateRepository, IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
     {
         _deliveryRepository = deliveryRepository;
         _stockStateRepository = stockStateRepository;
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
-        _employeeRepository = employeeRepository;
     }
 
     public async Task<ReceiveDeliveryCommandResponse> Handle(ReceiveDeliveryCommandRequest request, CancellationToken cancellationToken)
     {
-        var warehouseId = await _employeeRepository.GetEmployeeWarehouseId(_currentUserService.UserId);
+        var warehouseId = Guid.Parse(_currentUserService.WarehouseId!);
         var delivery = await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!));
         if (delivery is null || warehouseId != delivery.WarehouseId) 
             throw new Exception("Delivery not found");
