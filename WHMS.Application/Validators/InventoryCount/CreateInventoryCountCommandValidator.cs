@@ -7,8 +7,8 @@ public class CreateInventoryCountCommandValidator : AbstractValidator<CreateInve
 {
     public CreateInventoryCountCommandValidator()
     {
-        RuleFor(x => x.WarehouseId)
-            .NotEmpty().WithMessage("The WarehouseId is required")
-            .Must(x => Guid.TryParse(x, out _)).WithMessage("The WarehouseId must be a valid GUID.");
+        // RuleFor(x => x.WarehouseId)
+        //     .NotEmpty().WithMessage("The WarehouseId is required")
+        //     .Must(x => Guid.TryParse(x, out _)).WithMessage("The WarehouseId must be a valid GUID.");
     }
 }

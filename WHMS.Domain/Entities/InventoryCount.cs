@@ -7,6 +7,7 @@ public class InventoryCount : IAuditable, ISoftDeletable
     public Guid Id { get; set; }
     public Guid WarehouseId { get; set; }
     public List<InventoryCountLine>? InventoryCountLines { get; set; }
+    public bool IsComplated { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }
     public string? CreatedByName { get; set; }

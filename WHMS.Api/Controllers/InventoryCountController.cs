@@ -46,7 +46,7 @@ public class InventoryCountController : ControllerBase
     public async Task<IActionResult> GetInventoryCountLine(string inventoryCountLineId)
         => Ok(await _mediator.Send(new GetInventoryCountLineQueryRequest { InventoryCountLineId = inventoryCountLineId }));
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "WarehouseManager")]
     [HttpPost]
     public async Task<IActionResult> CreateInventoryCount(CreateInventoryCountCommandRequest request)
         => Ok(await _mediator.Send(request));
