@@ -10,4 +10,6 @@ public class CreateWarehouseCommandRequest : IRequest<CreateWarehouseCommandResp
     public string? NeighborhoodId { get; set; }
     public string? AddressLine { get; set; }
     public string? PostalCode { get; set; }
+    public string? ManagerId { get; set; }
+    public List<string>? StaffIds { get; set; }
 }

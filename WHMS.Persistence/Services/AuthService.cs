@@ -18,6 +18,9 @@ public class AuthService : IAuthService
     public async Task<SignInResult> CheckPasswordSignInAsync(ApplicationUser user, string password, bool lockoutOnFailure)
         => await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure);
 
+    public async Task<ApplicationUser?> FindByIdAsync(string userId)
+        => await _userManager.FindByIdAsync(userId);
+
     public async Task<ApplicationUser?> FindByNameAsync(string userName)
         => await _userManager.FindByNameAsync(userName);
 

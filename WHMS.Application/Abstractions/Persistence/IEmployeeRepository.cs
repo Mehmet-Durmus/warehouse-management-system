@@ -13,4 +13,6 @@ public interface IEmployeeRepository
     Task<bool> HasWarehouseAnyManager(Guid warehouseId);
     Task<string> GenerateWarehouseManagerUserName();
     Task<string> GenerateWarehouseStaffUserName();
+    Task SetWarehouseId(Guid employeeId, Guid warehouseId);
+    Task<ApplicationUser> GetEmployee(Guid employeeId);
 }

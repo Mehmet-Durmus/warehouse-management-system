@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
+using WHMS.Domain.ValueObjects;
 using WHMS.Persistence.Contexts;
 
 namespace WHMS.Persistence.Repositories;
@@ -12,6 +13,15 @@ public class LocationRepository : ILocationRepository
     public LocationRepository(WHMSDbContext whmsContext)
     {
         _whmsContext = whmsContext;
+    }
+
+    public async Task<string> ConvertString(Address address)
+    {
+        string city = await GetCityName(address.CityId);
+        string district = await GetDistrictName(address.DistrictId);
+        string neighborhood = await GetNeighborhoodName(address.NeighborhoodId);
+
+        return $"{neighborhood} Mah. {address.AddressLine} {district} / {city} {address.PostalCode}";
     }
 
     public async Task<string> GetCityName(Guid cityId)
@@ -48,7 +58,7 @@ public class LocationRepository : ILocationRepository
             .Select(n => n.Name)
             .FirstOrDefaultAsync();
         if (name is null)
-            throw new Exception("City not found.");
+            throw new Exception("Neighborhood not found.");
         return name;
     }
 
@@ -57,11 +67,11 @@ public class LocationRepository : ILocationRepository
         throw new NotImplementedException();
     }
 
-    public async Task<bool> IsAddressValid(Guid cityId, Guid districtId, Guid neighborhoodId)
+    public async Task<bool> IsAddressValid(Address address)
     {
         return await _whmsContext.Neighborhoods
-            .AnyAsync(n => n.NeighborhoodId == neighborhoodId
-            && n.DistrictId == districtId
-            && n.District.CityId == cityId);
+            .AnyAsync(n => n.NeighborhoodId == address.NeighborhoodId
+            && n.DistrictId == address.DistrictId
+            && n.District.CityId == address.CityId);
     }
 }

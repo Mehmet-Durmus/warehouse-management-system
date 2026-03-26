@@ -45,4 +45,7 @@ public class WarehouseRepository : IWarehouseRepository
     {
         return await _whmsContext.Warehouses.AnyAsync(w => w.Id == warehouseId);
     }
+
+    public async Task<bool> WarehouseNameExists(string warehouseName)
+        => await _whmsContext.Warehouses.AnyAsync(w => w.NormalizedName == warehouseName);
 }

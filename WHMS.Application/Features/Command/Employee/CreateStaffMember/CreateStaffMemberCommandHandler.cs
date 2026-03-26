@@ -23,9 +23,9 @@ public class CreateStaffMemberCommandHandler : IRequestHandler<CreateStaffMember
 
     public async Task<CreateStaffMemberCommandResponse> Handle(CreateStaffMemberCommandRequest request, CancellationToken cancellationToken)
     {
-        bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
-        if (!isWarehouseExists)
-            throw new Exception("Watehouse not found.");
+        // bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
+        // if (!isWarehouseExists)
+        //     throw new Exception("Watehouse not found.");
 
         string userName = await _employeeRepository.GenerateWarehouseStaffUserName();
         var staff = new ApplicationUser

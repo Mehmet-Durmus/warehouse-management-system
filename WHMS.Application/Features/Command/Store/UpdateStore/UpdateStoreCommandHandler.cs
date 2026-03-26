@@ -19,28 +19,28 @@ public class UpdateStoreCommandHandler : IRequestHandler<UpdateStoreCommandReque
 
     public async Task<UpdateStoreCommandResponse> Handle(UpdateStoreCommandRequest request, CancellationToken cancellationToken)
     {
-        var store = await _storeRepository.GetStore(Guid.Parse(request.StoreId!));
-        if (store is null)
-            throw new Exception("Store not found.");
+        // var store = await _storeRepository.GetStore(Guid.Parse(request.StoreId!));
+        // if (store is null)
+        //     throw new Exception("Store not found.");
         
-        bool isAddressValid = await _locationRepository.IsAddressValid(
-            Guid.Parse(request.CityId!),
-            Guid.Parse(request.DistrictId!),
-            Guid.Parse(request.NeighborhoodId!));
-        if (!isAddressValid)
-            throw new Exception("Address data is invalid.");
+        // bool isAddressValid = await _locationRepository.IsAddressValid(
+        //     Guid.Parse(request.CityId!),
+        //     Guid.Parse(request.DistrictId!),
+        //     Guid.Parse(request.NeighborhoodId!));
+        // if (!isAddressValid)
+        //     throw new Exception("Address data is invalid.");
 
-        store.StoreName = request.StoreName!;
-        store.Address = new Address
-        {
-            CityId = Guid.Parse(request.CityId!),
-            DistrictId = Guid.Parse(request.DistrictId!),
-            NeighborhoodId = Guid.Parse(request.NeighborhoodId!),
-            AddressLine = request.AddressLine!,
-            PostalCode = request.PostalCode!
-        };
-        _storeRepository.Update(store);
-        await _unitOfWork.CommitAsync();
+        // store.StoreName = request.StoreName!;
+        // store.Address = new Address
+        // {
+        //     CityId = Guid.Parse(request.CityId!),
+        //     DistrictId = Guid.Parse(request.DistrictId!),
+        //     NeighborhoodId = Guid.Parse(request.NeighborhoodId!),
+        //     AddressLine = request.AddressLine!,
+        //     PostalCode = request.PostalCode!
+        // };
+        // _storeRepository.Update(store);
+        // await _unitOfWork.CommitAsync();
         return new();
     }
 }

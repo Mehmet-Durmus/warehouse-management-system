@@ -12,4 +12,5 @@ public interface IWarehouseRepository
     void UpdateWarehouse(Warehouse warehouse);
     Task SoftDelete(Guid warehouseId);
     Task<bool> WarehouseExists(Guid warehouseId);
+    Task<bool> WarehouseNameExists(string warehouseName);
 }

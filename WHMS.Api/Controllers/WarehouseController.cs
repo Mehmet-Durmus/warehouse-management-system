@@ -4,6 +4,7 @@ using System.Security.Authentication.ExtendedProtection;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WHMS.Api.Common.Models;
 using WHMS.Application.Features.Command.Warehouse.CreateWarehouse;
 using WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
 using WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
@@ -36,7 +37,14 @@ public class WarehouseController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]
     public async Task<IActionResult> CreateWarehouse(CreateWarehouseCommandRequest request)
-        => Ok(await _mediator.Send(request));
+    {
+        var result = await _mediator.Send(request);
+        var response = result.Warnings.Count > 0 ?
+            ApiResponse<CreateWarehouseResultDto>.SuccessWithWarnings(result.ResultDto, result.Warnings) :
+            ApiResponse<CreateWarehouseResultDto>.Success(result.ResultDto);
+        
+        return CreatedAtAction(nameof(GetWarehouse), new { id = result.ResultDto.WarehouseId }, response);
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]

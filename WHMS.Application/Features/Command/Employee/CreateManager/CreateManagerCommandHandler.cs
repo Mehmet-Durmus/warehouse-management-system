@@ -25,13 +25,13 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommandR
 
     public async Task<CreateManagerCommandResponse> Handle(CreateManagerCommandRequest request, CancellationToken cancellationToken)
     {
-        bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
-        if (!isWarehouseExists)
-            throw new Exception("Warehouse not found.");
+        // bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
+        // if (!isWarehouseExists)
+        //     throw new Exception("Warehouse not found.");
             
-        bool hasWarehouseAnyManager = await _employeeRepository.HasWarehouseAnyManager(Guid.Parse(request.WarehouseId!));
-        if (hasWarehouseAnyManager)
-            throw new Exception("The warehouse has already a manager.");
+        // bool hasWarehouseAnyManager = await _employeeRepository.HasWarehouseAnyManager(Guid.Parse(request.WarehouseId!));
+        // if (hasWarehouseAnyManager)
+        //     throw new Exception("The warehouse has already a manager.");
 
         string userName = await _employeeRepository.GenerateWarehouseManagerUserName();
         var manager = new ApplicationUser 
@@ -39,9 +39,11 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommandR
             FullName = request.FullName!,
             UserName = userName,
             Email = userName,
-            EmailConfirmed = true,
-            WarehouseId = Guid.Parse(request.WarehouseId!)
+            EmailConfirmed = true
         };
+
+        if (!string.IsNullOrWhiteSpace(request.WarehouseId))
+            manager.WarehouseId = Guid.Parse(request.WarehouseId);
         var tempPassword = await _passwordCreator.CreateTempPassword();
         var result = await _userManager.CreateAsync(manager, tempPassword);
         if (result.Succeeded)

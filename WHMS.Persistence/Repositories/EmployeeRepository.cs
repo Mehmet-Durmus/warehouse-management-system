@@ -30,6 +30,11 @@ public class EmployeeRepository : IEmployeeRepository
         return "WHS_"+seq.ToString("D4");
     }
 
+    public Task<ApplicationUser> GetEmployee(Guid employeeId)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<ApplicationUser> GetManager(Guid managerId)
     {
         var roleId = await GetRoleId("WarehouseManager");
@@ -80,6 +85,12 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<bool> HasWarehouseAnyManager(Guid warehouseId)
     {
         return await _context.Users.AnyAsync(u => u.WarehouseId == warehouseId);
+    }
+
+    public async Task SetWarehouseId(Guid employeeId, Guid warehouseId)
+    {
+        var employee = await GetEmployee(employeeId);
+        employee.WarehouseId = warehouseId;
     }
 
     public void Update(ApplicationUser employee)
