@@ -17,17 +17,21 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 
     public async Task<UpdateCategoryCommandResponse> Handle(UpdateCategoryCommandRequest request, CancellationToken cancellationToken)
     {
-        var normalizedCategoryName = request.CategoryName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
-        bool isCategoryNameExists = await _catalogRepository.IsCategoryNameExists(normalizedCategoryName);
-
-        if (isCategoryNameExists)
-            throw new Exception("Category already exists.");
-
         var category = await _catalogRepository.GetCategory(Guid.Parse(request.CategoryId!));
+        if (category is null)
+            throw new Exception("Category not found.");
+
+        var normalizedCategoryName = request.CategoryName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
+        if (!category.NormalizedCategoryName.Equals(normalizedCategoryName))
+        {
+            bool isCategoryNameExists = await _catalogRepository.IsCategoryNameExists(normalizedCategoryName);
+            if (isCategoryNameExists)
+                throw new Exception("Category already exists.");
+        }
+        
         category.CategoryName = request.CategoryName;
         category.NormalizedCategoryName = normalizedCategoryName;
 
-        _catalogRepository.UpdateCategory(category);
         await _unitOfWork.CommitAsync();
 
         return new()

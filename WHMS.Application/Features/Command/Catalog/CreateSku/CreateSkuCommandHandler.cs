@@ -36,7 +36,7 @@ public class CreateSkuCommandHandler : IRequestHandler<CreateSkuCommandRequest, 
             CategoryId = category.Id
         };
 
-        _catalogRepository.UpdateSku(sku);
+        await _catalogRepository.AddSku(sku);
         await _unitOfWork.CommitAsync();
 
         return new()
