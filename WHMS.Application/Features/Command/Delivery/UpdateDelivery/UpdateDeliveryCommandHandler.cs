@@ -17,9 +17,14 @@ public class UpdateDeliveryCommandHandler : IRequestHandler<UpdateDeliveryComman
     public async Task<UpdateDeliveryCommandResponse> Handle(UpdateDeliveryCommandRequest request, CancellationToken cancellationToken)
     {
         var delivery = await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!));
+        if (delivery is null)
+            throw new Exception("Delivery not found.");
+        
+        if (delivery.ReceivedAt is not null)
+            throw new Exception("Delivery has already been received.");
+        
         delivery.WarehouseId = Guid.Parse(request.WarehouseId!);
         delivery.ExpectedArrivalDate = request.ExpectedArrivalDate;
-        _deliveryRepository.UpdateDelivery(delivery);
         await _unitOfWork.CommitAsync();
         return new();
     }
