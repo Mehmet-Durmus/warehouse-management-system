@@ -14,6 +14,10 @@ public class StockStateRepository : IStockStateRepository
         _context = context;
     }
 
+    public async Task<bool> HasStockInAnyWarehouse(Guid skuId)
+        => await _context.StockStates
+            .AnyAsync(ss => ss.SkuId == skuId && ss.Quantity > 0);
+
     public async Task<int> SetQuantity(Guid warehouseId, Guid skuId, int quantity)
         => await _context.Database.ExecuteSqlInterpolatedAsync(
             $@"INSERT INTO ""StockStates"" (""WarehouseId"", ""SkuId"", ""Quantity"")

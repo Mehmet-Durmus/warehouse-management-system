@@ -17,4 +17,7 @@ public interface IDeliveryRepository
     Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter, bool withPagination);
     Task<int> GetDeliveryItemsCount(DeliveryItemFilter filter);
     Task<DeliveryItem> GetDeliveryItem(Guid deliveryItemId);
+
+
+    Task<bool> HasIncomingDeliveriesWithSku(Guid skuId);
 }

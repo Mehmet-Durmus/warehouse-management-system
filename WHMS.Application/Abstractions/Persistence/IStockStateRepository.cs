@@ -4,4 +4,5 @@ public interface IStockStateRepository
 {
     Task<int> UpdateQuantity(Guid warehouseId, Guid skuId, int delta);
     Task<int> SetQuantity(Guid warehouseId, Guid skuId, int quantity);
+    Task<bool> HasStockInAnyWarehouse(Guid skuId);
 }

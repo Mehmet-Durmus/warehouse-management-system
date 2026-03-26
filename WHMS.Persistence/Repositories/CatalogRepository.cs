@@ -25,14 +25,12 @@ public class CatalogRepository : ICatalogRepository
     {
         var category = await GetCategory(categoryId);
         category.IsActive = false;
-        UpdateCategory(category);
     }
 
     public async Task DeleteSku(Guid skuId)
     {
         var sku = await GetSku(skuId);
         sku.IsActive = false;
-        UpdateSku(sku);
     }
 
     public async Task<List<Category>> GetCategories()

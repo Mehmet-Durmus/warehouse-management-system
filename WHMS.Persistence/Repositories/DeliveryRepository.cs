@@ -81,6 +81,12 @@ public class DeliveryRepository : IDeliveryRepository
             .Include(i => i.Sku)
             .CountAsync();
 
+    public async Task<bool> HasIncomingDeliveriesWithSku(Guid skuId)
+        => await _context.Deliveries
+            .AnyAsync(d => d.ReceivedAt == null &&
+                            d.DeliveryItems!.Any(di => di.SkuId == skuId));
+                
+
     public void UpdateDelivery(Delivery delivery)
         => _context.Deliveries.Update(delivery);
 
