@@ -17,6 +17,13 @@ public class CreateDeliveryItemCommandHandler : IRequestHandler<CreateDeliveryIt
 
     public async Task<CreateDeliveryItemCommandResponse> Handle(CreateDeliveryItemCommandRequest request, CancellationToken cancellationToken)
     {
+        var delivery = await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!));
+        if (delivery is null)
+            throw new Exception("Delivery not found.");
+        
+        if (delivery.ReceivedAt is not null)
+            throw new Exception("Delivery has already been received.");
+        
         var deliveryItem = new DeliveryItem
         {
             DeliveryId = Guid.Parse(request.DeliveryId!),
