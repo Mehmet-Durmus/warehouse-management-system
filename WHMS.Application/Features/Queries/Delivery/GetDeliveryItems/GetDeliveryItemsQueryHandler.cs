@@ -1,4 +1,5 @@
 using MediatR;
+using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.DTOs.Catalog;
 using WHMS.Application.DTOs.Delivery;
@@ -9,14 +10,34 @@ namespace WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
 public class GetDeliveryItemsQueryHandler : IRequestHandler<GetDeliveryItemsQueryRequest, GetDeliveryItemsQueryResponse>
 {
     private readonly IDeliveryRepository _deliveryRepository;
+    private readonly ICurrentUserService _currentUserService;
 
-    public GetDeliveryItemsQueryHandler(IDeliveryRepository deliveryRepository)
+    public GetDeliveryItemsQueryHandler(IDeliveryRepository deliveryRepository, ICurrentUserService currentUserService)
     {
         _deliveryRepository = deliveryRepository;
+        _currentUserService = currentUserService;
     }
 
     public async Task<GetDeliveryItemsQueryResponse> Handle(GetDeliveryItemsQueryRequest request, CancellationToken cancellationToken)
     {
+        var delivery = await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!));
+
+        bool isUnauthorized = delivery switch
+        {
+            null => true,
+            not null when _currentUserService.Roles!.Contains("WarehouseManager")
+                && delivery.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
+            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+                && delivery.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
+            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+                && delivery.WarehouseId == Guid.Parse(_currentUserService.WarehouseId!)
+                && delivery.ReceivedAt != null => true,
+            _ => false
+        };
+
+        if (isUnauthorized)
+            throw new Exception("Delivery not found.");
+
         DeliveryItemFilter filter = new()
         {
             DeliveryId = request.DeliveryId,

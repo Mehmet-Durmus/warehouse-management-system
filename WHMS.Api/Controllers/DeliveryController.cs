@@ -36,7 +36,7 @@ public class DeliveryController : ControllerBase
     public async Task<IActionResult> GetDelivery(string deliveryId)
         => Ok(await _mediator.Send(new GetDeliveryQueryRequet {DeliveryId = deliveryId}));
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet("delivery-items")]
     public async Task<IActionResult> GetDeliveryItems([FromQuery] GetDeliveryItemsQueryRequest request)
         => Ok(await _mediator.Send(request));
