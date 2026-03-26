@@ -9,9 +9,6 @@ using WHMS.Application.Features.Command.Catalog.DeleteSku;
 using WHMS.Application.Features.Command.Catalog.UpdateCategory;
 using WHMS.Application.Features.Command.Catalog.UpdateSku;
 using WHMS.Application.Features.Queries.Catalog.GetCategories;
-using WHMS.Application.Features.Queries.Catalog.GetCategory;
-using WHMS.Application.Features.Queries.Catalog.GetSku;
-using WHMS.Application.Features.Queries.Catalog.GetSkus;
 
 namespace WHMS.Api.Controllers;
 
@@ -26,15 +23,10 @@ public class CatalogController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize(Policy = "DirectorOrManager")]
-    [HttpGet("categories")]
-    public async Task<IActionResult> GetCategories()
-        => Ok(await _mediator.Send(new GetCategoriesQueryRequest()));
-
-    [Authorize(Policy = "DirectorOrManager")]
-    [HttpGet("categories/{id}")]
-    public async Task<IActionResult> GetCategory(string id)
-        => Ok(await _mediator.Send(new GetCategoryQueryRequest {CategoryId = id}));
+    [Authorize(Policy = "DirectorManagerOrStaff")]
+    [HttpGet]
+    public async Task<IActionResult> GetCatalogData()
+        => Ok(await _mediator.Send(new GetCatalogDataQueryRequest()));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("category")]
@@ -50,16 +42,6 @@ public class CatalogController : ControllerBase
     [HttpDelete("category/{id}")]
     public async Task<IActionResult> DeleteCategory(string id)
         => Ok(await _mediator.Send(new DeleteCategoryCommandRequest {CategoryId = id}));
-
-    [Authorize(Policy = "DirectorOrManager")]
-    [HttpGet("skus")]
-    public async Task<IActionResult> GetSkus()
-        => Ok(await _mediator.Send(new GetSkusQueryRequest()));
-    
-    [Authorize(Policy = "DirectorOrManager")]
-    [HttpGet("skus/{id}")]
-    public async Task<IActionResult> GetSku(string id)
-        => Ok(await _mediator.Send(new GetSkuQueryRequest {SkuId = id}));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("sku")]

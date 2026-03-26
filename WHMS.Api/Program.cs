@@ -96,6 +96,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("WarehouseStaff", p => p.RequireRole("WarehouseStaff"));
     options.AddPolicy("DirectorOrManager", p => p.RequireRole("LogisticDirector", "WarehouseManager"));
     options.AddPolicy("ManagerOrStaff", p => p.RequireRole("WarehouseManager", "WarehouseStaff"));
+    options.AddPolicy("DirectorManagerOrStaff", p => p.RequireRole("LogisticDirector", "WarehouseManager", "WarehouseStaff"));
 });
 
 builder.Services.AddEndpointsApiExplorer();

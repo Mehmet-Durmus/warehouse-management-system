@@ -4,7 +4,7 @@ namespace WHMS.Application.Abstractions.Persistence;
 
 public interface ICatalogRepository
 {
-    Task<List<Category>> GetCategories();
+    Task<List<Category>> GetCatalogData();
     Task<Category> GetCategory(Guid categoryId);
     Task<bool> IsCategoryNameExists(string normalizedCategoryName);
     Task AddCategory(Category category);

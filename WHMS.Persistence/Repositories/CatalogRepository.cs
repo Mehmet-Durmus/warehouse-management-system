@@ -33,7 +33,7 @@ public class CatalogRepository : ICatalogRepository
         sku.IsActive = false;
     }
 
-    public async Task<List<Category>> GetCategories()
+    public async Task<List<Category>> GetCatalogData()
         => await _context.Categories.Include(c => c.Skus).ToListAsync();
 
     public async Task<Category> GetCategory(Guid categoryId)

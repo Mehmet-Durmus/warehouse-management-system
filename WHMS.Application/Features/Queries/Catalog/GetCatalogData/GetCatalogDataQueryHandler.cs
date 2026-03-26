@@ -4,19 +4,19 @@ using WHMS.Application.DTOs.Catalog;
 
 namespace WHMS.Application.Features.Queries.Catalog.GetCategories;
 
-public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQueryRequest, GetCategoriesQueryResponse>
+public class GetCatalogDataQueryHandler : IRequestHandler<GetCatalogDataQueryRequest, GetCatalogDataQueryResponse>
 {
     private readonly ICatalogRepository _catalogRepository;
 
-    public GetCategoriesQueryHandler(ICatalogRepository catalogRepository)
+    public GetCatalogDataQueryHandler(ICatalogRepository catalogRepository)
     {
         _catalogRepository = catalogRepository;
     }
 
-    public async Task<GetCategoriesQueryResponse> Handle(GetCategoriesQueryRequest request, CancellationToken cancellationToken)
+    public async Task<GetCatalogDataQueryResponse> Handle(GetCatalogDataQueryRequest request, CancellationToken cancellationToken)
     {
-        var categories = await _catalogRepository.GetCategories();
-        GetCategoriesQueryResponse response = new() {Categories = []};
+        var categories = await _catalogRepository.GetCatalogData();
+        GetCatalogDataQueryResponse response = new() {Categories = []};
 
         foreach (var category in categories)
         {

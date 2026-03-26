@@ -2,7 +2,7 @@ using WHMS.Application.DTOs.Catalog;
 
 namespace WHMS.Application.Features.Queries.Catalog.GetCategories;
 
-public class GetCategoriesQueryResponse
+public class GetCatalogDataQueryResponse
 {
     public List<CategoryDto>? Categories { get; set; }
 }
