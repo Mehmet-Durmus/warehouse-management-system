@@ -16,6 +16,15 @@ public class DeleteDeliveryItemCommandHandler : IRequestHandler<DeleteDeliveryIt
 
     public async Task<DeleteDeliveryItemCommandResponse> Handle(DeleteDeliveryItemCommandRequest request, CancellationToken cancellationToken)
     {
+        var deliveryItem = await _deliveryRepository.GetDeliveryItem(Guid.Parse(request.DeliveryItemId!));
+        if (deliveryItem is null)
+            throw new Exception("Delivery item not found.");
+        var delivery = await _deliveryRepository.GetDelivery(deliveryItem.DeliveryId);
+        if (delivery is null)
+            throw new Exception("Delivery not found.");
+        if (delivery.ReceivedAt is not null)
+            throw new Exception("Delivery has already been received.");
+            
         await _deliveryRepository.DeleteDeliveryItem(Guid.Parse(request.DeliveryItemId!));
         await _unitOfWork.CommitAsync();
         return new();

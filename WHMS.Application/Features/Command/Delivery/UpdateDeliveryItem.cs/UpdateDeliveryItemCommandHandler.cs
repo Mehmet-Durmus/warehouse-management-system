@@ -28,7 +28,7 @@ public class UpdateDeliveryItemCommandHandler : IRequestHandler<UpdateDeliveryIt
         deliveryItem.DeliveryId = Guid.Parse(request.DeliveryId!);
         deliveryItem.SkuId = Guid.Parse(request.SkuId!);
         deliveryItem.Quantity = request.Quantity;
-        _deliveryRepository.UpdateDeliveryItem(deliveryItem);
+        
         await _unitOfWork.CommitAsync();
         return new();
     }
