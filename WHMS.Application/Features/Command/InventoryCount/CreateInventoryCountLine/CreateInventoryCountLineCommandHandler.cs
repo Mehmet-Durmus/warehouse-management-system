@@ -1,4 +1,5 @@
 using MediatR;
+using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
 
@@ -8,15 +9,25 @@ public class CreateInventoryCountLineCommandHandler : IRequestHandler<CreateInve
 {
     private readonly IInventoryCountRepository _inventoryCountRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICurrentUserService _currentUserService;
 
-    public CreateInventoryCountLineCommandHandler(IInventoryCountRepository inventoryCountRepository, IUnitOfWork unitOfWork)
+    public CreateInventoryCountLineCommandHandler(IInventoryCountRepository inventoryCountRepository, IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
     {
         _inventoryCountRepository = inventoryCountRepository;
         _unitOfWork = unitOfWork;
+        _currentUserService = currentUserService;
     }
 
     public async Task<CreateInventoryCountLineCommandResponse> Handle(CreateInventoryCountLineCommandRequest request, CancellationToken cancellationToken)
     {
+        Guid warehouseId = Guid.Parse(_currentUserService.WarehouseId!);
+        var inventoryCount = await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!));
+        if (inventoryCount is null || warehouseId != inventoryCount.WarehouseId)
+            throw new Exception("Inventory count not found.");
+        
+        if (inventoryCount.IsCompleted)
+            throw new Exception("This inventory count already completed.");
+        
         InventoryCountLine inventoryCountLine = new()
         {
             InventoryCountId = Guid.Parse(request.InventoryCountId!),
