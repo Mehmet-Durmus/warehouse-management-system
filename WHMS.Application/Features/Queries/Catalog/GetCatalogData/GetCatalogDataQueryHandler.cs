@@ -2,7 +2,7 @@ using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.DTOs.Catalog;
 
-namespace WHMS.Application.Features.Queries.Catalog.GetCategories;
+namespace WHMS.Application.Features.Queries.Catalog.GetCatalogData;
 
 public class GetCatalogDataQueryHandler : IRequestHandler<GetCatalogDataQueryRequest, GetCatalogDataQueryResponse>
 {

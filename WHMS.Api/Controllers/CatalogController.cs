@@ -8,7 +8,7 @@ using WHMS.Application.Features.Command.Catalog.DeleteCategory;
 using WHMS.Application.Features.Command.Catalog.DeleteSku;
 using WHMS.Application.Features.Command.Catalog.UpdateCategory;
 using WHMS.Application.Features.Command.Catalog.UpdateSku;
-using WHMS.Application.Features.Queries.Catalog.GetCategories;
+using WHMS.Application.Features.Queries.Catalog.GetCatalogData;
 
 namespace WHMS.Api.Controllers;
 
