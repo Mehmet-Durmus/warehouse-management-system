@@ -17,5 +17,5 @@ public interface IInventoryCountRepository
     void UpdateInventoryCountLine(InventoryCountLine inventoryCountLine);
     void DeleteInventoryCount(InventoryCount inventoryCount);
     void DeleteInventoryCountLine(InventoryCountLine inventoryCountLine);
-    Task<bool> IsThereUncomplatedInventoryCount(Guid warehouseId);
+    Task<bool> IsThereUncompletedInventoryCount(Guid warehouseId);
 }

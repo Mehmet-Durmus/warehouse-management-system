@@ -20,12 +20,16 @@ public class CreateInventoryCountCommandHandler : IRequestHandler<CreateInventor
 
     public async Task<CreateInventoryCountCommandResponse> Handle(CreateInventoryCountCommandRequest request, CancellationToken cancellationToken)
     {
-        bool isThereUncomplatedInventoryCount = await _inventoryCountRepository
-            .IsThereUncomplatedInventoryCount(Guid.Parse(_currentUserService.WarehouseId!));
-        if (isThereUncomplatedInventoryCount)
+        bool isThereUncompletedInventoryCount = await _inventoryCountRepository
+            .IsThereUncompletedInventoryCount(Guid.Parse(_currentUserService.WarehouseId!));
+        if (isThereUncompletedInventoryCount)
             throw new Exception("There is uncomplated inventory count.");
 
-        Domain.Entities.InventoryCount inventoryCount = new() { WarehouseId = Guid.Parse(_currentUserService.WarehouseId!)};
+        Domain.Entities.InventoryCount inventoryCount = new() 
+        { 
+            WarehouseId = Guid.Parse(_currentUserService.WarehouseId!),
+            IsCompleted = false
+        };
 
         await _inventoryCountRepository.CreateInventoryCount(inventoryCount);
         await _unitOfWork.CommitAsync();

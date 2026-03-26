@@ -69,9 +69,9 @@ public class InventoryCountRepository : IInventoryCountRepository
                 .ThenInclude(l => l.Sku)
             .ToListAsync();
 
-    public async Task<bool> IsThereUncomplatedInventoryCount(Guid warehouseId)
+    public async Task<bool> IsThereUncompletedInventoryCount(Guid warehouseId)
         => await _context.InventoryCounts
-            .Where(ic => ic.WarehouseId == warehouseId && !ic.IsComplated)
+            .Where(ic => ic.WarehouseId == warehouseId && !ic.IsCompleted)
             .AnyAsync();
 
     public void UpdateInventoryCount(InventoryCount inventoryCount)
