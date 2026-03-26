@@ -6,4 +6,5 @@ public interface ICurrentUserService
     public string? FullName { get; }
     public string? UserName { get; }
     public string? WarehouseId { get; }
+    public List<string>? Roles { get; }
 }

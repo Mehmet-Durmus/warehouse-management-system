@@ -40,5 +40,12 @@ public class CurrentUserService : ICurrentUserService
         get => _httpContextAccessor.HttpContext?
             .User.FindFirstValue("Warehouse");
     }
-    
+
+    public List<string>? Roles
+    {
+        get => _httpContextAccessor.HttpContext?
+            .User.FindAll(ClaimTypes.Role)
+            .Select(c => c.Value)
+            .ToList() ?? new List<string>();
+    }
 }

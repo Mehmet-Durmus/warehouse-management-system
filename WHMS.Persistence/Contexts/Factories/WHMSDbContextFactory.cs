@@ -38,5 +38,7 @@ public class WHMSDbContextFactory : IDesignTimeDbContextFactory<WHMSDbContext>
         public string? UserName => null;
 
         public string? WarehouseId => null;
+
+        public List<string>? Roles => null;
     }
 }

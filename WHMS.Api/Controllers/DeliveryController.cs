@@ -26,7 +26,7 @@ public class DeliveryController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet]
     public async Task<IActionResult> GetDeliveries([FromQuery] GetDeliveriesQueryRequest request)
         => Ok(await _mediator.Send(request));
