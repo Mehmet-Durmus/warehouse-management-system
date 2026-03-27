@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Identity;
+using WHMS.Application.Common.Filtering.Extensions;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Abstractions.Persistence;
@@ -17,4 +19,6 @@ public interface IEmployeeRepository
     Task<ApplicationUser> GetEmployee(Guid employeeId);
     Task<List<ApplicationUser>> GetEmployeesByWarehouse(Guid warehouseId);
     Task<ApplicationUser> GetManagerByWarehouse(Guid warehouseId);
+    Task<List<ApplicationUser>> GetAllEmployees(EmployeeFilter filter, bool applyPagination);
+    Task<int> GetEmployeeCount(EmployeeFilter filter);
 }

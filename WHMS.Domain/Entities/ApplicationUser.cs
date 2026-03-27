@@ -5,7 +5,7 @@ namespace WHMS.Domain.Entities;
 
 public class ApplicationUser : IdentityUser<Guid>, IAuditable, ISoftDeletable
 {
-    public required string FullName { get; set; }
+    public string FullName { get; set; } = null!;
     public Guid? WarehouseId { get; set; }
     public Warehouse? Warehouse { get; set; }
     public bool IsActive { get; set; }

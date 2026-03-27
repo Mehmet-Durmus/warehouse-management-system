@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Filtering.Extensions;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -30,10 +32,32 @@ public class EmployeeRepository : IEmployeeRepository
         return "WHS_"+seq.ToString("D4");
     }
 
+    public async Task<List<ApplicationUser>> GetAllEmployees(EmployeeFilter filter, bool applyPagination)
+    {
+        var roleId = await GetRoleId("LogisticDirector");
+        return await _context.Users
+            .Where(u => _context.UserRoles
+                    .Any(ur => ur.UserId == u.Id && ur.RoleId != roleId))
+            .Apply(filter, applyPagination)
+            .Include(e => e.Warehouse)
+            .ToListAsync();
+
+    }
+        // => await _context.Users
+        //     .Apply(filter, applyPagination)
+        //     .Where(e => e.UserName )
+        //     .Include(e => e.Warehouse)
+        //     .ToListAsync();
+
     public Task<ApplicationUser> GetEmployee(Guid employeeId)
     {
         throw new NotImplementedException();
     }
+
+    public async Task<int> GetEmployeeCount(EmployeeFilter filter)
+        => await _context.Users
+            .Apply(filter, applyPagination: false)
+            .CountAsync();
 
     public async Task<List<ApplicationUser>> GetEmployeesByWarehouse(Guid warehouseId)
         => await _context.Users

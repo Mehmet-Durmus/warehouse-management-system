@@ -7,6 +7,7 @@ using WHMS.Application.Features.Command.Employee.CreateStaffMember;
 using WHMS.Application.Features.Command.Employee.DeleteEmployee;
 using WHMS.Application.Features.Command.Employee.UpdateManager;
 using WHMS.Application.Features.Command.Employee.UpdateStaffMember;
+using WHMS.Application.Features.Queries.Employee.GetAllEmployees;
 using WHMS.Application.Features.Queries.Employee.GetManager;
 using WHMS.Application.Features.Queries.Employee.GetManagers;
 using WHMS.Application.Features.Queries.Employee.GetStaff;
@@ -24,6 +25,15 @@ public class EmployeeController : ControllerBase
     {
         _mediator = mediator;
     }
+
+    [Authorize(Policy = "LogisticDirector")]
+    [HttpGet()]
+    public async Task<IActionResult> GetEmployees([FromQuery] GetAllEmployeesQueryRequest request)
+    {
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<GetAllEmployeesResultUserDto>>.SuccessList(result.Employees!, new(result.Pagination)));
+    }
+
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("managers")]
