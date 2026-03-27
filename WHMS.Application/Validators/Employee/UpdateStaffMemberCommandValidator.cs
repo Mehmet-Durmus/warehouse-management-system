@@ -17,7 +17,7 @@ public class UpdateStaffMemberCommandValidator : AbstractValidator<UpdateStaffMe
             .WithMessage("Full name must contain at least two words, each with minimum two letters.");
 
         RuleFor(x => x.WarehouseId)
-            .NotEmpty().WithMessage("WarehouseId is required.")
-            .Must(x => Guid.TryParse(x, out _)).WithMessage("WarehouseId must be a valid GUID.");
+            .Must(x => string.IsNullOrWhiteSpace(x) || Guid.TryParse(x, out _))
+            .WithMessage("WarehouseId must be a valid GUID.");
     }
 }

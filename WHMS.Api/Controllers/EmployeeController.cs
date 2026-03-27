@@ -63,7 +63,7 @@ public class EmployeeController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut("staff-member")]
     public async Task<IActionResult> UpdateStaffMember(UpdateStaffMemberCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<UpdateStaffMemberCommandResponse>.Success(await _mediator.Send(request)));
     
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete]
