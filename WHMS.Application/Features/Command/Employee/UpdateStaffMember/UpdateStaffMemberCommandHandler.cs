@@ -18,8 +18,6 @@ public class UpdateStaffMemberCommandHandler : IRequestHandler<UpdateStaffMember
 
     public async Task<UpdateStaffMemberCommandResponse> Handle(UpdateStaffMemberCommandRequest request, CancellationToken cancellationToken)
     {
-        
-
         var staffMember = await _employeeRepository.GetStaffMember(Guid.Parse(request.UserId!));
         if (staffMember is null)
             throw new Exception("Staff member not found.");

@@ -68,5 +68,8 @@ public class EmployeeController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployee(DeleteEmployeeCommandRequest request)
-        => Ok(await _mediator.Send(request));
+    {
+        await _mediator.Send(request);
+        return NoContent();
+    }
 }

@@ -3,7 +3,7 @@ using WHMS.Application.Abstractions.Persistence;
 
 namespace WHMS.Application.Features.Command.Employee.DeleteEmployee;
 
-public class DeleteEmployeeCommandHandler : IRequestHandler<DeleteEmployeeCommandRequest, DeleteEmployeeCommandResponse>
+public class DeleteEmployeeCommandHandler : IRequestHandler<DeleteEmployeeCommandRequest>
 {
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -14,7 +14,7 @@ public class DeleteEmployeeCommandHandler : IRequestHandler<DeleteEmployeeComman
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<DeleteEmployeeCommandResponse> Handle(DeleteEmployeeCommandRequest request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteEmployeeCommandRequest request, CancellationToken cancellationToken)
     {
         var employee = await _employeeRepository.GetManager(Guid.Parse(request.EmployeeId!));
         if (employee is null)
@@ -24,8 +24,6 @@ public class DeleteEmployeeCommandHandler : IRequestHandler<DeleteEmployeeComman
             throw new Exception("Employee not found.");
 
         employee.IsActive = false;
-        _employeeRepository.Update(employee);
         await _unitOfWork.CommitAsync();
-        return new();
     }
 }
