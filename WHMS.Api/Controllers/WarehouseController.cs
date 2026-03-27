@@ -49,7 +49,8 @@ public class WarehouseController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
     public async Task<IActionResult> UpdateWarehouse(UpdateWarehouseCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<UpdateWarehouseCommandResponse>.Success(await _mediator.Send(request)));
+    
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete]

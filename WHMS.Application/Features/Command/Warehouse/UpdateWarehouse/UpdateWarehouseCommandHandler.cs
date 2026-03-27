@@ -20,32 +20,36 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
 
     public async Task<UpdateWarehouseCommandResponse> Handle(UpdateWarehouseCommandRequest request, CancellationToken cancellationToken)
     {
-        // var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
+        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
         
-        // if (warehouse is null)
-        //     throw new Exception("Warehouse not found.");
+        if (warehouse is null)
+            throw new Exception("Warehouse not found.");
 
-        // bool isAddressValid = await _locationRepository.IsAddressValid(
-        //     Guid.Parse(request.CityId!),
-        //     Guid.Parse(request.DistrictId!),
-        //     Guid.Parse(request.NeighborhoodId!));
-        // if (!isAddressValid)
-        //     throw new Exception("Address data is invalid.");
+        Address address = new(
+            request.CityId!,
+            request.DistrictId!,
+            request.NeighborhoodId!,request.PostalCode!,
+            request.AddressLine!);
 
-        // var normalizedName = request.WarehouseName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
-        // warehouse.Address = new Address
-        // {
-        //     CityId = Guid.Parse(request.CityId!),
-        //     DistrictId = Guid.Parse(request.DistrictId!),
-        //     NeighborhoodId = Guid.Parse(request.NeighborhoodId!),
-        //     AddressLine = request.AddressLine!,
-        //     PostalCode = request.PostalCode!
-        // };
-        // warehouse.NormalizedName = normalizedName;
-        // warehouse.WarehouseName = request.WarehouseName;
+        bool isAddressValid = await _locationRepository.IsAddressValid(address);
+        if (!isAddressValid)
+            throw new Exception("Address data is invalid.");
 
-        // _warehouseRepository.UpdateWarehouse(warehouse);
-        // await _unitOfWork.CommitAsync();
-        return new();
+        var normalizedName = request.WarehouseName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
+        bool isNameUsed = await _warehouseRepository.WarehouseNameExists(normalizedName);
+        if (!warehouse.NormalizedName.Equals(normalizedName) && isNameUsed)
+            throw new Exception("This warehouse name is being used for another warehouse.");
+        
+        warehouse.Address = address;
+        warehouse.NormalizedName = normalizedName;
+        warehouse.WarehouseName = request.WarehouseName;
+
+        await _unitOfWork.CommitAsync();
+        return new()
+        {
+            WarehouseId = warehouse.Id.ToString(),
+            WarehouseName = warehouse.WarehouseName,
+            Address = await _locationRepository.ConvertString(address)
+        };
     }
 }
