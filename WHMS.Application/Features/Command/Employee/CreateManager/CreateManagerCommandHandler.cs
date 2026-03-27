@@ -25,14 +25,6 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommandR
 
     public async Task<CreateManagerCommandResponse> Handle(CreateManagerCommandRequest request, CancellationToken cancellationToken)
     {
-        // bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
-        // if (!isWarehouseExists)
-        //     throw new Exception("Warehouse not found.");
-            
-        // bool hasWarehouseAnyManager = await _employeeRepository.HasWarehouseAnyManager(Guid.Parse(request.WarehouseId!));
-        // if (hasWarehouseAnyManager)
-        //     throw new Exception("The warehouse has already a manager.");
-
         string userName = await _employeeRepository.GenerateWarehouseManagerUserName();
         var manager = new ApplicationUser 
         {
@@ -43,7 +35,18 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommandR
         };
 
         if (!string.IsNullOrWhiteSpace(request.WarehouseId))
+        {
+            bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
+            if (!isWarehouseExists)
+                throw new Exception("Warehouse not found.");
+                
+            bool hasWarehouseAnyManager = await _employeeRepository.HasWarehouseAnyManager(Guid.Parse(request.WarehouseId!));
+            if (hasWarehouseAnyManager)
+                throw new Exception("The warehouse has already a manager.");
+            
             manager.WarehouseId = Guid.Parse(request.WarehouseId);
+        }
+
         var tempPassword = await _passwordCreator.CreateTempPassword();
         var result = await _userManager.CreateAsync(manager, tempPassword);
         if (result.Succeeded)
@@ -52,9 +55,10 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommandR
             throw new Exception("Manager could not be created.");
         return new()
         {
+            UserId = manager.Id.ToString(),
             UserName = manager.UserName,
             FullName = manager.FullName,
-            WarehouseId = manager.WarehouseId.ToString(),
+            WarehouseId = manager.WarehouseId?.ToString(),
             TempPassword = tempPassword
         };
     }
