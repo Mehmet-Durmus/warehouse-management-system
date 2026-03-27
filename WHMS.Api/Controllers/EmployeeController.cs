@@ -53,7 +53,7 @@ public class EmployeeController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("staff-member")]
     public async Task<IActionResult> CreateStaffMember(CreateStaffMemberCommandRequest request) 
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<CreateStaffMemberCommandResponse>.Success(await _mediator.Send(request)));
     
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut("manager")]

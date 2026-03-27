@@ -23,9 +23,7 @@ public class CreateStaffMemberCommandHandler : IRequestHandler<CreateStaffMember
 
     public async Task<CreateStaffMemberCommandResponse> Handle(CreateStaffMemberCommandRequest request, CancellationToken cancellationToken)
     {
-        // bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
-        // if (!isWarehouseExists)
-        //     throw new Exception("Watehouse not found.");
+        
 
         string userName = await _employeeRepository.GenerateWarehouseStaffUserName();
         var staff = new ApplicationUser
@@ -33,9 +31,17 @@ public class CreateStaffMemberCommandHandler : IRequestHandler<CreateStaffMember
             FullName = request.FullName!,
             UserName = userName,
             Email = userName,
-            EmailConfirmed = true,
-            WarehouseId = Guid.Parse(request.WarehouseId!)
+            EmailConfirmed = true
         };
+
+        if (!string.IsNullOrWhiteSpace(request.WarehouseId))
+        {
+            bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
+            if (!isWarehouseExists)
+                throw new Exception("Watehouse not found.");
+            staff.WarehouseId = Guid.Parse(request.WarehouseId);
+        }
+
         string tempPassword = await _passwordCreator.CreateTempPassword();
         var result = await _userManager.CreateAsync(staff, tempPassword);
         if (result.Succeeded)
@@ -45,9 +51,11 @@ public class CreateStaffMemberCommandHandler : IRequestHandler<CreateStaffMember
         
         return new()
         {
+            UserId = staff.Id.ToString(),
             UserName = staff.UserName,
             FullName = staff.FullName,
-            WarehouseId = staff.WarehouseId.ToString()
+            WarehouseId = staff.WarehouseId?.ToString(),
+            TempPassword = tempPassword
         };
     }
 }
