@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace WHMS.Application.Features.Queries.GetDeliveryItem;
+namespace WHMS.Application.Features.Queries.Delivery.GetDeliveryItem;
 
 public class GetDeliveryItemQueryRequest : IRequest<GetDeliveryItemQueryResponse>
 {

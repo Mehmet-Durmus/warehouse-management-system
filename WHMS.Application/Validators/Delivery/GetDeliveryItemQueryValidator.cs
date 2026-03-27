@@ -1,5 +1,5 @@
 using FluentValidation;
-using WHMS.Application.Features.Queries.GetDeliveryItem;
+using WHMS.Application.Features.Queries.Delivery.GetDeliveryItem;
 
 namespace WHMS.Application.Validators;
 

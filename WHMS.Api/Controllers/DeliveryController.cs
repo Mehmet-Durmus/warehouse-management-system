@@ -11,7 +11,7 @@ using WHMS.Application.Features.Command.Delivery.UpdateDeliveryItem;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveries;
 using WHMS.Application.Features.Queries.Delivery.GetDelivery;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
-using WHMS.Application.Features.Queries.GetDeliveryItem;
+using WHMS.Application.Features.Queries.Delivery.GetDeliveryItem;
 
 namespace WHMS.Api.Controllers;
 

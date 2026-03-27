@@ -36,7 +36,8 @@ public class WarehouseController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetWarehouse(string id)
-        => Ok(await _mediator.Send(new GetWarehouseQueryRequest {WarehouseId = id}));
+        => Ok(ApiResponse<GetWarehouseQueryResponse>.
+            Success(await _mediator.Send(new GetWarehouseQueryRequest {WarehouseId = id})));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]

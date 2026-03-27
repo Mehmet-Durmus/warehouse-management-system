@@ -1,7 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 
-namespace WHMS.Application.Features.Queries.GetDeliveryItem;
+namespace WHMS.Application.Features.Queries.Delivery.GetDeliveryItem;
 
 public class GetDeliveryItemQueryHandler : IRequestHandler<GetDeliveryItemQueryRequest, GetDeliveryItemQueryResponse>
 {
