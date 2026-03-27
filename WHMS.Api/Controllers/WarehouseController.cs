@@ -5,7 +5,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Api.Common.Models;
+using WHMS.Api.Common.Models.Warehouse;
 using WHMS.Application.DTOs.Warehouse;
+using WHMS.Application.Features.Command.Warehouse.AssignEmployees;
 using WHMS.Application.Features.Command.Warehouse.CreateWarehouse;
 using WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
 using WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
@@ -62,6 +64,22 @@ public class WarehouseController : ControllerBase
     public async Task<IActionResult> DeleteWarehouse(string warehouseId)
     {
         await _mediator.Send(new DeleteWarehouseCommandRequest { WarehouseId = warehouseId });
+        return NoContent();
+    }
+
+    [Authorize(Policy = "LogisticDirector")]
+    [HttpPost("{id}/employees")]
+    public async Task<IActionResult> AssignEmployees(string id, AssignEmployeesRequestDto dto)
+    {
+        var result = await _mediator.Send(new AssignEmployeesCommandRequest
+        {
+            WarehouseId = id,
+            ManagerId = dto.ManagerId,
+            StaffIds = dto.StaffIds
+        });
+        if (result.Warnings is not null && result.Warnings.Count > 0)
+            return Ok(ApiResponse.SuccessWithWarnings(result.Warnings));
+        
         return NoContent();
     }
 }
