@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Filtering.Extensions;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.Extensions;
-using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -38,14 +39,14 @@ public class DeliveryRepository : IDeliveryRepository
 
     public async Task<List<Delivery>> GetDeliveries(DeliveryFilter filter, bool withPagination)
         => await _context.Deliveries
-            .ApplyDeliveryFilter(filter, withPagination)
+            .Apply(filter, withPagination)
             .Include(d => d.DeliveryItems)!
             .ThenInclude(i => i.Sku)
             .ToListAsync();
 
     public async Task<int> GetDeliveriesCount(DeliveryFilter filter)
         => await _context.Deliveries
-            .ApplyDeliveryFilter(filter, false)
+            .Apply(filter, false)
             .Include(d => d.DeliveryItems)!
             .ThenInclude(i => i.Sku)
             .CountAsync();
@@ -71,13 +72,13 @@ public class DeliveryRepository : IDeliveryRepository
 
     public async Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter, bool withPagination)
         => await _context.DeliveryItems
-            .ApplyDeliveryItemFilter(filter, withPagination)
+            .Apply(filter, withPagination)
             .Include(i => i.Sku)
             .ToListAsync();
 
     public async Task<int> GetDeliveryItemsCount(DeliveryItemFilter filter)
         => await _context.DeliveryItems
-            .ApplyDeliveryItemFilter(filter, false)
+            .Apply(filter, false)
             .Include(i => i.Sku)
             .CountAsync();
 

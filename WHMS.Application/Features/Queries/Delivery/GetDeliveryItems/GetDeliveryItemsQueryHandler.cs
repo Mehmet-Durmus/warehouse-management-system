@@ -1,9 +1,9 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.DTOs.Catalog;
 using WHMS.Application.DTOs.Delivery;
-using WHMS.Application.Filters;
 
 namespace WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
 

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using WHMS.Domain.Entities.Abstractions;
 
@@ -27,4 +28,11 @@ public static class QueryFilterExtensions
         
         return query;
     }
+
+    public static IQueryable<T> WhereIf<T>(
+        this IQueryable<T> query,
+        bool condition,
+        Expression<Func<T, bool>> predicate
+    )
+    { return condition ? query.Where(predicate) : query; }
 }

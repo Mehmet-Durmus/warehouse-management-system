@@ -1,23 +1,37 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Filtering.Filters;
 
 namespace WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
 
-public class DeleteWarehouseCommandHnadler : IRequestHandler<DeleteWarehouseCommandRequest, DeleteWarehouseCommandResponse>
+public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseCommandRequest>
 {
     private readonly IWarehouseRepository _warehouseRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IDeliveryRepository _deliveryRepository;
+    private readonly IEmployeeRepository _employeeRepository;
 
-    public DeleteWarehouseCommandHnadler(IWarehouseRepository warehouseRepository, IUnitOfWork unitOfWork)
+    public DeleteWarehouseCommandHandler(IWarehouseRepository warehouseRepository, IUnitOfWork unitOfWork, IDeliveryRepository deliveryRepository, IEmployeeRepository employeeRepository)
     {
         _warehouseRepository = warehouseRepository;
         _unitOfWork = unitOfWork;
+        _deliveryRepository = deliveryRepository;
+        _employeeRepository = employeeRepository;
     }
 
-    public async Task<DeleteWarehouseCommandResponse> Handle(DeleteWarehouseCommandRequest request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteWarehouseCommandRequest request, CancellationToken cancellationToken)
     {
+        DeliveryFilter filter = new() { WarehouseId = request.WarehouseId, IsReceived = false };
+        int count = await _deliveryRepository.GetDeliveriesCount(filter);
+        if (count > 0)
+            throw new Exception("Warehouse cannot be deleted because there are pending deliveries assigned to it.");
+        
+        var employees = await _employeeRepository.GetEmployeesByWarehouse(Guid.Parse(request.WarehouseId));
+        foreach (var employee in employees)
+            employee.WarehouseId = null;
+
         await _warehouseRepository.SoftDelete(Guid.Parse(request.WarehouseId));
         await _unitOfWork.CommitAsync();
-        return new();
+        
     }
 }

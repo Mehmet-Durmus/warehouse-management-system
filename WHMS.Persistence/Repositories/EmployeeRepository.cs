@@ -35,6 +35,11 @@ public class EmployeeRepository : IEmployeeRepository
         throw new NotImplementedException();
     }
 
+    public async Task<List<ApplicationUser>> GetEmployeesByWarehouse(Guid warehouseId)
+        => await _context.Users
+            .Where(u => u.WarehouseId == warehouseId)
+            .ToListAsync();
+
     public async Task<ApplicationUser> GetManager(Guid managerId)
     {
         var roleId = await GetRoleId("WarehouseManager");

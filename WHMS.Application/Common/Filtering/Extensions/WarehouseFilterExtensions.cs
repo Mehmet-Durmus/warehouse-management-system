@@ -14,24 +14,23 @@ public static class WarehouseFilterExtensions
     )
     {
         return query
-            .ApplyCommonFilters(filter, applyPagination)
-            .ApplyWarehouseFilter(filter);
+            .ApplyWarehouseFilter(filter)
+            .ApplyCommonFilters(filter, applyPagination);
     }
 
     private static IQueryable<Warehouse> ApplyWarehouseFilter(
         this IQueryable<Warehouse> query,
         WarehouseFilter filter
     )
-    {
-        if (!string.IsNullOrWhiteSpace(filter.Name))
-            query = query.Where(w => w.NormalizedName.Contains(filter.Name.ToUpper(CultureInfo.GetCultureInfo("tr-TR"))));
-        if (!string.IsNullOrWhiteSpace(filter.CityId))
-            query = query.Where(w => w.Address.CityId == Guid.Parse(filter.CityId));
-        if (!string.IsNullOrWhiteSpace(filter.DistrictId))
-            query = query.Where(w => w.Address.DistrictId == Guid.Parse(filter.DistrictId));
-        if (!string.IsNullOrWhiteSpace(filter.NeighborhoodId))
-            query = query.Where(w => w.Address.NeighborhoodId == Guid.Parse(filter.NeighborhoodId));
-        
-        return query;
+    {   
+        return query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.Name),
+                w => w.NormalizedName.Contains(filter.Name!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"))))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.CityId),
+                w => w.Address.CityId == Guid.Parse(filter.CityId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.DistrictId),
+                w => w.Address.DistrictId == Guid.Parse(filter.DistrictId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.NeighborhoodId),
+                w => w.Address.NeighborhoodId == Guid.Parse(filter.NeighborhoodId!));
     }
 }

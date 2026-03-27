@@ -53,7 +53,10 @@ public class WarehouseController : ControllerBase
     
 
     [Authorize(Policy = "LogisticDirector")]
-    [HttpDelete]
-    public async Task<IActionResult> DeleteWarehouse(DeleteWarehouseCommandRequest request)
-        => Ok(await _mediator.Send(request));
+    [HttpDelete("{warehouseId}")]
+    public async Task<IActionResult> DeleteWarehouse(string warehouseId)
+    {
+        await _mediator.Send(new DeleteWarehouseCommandRequest { WarehouseId = warehouseId });
+        return NoContent();
+    }
 }

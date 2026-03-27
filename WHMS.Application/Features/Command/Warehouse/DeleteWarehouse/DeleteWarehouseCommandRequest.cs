@@ -2,7 +2,7 @@ using MediatR;
 
 namespace WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
 
-public class DeleteWarehouseCommandRequest : IRequest<DeleteWarehouseCommandResponse>
+public class DeleteWarehouseCommandRequest : IRequest
 {
     public required string WarehouseId { get; set; }
 }
