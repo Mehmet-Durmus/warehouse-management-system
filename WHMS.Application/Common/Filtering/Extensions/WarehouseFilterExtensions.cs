@@ -31,6 +31,8 @@ public static class WarehouseFilterExtensions
             .WhereIf(!string.IsNullOrWhiteSpace(filter.DistrictId),
                 w => w.Address.DistrictId == Guid.Parse(filter.DistrictId!))
             .WhereIf(!string.IsNullOrWhiteSpace(filter.NeighborhoodId),
-                w => w.Address.NeighborhoodId == Guid.Parse(filter.NeighborhoodId!));
+                w => w.Address.NeighborhoodId == Guid.Parse(filter.NeighborhoodId!))
+            .WhereIf(filter.SkuIds is not null && filter.SkuIds.Count > 0,
+                w => w.StockStates.Any(ss => filter.SkuIds!.Contains(ss.SkuId.ToString())));
     }
 }

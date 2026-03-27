@@ -53,6 +53,17 @@ public class EmployeeRepository : IEmployeeRepository
         return manager!;
     }
 
+    public async Task<ApplicationUser> GetManagerByWarehouse(Guid warehouseId)
+    {
+        var roleId = await GetRoleId("WarehouseManager");
+        var manager = await _context.Users
+            .Where(u => u.WarehouseId == warehouseId)
+            .Where(u => _context.UserRoles
+                .Any(ur => ur.UserId == u.Id && ur.RoleId == roleId))
+            .SingleOrDefaultAsync();
+        return manager!;
+    }
+
     public async Task<List<ApplicationUser>> GetManagers()
     {
         var roleId = await GetRoleId("WarehouseManager");

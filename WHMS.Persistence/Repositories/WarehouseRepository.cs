@@ -20,7 +20,9 @@ public class WarehouseRepository : IWarehouseRepository
         => await _whmsContext.Warehouses.AddAsync(warehouse);
 
     public async Task<List<Warehouse>> GetAllWarehouses(WarehouseFilter filter)
-        => await _whmsContext.Warehouses.AsQueryable().Apply(filter).ToListAsync();
+        => await _whmsContext.Warehouses
+            .Apply(filter)
+            .ToListAsync();
 
     public async Task<Warehouse>? GetWarehouse(Guid warehouseId)
     { 

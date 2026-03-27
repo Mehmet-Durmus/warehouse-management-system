@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Api.Common.Models;
+using WHMS.Application.DTOs.Warehouse;
 using WHMS.Application.Features.Command.Warehouse.CreateWarehouse;
 using WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
 using WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
@@ -27,7 +28,10 @@ public class WarehouseController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet]
     public async Task<IActionResult> GetAllWarehouses([FromQuery] GetAllWarehousesQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    {
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<WarehouseDto>>.SuccessList(result.Warehouses, new(result.Pagination)));
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{id}")]

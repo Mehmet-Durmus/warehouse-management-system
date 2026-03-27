@@ -25,6 +25,9 @@ public class StockStateRepository : IStockStateRepository
             ON CONFLICT (""WarehouseId"", ""SkuId"")
             DO UPDATE SET ""Quantity"" = {quantity}");
 
+    public async Task<int> TotalStockByWarehouse(Guid warehouseId)
+        => await _context.StockStates.Where(ss => ss.WarehouseId == warehouseId).SumAsync(ss => ss.Quantity);
+
     public async Task<int> UpdateQuantity(Guid warehouseId, Guid skuId, int delta)
         => await _context.Database.ExecuteSqlInterpolatedAsync(
             $@"INSERT INTO ""StockStates"" (""WarehouseId"", ""SkuId"", ""Quantity"")

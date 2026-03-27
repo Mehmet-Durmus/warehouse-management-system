@@ -16,4 +16,5 @@ public interface IEmployeeRepository
     Task SetWarehouseId(Guid employeeId, Guid warehouseId);
     Task<ApplicationUser> GetEmployee(Guid employeeId);
     Task<List<ApplicationUser>> GetEmployeesByWarehouse(Guid warehouseId);
+    Task<ApplicationUser> GetManagerByWarehouse(Guid warehouseId);
 }
