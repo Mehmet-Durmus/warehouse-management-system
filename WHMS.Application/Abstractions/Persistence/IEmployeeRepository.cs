@@ -7,9 +7,11 @@ namespace WHMS.Application.Abstractions.Persistence;
 
 public interface IEmployeeRepository
 {
-    Task<List<ApplicationUser>> GetManagers();
+    Task<List<ApplicationUser>> GetManagers(EmployeeFilter filter, bool applyPagination);
+    Task<int> GetManagerCount(EmployeeFilter filter);
     Task<ApplicationUser> GetManager(Guid managerId);
-    Task<List<ApplicationUser>> GetStaff();
+    Task<List<ApplicationUser>> GetStaff(EmployeeFilter filter, bool applyPagination);
+    Task<int> GetStaffCount(EmployeeFilter filter);
     Task<ApplicationUser> GetStaffMember(Guid staffMemberId);
     void Update(ApplicationUser employee);
     Task<bool> HasWarehouseAnyManager(Guid warehouseId);

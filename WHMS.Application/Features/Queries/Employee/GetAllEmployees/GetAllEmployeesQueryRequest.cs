@@ -4,6 +4,7 @@ namespace WHMS.Application.Features.Queries.Employee.GetAllEmployees;
 
 public class GetAllEmployeesQueryRequest : IRequest<GetAllEmployeesQueryResponse>
 {
+    public bool? IsManager { get; set; }
     public string? Name { get; set; }
     public string? WarehouseId { get; set; }
     public string? CityId { get; set; }

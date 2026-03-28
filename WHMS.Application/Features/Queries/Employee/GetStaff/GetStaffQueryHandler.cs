@@ -15,20 +15,21 @@ public class GetStaffQueryHandler : IRequestHandler<GetStaffQueryRequest, GetSta
 
     public async Task<GetStaffQueryReponse> Handle(GetStaffQueryRequest request, CancellationToken cancellationToken)
     {
-        var staff = await _employeeRepository.GetStaff();
+        // var staff = await _employeeRepository.GetStaff();
 
-        var result = new GetStaffQueryReponse {Staff = []};
+        // var result = new GetStaffQueryReponse {Staff = []};
 
-        foreach (var staffMember in staff)
-            result.Staff.Add(new UserDto
-            {
-                UserId = staffMember.Id.ToString(),
-                FullName = staffMember.FullName,
-                WarehouseId = staffMember.WarehouseId.ToString(),
-                CreatedAt = staffMember.CreatedAt,
-                UpdatedAt = staffMember.UpdatedAt
-            });
+        // foreach (var staffMember in staff)
+        //     result.Staff.Add(new UserDto
+        //     {
+        //         UserId = staffMember.Id.ToString(),
+        //         FullName = staffMember.FullName,
+        //         WarehouseId = staffMember.WarehouseId.ToString(),
+        //         CreatedAt = staffMember.CreatedAt,
+        //         UpdatedAt = staffMember.UpdatedAt
+        //     });
         
-        return result;
+        // return result;
+        return new();
     }
 }

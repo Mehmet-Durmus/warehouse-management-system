@@ -15,20 +15,21 @@ public class GetManagersQueryHandler : IRequestHandler<GetManagersQueryRequest, 
 
     public async Task<GetManagersQueryResponse> Handle(GetManagersQueryRequest request, CancellationToken cancellationToken)
     {
-        var managers = await _employeeRepository.GetManagers();
+        // var managers = await _employeeRepository.GetManagers();
 
-        var result = new GetManagersQueryResponse { Employees = [] };
+        // var result = new GetManagersQueryResponse { Employees = [] };
 
-        foreach (var manager in managers)
-            result.Employees.Add(new UserDto
-            {
-                UserId = manager.Id.ToString(),
-                FullName = manager.FullName,
-                WarehouseId = manager.WarehouseId.ToString(),
-                CreatedAt = manager.CreatedAt,
-                UpdatedAt = manager.UpdatedAt
-            });
+        // foreach (var manager in managers)
+        //     result.Employees.Add(new UserDto
+        //     {
+        //         UserId = manager.Id.ToString(),
+        //         FullName = manager.FullName,
+        //         WarehouseId = manager.WarehouseId.ToString(),
+        //         CreatedAt = manager.CreatedAt,
+        //         UpdatedAt = manager.UpdatedAt
+        //     });
 
-        return result;
+        // return result;
+        return new();
     }
 }

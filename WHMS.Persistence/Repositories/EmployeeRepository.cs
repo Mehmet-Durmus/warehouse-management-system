@@ -41,13 +41,7 @@ public class EmployeeRepository : IEmployeeRepository
             .Apply(filter, applyPagination)
             .Include(e => e.Warehouse)
             .ToListAsync();
-
     }
-        // => await _context.Users
-        //     .Apply(filter, applyPagination)
-        //     .Where(e => e.UserName )
-        //     .Include(e => e.Warehouse)
-        //     .ToListAsync();
 
     public Task<ApplicationUser> GetEmployee(Guid employeeId)
     {
@@ -88,25 +82,48 @@ public class EmployeeRepository : IEmployeeRepository
         return manager!;
     }
 
-    public async Task<List<ApplicationUser>> GetManagers()
+    public async Task<List<ApplicationUser>> GetManagers(EmployeeFilter filter, bool applyPagination)
     {
         var roleId = await GetRoleId("WarehouseManager");
 
         return await _context.Users
+            .Apply(filter, applyPagination)
             .Where(u => _context.UserRoles
                 .Any(ur => ur.UserId == u.Id && ur.RoleId == roleId))
             .ToListAsync();
             
     }
 
-    public async Task<List<ApplicationUser>> GetStaff()
+    public async Task<int> GetManagerCount(EmployeeFilter filter)
+    {
+        var roleId = await GetRoleId("WarehouseManager");
+        return await _context.Users
+            .Apply(filter, false)
+            .Where(u => _context.UserRoles
+                .Any(ur => ur.UserId == u.Id && ur.RoleId == roleId))
+            .CountAsync();
+    }
+
+    public async Task<List<ApplicationUser>> GetStaff(EmployeeFilter filter, bool applyPagination)
     {
         var roleId = await GetRoleId("WarehouseStaff");
 
         return await _context.Users
+            .Apply(filter, applyPagination)
             .Where(u => _context.UserRoles
                 .Any(ur => ur.UserId == u.Id && ur.RoleId == roleId))
             .ToListAsync();
+    }
+
+    public async Task<int> GetStaffCount(EmployeeFilter filter)
+    {
+        var roleId = await GetRoleId("WarehouseStaff");
+
+        return await _context.Users
+            .Apply(filter, false)
+            .Where(u => _context.UserRoles
+                .Any(ur => ur.UserId == u.Id && ur.RoleId == roleId))
+            .CountAsync();
     }
 
     public async Task<ApplicationUser> GetStaffMember(Guid staffMemberId)

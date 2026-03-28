@@ -34,7 +34,6 @@ public class EmployeeController : ControllerBase
         return Ok(ApiResponse<List<GetAllEmployeesResultUserDto>>.SuccessList(result.Employees!, new(result.Pagination)));
     }
 
-
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("managers")]
     public async Task<IActionResult> GetManagers()

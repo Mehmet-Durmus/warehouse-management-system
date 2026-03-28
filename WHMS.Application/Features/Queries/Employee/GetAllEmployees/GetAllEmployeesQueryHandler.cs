@@ -36,8 +36,25 @@ public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQueryR
             PageSize = request.PageSize
         };
 
-        var employees = await _employeeRepository.GetAllEmployees(filter, applyPagination: true);
-        int employeeCount = await _employeeRepository.GetEmployeeCount(filter);
+        List<ApplicationUser> employees;
+        int employeeCount;
+
+        if (request.IsManager == true)
+        {
+            employees = await _employeeRepository.GetManagers(filter, applyPagination: true);
+            employeeCount = await _employeeRepository.GetEmployeeCount(filter);
+        }
+        else if (request.IsManager == false)
+        {
+            employees = await _employeeRepository.GetStaff(filter, applyPagination: true);
+            employeeCount = await _employeeRepository.GetStaffCount(filter);
+        }
+        else
+        {
+            employees = await _employeeRepository.GetAllEmployees(filter, applyPagination: true);
+            employeeCount = await _employeeRepository.GetEmployeeCount(filter);          
+        }
+
 
         GetAllEmployeesQueryResponse response = new() { Employees = [] };
         response.Pagination = new(
