@@ -77,13 +77,15 @@ public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQueryR
             (int)Math.Ceiling((double) employeeCount / request.PageSize)
         );
 
+        var roles = await _employeeRepository.GetEmployeeRoles(employees.Select(e => e.Id));
+
         foreach (var employee in employees)
             response.Employees.Add(new()
             {
                 UserId = employee.Id.ToString(),
                 UserName = employee.UserName!,
                 FullName = employee.FullName,
-                Role = (await _userManager.GetRolesAsync(employee)).FirstOrDefault()!,
+                Role = roles.GetValueOrDefault(employee.Id)!,
                 WarehouseId = employee.WarehouseId.ToString(),
                 WarehouseName = employee.Warehouse?.WarehouseName
             });
