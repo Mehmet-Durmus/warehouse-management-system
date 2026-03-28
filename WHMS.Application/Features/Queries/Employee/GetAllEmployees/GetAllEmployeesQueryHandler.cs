@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Extensions;
 using WHMS.Application.Common.Filtering.Filters;
@@ -11,23 +12,25 @@ public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQueryR
 {
     private readonly IEmployeeRepository _employeeRepository;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ICurrentUserService _currentUserService;
 
-    public GetAllEmployeesQueryHandler(IEmployeeRepository employeeRepository, UserManager<ApplicationUser> userManager)
+    public GetAllEmployeesQueryHandler(IEmployeeRepository employeeRepository, UserManager<ApplicationUser> userManager, ICurrentUserService currentUserService)
     {
         _employeeRepository = employeeRepository;
         _userManager = userManager;
+        _currentUserService = currentUserService;
     }
 
     public async Task<GetAllEmployeesQueryResponse> Handle(GetAllEmployeesQueryRequest request, CancellationToken cancellationToken)
     {
+        bool isLogisticDirector = _currentUserService.Roles!.Contains("LogisticDirector");
+
+        // CurrnetUser Manager ise sadece staff alabilir, Director ise filtre uygulayabilir
+        request.IsManager = isLogisticDirector ? request.IsManager : false;
+
         EmployeeFilter filter = new()
         {
             Name = request.Name,
-            WarehouseId = request.WarehouseId,
-            CityId = request.CityId,
-            DistrictId = request.DistrictId,
-            NeighborhoodId = request.NeighborhoodId,
-            IsAssignedToWarehouse = request.IsAssignedToWarehouse,
             CreatedAfter = request.CreatedAfter,
             CreatedBefore = request.CreatedBefore,
             UpdatedAfter = request.UpdatedAfter,
@@ -35,6 +38,17 @@ public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQueryR
             Page = request.Page,
             PageSize = request.PageSize
         };
+
+        if (isLogisticDirector)
+        {
+            filter.WarehouseId = request.WarehouseId;
+            filter.CityId = request.CityId;
+            filter.DistrictId = request.DistrictId;
+            filter.NeighborhoodId = request.NeighborhoodId;
+            filter.IsAssignedToWarehouse = request.IsAssignedToWarehouse;  
+        }
+        else
+            filter.WarehouseId = _currentUserService.WarehouseId;
 
         List<ApplicationUser> employees;
         int employeeCount;

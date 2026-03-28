@@ -26,7 +26,7 @@ public class EmployeeController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorOrManager")]
     [HttpGet()]
     public async Task<IActionResult> GetEmployees([FromQuery] GetAllEmployeesQueryRequest request)
     {
