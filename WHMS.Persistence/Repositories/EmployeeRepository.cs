@@ -43,9 +43,13 @@ public class EmployeeRepository : IEmployeeRepository
             .ToListAsync();
     }
 
-    public Task<ApplicationUser> GetEmployee(Guid employeeId)
+    public async Task<ApplicationUser> GetEmployee(Guid employeeId)
     {
-        throw new NotImplementedException();
+        var employee = await _context.Users
+            .Where(u => u.Id == employeeId)
+            .Include(u => u.Warehouse)
+            .SingleOrDefaultAsync();
+        return employee!;
     }
 
     public async Task<int> GetEmployeeCount(EmployeeFilter filter)
@@ -162,4 +166,28 @@ public class EmployeeRepository : IEmployeeRepository
             .Select(r => r.Id)
             .SingleAsync();
     }
+
+    public async Task<Dictionary<Guid, string>> GetEmployeeRoles(IEnumerable<Guid> employeeIds)
+    {
+        var roles = await _context.UserRoles
+            .Where(ur => employeeIds.Contains(ur.UserId))
+            .Join(_context.Roles,
+                ur => ur.RoleId,
+                r => r.Id,
+                (ur, r) => new { ur.UserId, r.Name })
+            .ToDictionaryAsync(
+                x => x.UserId,
+                x => x.Name
+            );
+        return roles!;
+    }
+
+    public async Task<string?> GetEmployeeRole(Guid employeeId)
+        => await _context.UserRoles
+            .Where(ur => ur.UserId == employeeId)
+            .Join(_context.Roles,
+                ur => ur.RoleId,
+                r => r.Id,
+                (ur, r) => r.Name)
+            .FirstOrDefaultAsync();
 }

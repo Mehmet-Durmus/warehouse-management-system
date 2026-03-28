@@ -23,4 +23,6 @@ public interface IEmployeeRepository
     Task<ApplicationUser> GetManagerByWarehouse(Guid warehouseId);
     Task<List<ApplicationUser>> GetAllEmployees(EmployeeFilter filter, bool applyPagination);
     Task<int> GetEmployeeCount(EmployeeFilter filter);
+    Task<Dictionary<Guid, string>> GetEmployeeRoles(IEnumerable<Guid> employeeIds);
+    Task<string?> GetEmployeeRole(Guid employeeId);
 }

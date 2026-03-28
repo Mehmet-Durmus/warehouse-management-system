@@ -8,6 +8,7 @@ using WHMS.Application.Features.Command.Employee.DeleteEmployee;
 using WHMS.Application.Features.Command.Employee.UpdateManager;
 using WHMS.Application.Features.Command.Employee.UpdateStaffMember;
 using WHMS.Application.Features.Queries.Employee.GetAllEmployees;
+using WHMS.Application.Features.Queries.Employee.GetEmployee;
 using WHMS.Application.Features.Queries.Employee.GetManager;
 using WHMS.Application.Features.Queries.Employee.GetManagers;
 using WHMS.Application.Features.Queries.Employee.GetStaff;
@@ -33,6 +34,11 @@ public class EmployeeController : ControllerBase
         var result = await _mediator.Send(request);
         return Ok(ApiResponse<List<GetAllEmployeesResultUserDto>>.SuccessList(result.Employees!, new(result.Pagination)));
     }
+
+    [Authorize(Policy = "DirectorOrManager")]
+    [HttpGet("{employeeId}")]
+    public async Task<IActionResult> GetEmployee(string employeeId)
+        => Ok(ApiResponse<GetEmployeeQueryResponse>.Success(await _mediator.Send(new GetEmployeeQueryRequest { EmployeeId = employeeId })));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("managers")]
