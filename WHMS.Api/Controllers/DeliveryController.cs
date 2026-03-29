@@ -12,6 +12,8 @@ using WHMS.Application.Features.Queries.Delivery.GetDeliveries;
 using WHMS.Application.Features.Queries.Delivery.GetDelivery;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveryItem;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using WHMS.Api.Common.Models;
 
 namespace WHMS.Api.Controllers;
 
@@ -49,7 +51,7 @@ public class DeliveryController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]
     public async Task<IActionResult> CreateDelivery(CreateDeliveryCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<CreateDeliveryCommandResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("delivery-items")]

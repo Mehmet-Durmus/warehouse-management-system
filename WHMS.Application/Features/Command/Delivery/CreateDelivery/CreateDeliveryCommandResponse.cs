@@ -2,7 +2,11 @@ namespace WHMS.Application.Features.Command.Delivery.CreateDelivery;
 
 public class CreateDeliveryCommandResponse
 {
-    public string Id { get; set; } = null!;
+    public string DeliveryId { get; set; } = null!;
     public string WarehouseId { get; set; } = null!;
-    public string? CreatedByUserName { get; set; }
+    public string WarehouseName { get; set; } = null!;
+    public DateTime ExpectedArrivalDate { get; set; }
+    public bool IsReceived { get; set; }
+    public DateTime? ReceivedAt { get; set; }
+    public string? ReceivedById { get; set; }
 }
