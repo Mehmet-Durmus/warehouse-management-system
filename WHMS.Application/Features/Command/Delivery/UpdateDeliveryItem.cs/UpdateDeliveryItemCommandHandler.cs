@@ -7,11 +7,13 @@ public class UpdateDeliveryItemCommandHandler : IRequestHandler<UpdateDeliveryIt
 {
     private readonly IDeliveryRepository _deliveryRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICatalogRepository _catalogRepository;
 
-    public UpdateDeliveryItemCommandHandler(IDeliveryRepository deliveryRepository, IUnitOfWork unitOfWork)
+    public UpdateDeliveryItemCommandHandler(IDeliveryRepository deliveryRepository, IUnitOfWork unitOfWork, ICatalogRepository catalogRepository)
     {
         _deliveryRepository = deliveryRepository;
         _unitOfWork = unitOfWork;
+        _catalogRepository = catalogRepository;
     }
 
     public async Task<UpdateDeliveryItemCommandResponse> Handle(UpdateDeliveryItemCommandRequest request, CancellationToken cancellationToken)
@@ -25,11 +27,21 @@ public class UpdateDeliveryItemCommandHandler : IRequestHandler<UpdateDeliveryIt
         if (delivery.ReceivedAt is not null)
             throw new Exception("Delivery has already been received.");
 
+        var sku = await _catalogRepository.GetSku(Guid.Parse(request.SkuId!));
+        if (sku is null)
+            throw new Exception("Sku not found.");
+
         deliveryItem.DeliveryId = Guid.Parse(request.DeliveryId!);
         deliveryItem.SkuId = Guid.Parse(request.SkuId!);
         deliveryItem.Quantity = request.Quantity;
         
         await _unitOfWork.CommitAsync();
-        return new();
+        return new()
+        {
+            DeliveryId = deliveryItem.DeliveryId.ToString(),
+            SkuId = deliveryItem.SkuId.ToString(),
+            SkuName = sku.SKUName,
+            Quantity = deliveryItem.Quantity
+        };
     }
 }
