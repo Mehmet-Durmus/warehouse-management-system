@@ -4,7 +4,7 @@ using WHMS.Application.Abstractions.Persistence;
 
 namespace WHMS.Application.Features.Command.Delivery.DeleteDeliveryItem;
 
-public class DeleteDeliveryItemCommandHandler : IRequestHandler<DeleteDeliveryItemCommandRequest, DeleteDeliveryItemCommandResponse>
+public class DeleteDeliveryItemCommandHandler : IRequestHandler<DeleteDeliveryItemCommandRequest>
 {
     private readonly IDeliveryRepository _deliveryRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -14,7 +14,7 @@ public class DeleteDeliveryItemCommandHandler : IRequestHandler<DeleteDeliveryIt
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<DeleteDeliveryItemCommandResponse> Handle(DeleteDeliveryItemCommandRequest request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteDeliveryItemCommandRequest request, CancellationToken cancellationToken)
     {
         var deliveryItem = await _deliveryRepository.GetDeliveryItem(Guid.Parse(request.DeliveryItemId!));
         if (deliveryItem is null)
@@ -27,6 +27,5 @@ public class DeleteDeliveryItemCommandHandler : IRequestHandler<DeleteDeliveryIt
             
         await _deliveryRepository.DeleteDeliveryItem(Guid.Parse(request.DeliveryItemId!));
         await _unitOfWork.CommitAsync();
-        return new();
     }
 }
