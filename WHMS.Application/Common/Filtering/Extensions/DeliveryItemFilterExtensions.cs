@@ -23,7 +23,14 @@ public static class DeliveryItemFilterExtensions
         DeliveryItemFilter filter
     )
     {
-        return query;
-            
+        return query
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.DeliveryId),
+                i => i.DeliveryId == Guid.Parse(filter.DeliveryId!))
+            .WhereIf(!string.IsNullOrWhiteSpace(filter.SkuId),
+                i => i.SkuId == Guid.Parse(filter.SkuId!))
+            .WhereIf(filter.MaxQuantity.HasValue,
+                i => i.Quantity <= filter.MaxQuantity)
+            .WhereIf(filter.MinQuantity.HasValue,
+                i => i.Quantity <= filter.MinQuantity);
     }
 }

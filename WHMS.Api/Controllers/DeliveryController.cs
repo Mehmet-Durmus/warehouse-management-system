@@ -71,7 +71,10 @@ public class DeliveryController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("{deliveryId}")]
     public async Task<IActionResult> DeleteDelivery(string deliveryId)
-        => Ok(await _mediator.Send(new DeleteDeliveryCommandRequest {DeliveryId = deliveryId}));
+    {
+        await _mediator.Send(new DeleteDeliveryCommandRequest {DeliveryId = deliveryId});
+        return NoContent();
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("delivery-item/{deliveryItemId}")]
