@@ -1,3 +1,4 @@
+using System.Globalization;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.ValueObjects;
@@ -19,28 +20,36 @@ public class UpdateStoreCommandHandler : IRequestHandler<UpdateStoreCommandReque
 
     public async Task<UpdateStoreCommandResponse> Handle(UpdateStoreCommandRequest request, CancellationToken cancellationToken)
     {
-        // var store = await _storeRepository.GetStore(Guid.Parse(request.StoreId!));
-        // if (store is null)
-        //     throw new Exception("Store not found.");
-        
-        // bool isAddressValid = await _locationRepository.IsAddressValid(
-        //     Guid.Parse(request.CityId!),
-        //     Guid.Parse(request.DistrictId!),
-        //     Guid.Parse(request.NeighborhoodId!));
-        // if (!isAddressValid)
-        //     throw new Exception("Address data is invalid.");
+        var store = await _storeRepository.GetStore(Guid.Parse(request.StoreId!));
+        if (store is null)
+            throw new Exception("Store not found.");
 
-        // store.StoreName = request.StoreName!;
-        // store.Address = new Address
-        // {
-        //     CityId = Guid.Parse(request.CityId!),
-        //     DistrictId = Guid.Parse(request.DistrictId!),
-        //     NeighborhoodId = Guid.Parse(request.NeighborhoodId!),
-        //     AddressLine = request.AddressLine!,
-        //     PostalCode = request.PostalCode!
-        // };
-        // _storeRepository.Update(store);
-        // await _unitOfWork.CommitAsync();
-        return new();
+        Address address = new(
+            request.CityId!,
+            request.DistrictId!,
+            request.NeighborhoodId!,
+            request.PostalCode!,
+            request.AddressLine!
+        );
+
+        if (!await _locationRepository.IsAddressValid(address))
+            throw new Exception("Address data is invalid.");
+
+        string normalizedName = request.StoreName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
+        bool isNameUsed = await _storeRepository.StoreNameExists(normalizedName);
+        if (!store.NormalizedName.Equals(normalizedName) && isNameUsed)
+            throw new Exception("This name is being used for another store");
+
+        store.StoreName = request.StoreName;
+        store.NormalizedName = normalizedName;
+        store.Address = address;
+
+        await _unitOfWork.CommitAsync();
+
+        return new()
+        {
+            StoreName = store.StoreName,
+            Address = await _locationRepository.ConvertString(store.Address)
+        };
     }
 }

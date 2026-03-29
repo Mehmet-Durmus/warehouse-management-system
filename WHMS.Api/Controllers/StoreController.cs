@@ -42,7 +42,7 @@ public class StoreController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
     public async Task<IActionResult> UpdateStore(UpdateStoreCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<UpdateStoreCommandResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("{id}")]
