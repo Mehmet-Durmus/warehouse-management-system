@@ -61,7 +61,7 @@ public class DeliveryController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
     public async Task<IActionResult> UpdateDelivery(UpdateDeliveryCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<UpdateDeliveryCommandResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut("delivery-item")]
