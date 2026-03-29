@@ -56,7 +56,7 @@ public class DeliveryController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("delivery-items")]
     public async Task<IActionResult> CreateDeliveryItem(CreateDeliveryItemCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<CreateDeliveryItemCommandResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]

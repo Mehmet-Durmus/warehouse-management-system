@@ -8,11 +8,13 @@ public class CreateDeliveryItemCommandHandler : IRequestHandler<CreateDeliveryIt
 {
     private readonly IDeliveryRepository _deliveryRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICatalogRepository _catalogRepository;
 
-    public CreateDeliveryItemCommandHandler(IDeliveryRepository deliveryRepository, IUnitOfWork unitOfWork)
+    public CreateDeliveryItemCommandHandler(IDeliveryRepository deliveryRepository, IUnitOfWork unitOfWork, ICatalogRepository catalogRepository)
     {
         _deliveryRepository = deliveryRepository;
         _unitOfWork = unitOfWork;
+        _catalogRepository = catalogRepository;
     }
 
     public async Task<CreateDeliveryItemCommandResponse> Handle(CreateDeliveryItemCommandRequest request, CancellationToken cancellationToken)
@@ -32,11 +34,13 @@ public class CreateDeliveryItemCommandHandler : IRequestHandler<CreateDeliveryIt
         };
         await _deliveryRepository.AddDeliveryItem(deliveryItem);
         await _unitOfWork.CommitAsync();
+        var sku = await _catalogRepository.GetSku(deliveryItem.SkuId);
         return new()
         {
-            Id = deliveryItem.Id.ToString(),
+            DeliveryItemId = deliveryItem.Id.ToString(),
             DeliveryId = deliveryItem.DeliveryId.ToString(),
             SkuId = deliveryItem.SkuId.ToString(),
+            SkuName = sku.SKUName,
             Quantity = deliveryItem.Quantity
         };
     }
