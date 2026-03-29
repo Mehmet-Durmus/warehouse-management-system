@@ -36,7 +36,6 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 
         return new()
         {
-            CategoryId = category.Id.ToString(),
             CategoryName = category.CategoryName
         };
     }

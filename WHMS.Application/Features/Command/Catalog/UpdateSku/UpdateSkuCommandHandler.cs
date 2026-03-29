@@ -44,7 +44,6 @@ public class UpdateSkuCommandHandler : IRequestHandler<UpdateSkuCommandRequest, 
 
         return new()
         {
-            SkuId = sku.Id.ToString(),
             CategoryId = sku.CategoryId.ToString(),
             Barcode = sku.Barcode,
             UnitPrice = sku.UnitPrice,
