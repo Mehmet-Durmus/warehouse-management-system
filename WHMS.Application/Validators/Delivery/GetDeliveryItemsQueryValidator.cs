@@ -8,8 +8,8 @@ public class GetDeliveryItemsQueryValidator : AbstractValidator<GetDeliveryItems
     public GetDeliveryItemsQueryValidator()
     {
         RuleFor(x => x.DeliveryId)
-            .Must(x => string.IsNullOrWhiteSpace(x) || Guid.TryParse(x, out _))
-            .WithMessage("The DeliveryId must be a valid GUID or empty.");
+            .Must(x => Guid.TryParse(x, out _))
+            .WithMessage("The DeliveryId must be a valid GUID.");
         
         RuleFor(x => x.SkuId)
             .Must(x => string.IsNullOrWhiteSpace(x) || Guid.TryParse(x, out _))

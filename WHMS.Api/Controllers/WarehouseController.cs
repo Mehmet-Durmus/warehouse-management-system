@@ -50,7 +50,7 @@ public class WarehouseController : ControllerBase
             ApiResponse<CreateWarehouseResultDto>.SuccessWithWarnings(result.ResultDto, result.Warnings) :
             ApiResponse<CreateWarehouseResultDto>.Success(result.ResultDto);
         
-        return CreatedAtAction(nameof(GetWarehouse), new { id = result.ResultDto.WarehouseId }, response);
+        return Ok(response);
     }
 
     [Authorize(Policy = "LogisticDirector")]

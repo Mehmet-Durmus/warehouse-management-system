@@ -20,7 +20,7 @@ public class GetDeliveryQueryHandler : IRequestHandler<GetDeliveryQueryRequet, G
     public async Task<GetDeliveryQueryResponse> Handle(GetDeliveryQueryRequet request, CancellationToken cancellationToken)
     {
         var delivery = await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!));
-        bool isUnauthorized = delivery switch
+        bool notFound = delivery switch
         {
             null => true,
             not null when _currentUserService.Roles!.Contains("WarehouseManager")
@@ -33,40 +33,17 @@ public class GetDeliveryQueryHandler : IRequestHandler<GetDeliveryQueryRequet, G
             _ => false
         };
 
-        if (isUnauthorized)
+        if (notFound)
             throw new Exception("Delivery not found.");
-
-
-        GetDeliveryQueryResponse response = new()
+        
+        return new()
         {
-            DeliveryId = delivery!.Id.ToString(),
-            WarehouseId = delivery.WarehouseId.ToString(),
-            DeliveryItems = [],
+            WarehouseId = delivery!.WarehouseId.ToString(),
+            WarehouseName = delivery.Warehouse!.WarehouseName,
+            ExpectedArrivalDate = delivery.ExpectedArrivalDate,
+            IsReceived = delivery.ReceivedAt != null,
             ReceivedAt = delivery.ReceivedAt,
-            ReceivedById = delivery.ReceivedById.ToString(),
-            CreatedAt = delivery.CreatedAt,
-            CreatedById = delivery.CreatedById.ToString(),
-            CreatedByName = delivery.CreatedByName!,
-            CreatedByUserName = delivery.CreatedByUserName!,
-            UpdatedAt = delivery.UpdatedAt,
-            UpdatedById = delivery.UpdatedById.ToString(),
-            UpdatedByName = delivery.UpdatedByName!,
-            UpdatedByUserName = delivery.UpdatedByUserName!,
+            ReceivedById = delivery.ReceivedById.ToString()
         };
-
-        foreach (var item in delivery.DeliveryItems!)
-            response.DeliveryItems.Add( new DTOs.Delivery.DeliveryItemDto
-            {
-                DeliveryItemId = item.Id.ToString(),
-                Sku = new SkuDto
-                {
-                    Id = item.Sku.Id.ToString(),
-                    SKUName = item.Sku.SKUName,
-                    Barcode = item.Sku.Barcode,
-                    UnitPrice = item.Sku.UnitPrice,
-                },
-                Quantity = item.Quantity
-            });
-        return response;
     }
 }

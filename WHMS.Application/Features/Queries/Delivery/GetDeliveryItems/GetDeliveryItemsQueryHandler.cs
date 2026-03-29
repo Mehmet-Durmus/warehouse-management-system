@@ -22,7 +22,7 @@ public class GetDeliveryItemsQueryHandler : IRequestHandler<GetDeliveryItemsQuer
     {
         var delivery = await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!));
 
-        bool isUnauthorized = delivery switch
+        bool notFound = delivery switch
         {
             null => true,
             not null when _currentUserService.Roles!.Contains("WarehouseManager")
@@ -35,7 +35,7 @@ public class GetDeliveryItemsQueryHandler : IRequestHandler<GetDeliveryItemsQuer
             _ => false
         };
 
-        if (isUnauthorized)
+        if (notFound)
             throw new Exception("Delivery not found.");
 
         DeliveryItemFilter filter = new()
@@ -51,22 +51,21 @@ public class GetDeliveryItemsQueryHandler : IRequestHandler<GetDeliveryItemsQuer
         var deliveryItems = await _deliveryRepository.GetDeliveryItems(filter, true);
         int count = await _deliveryRepository.GetDeliveryItemsCount(filter);
 
-        GetDeliveryItemsQueryResponse response = new()
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            TotalPage = (int)Math.Ceiling((double) count / request.PageSize),
-            DeliveryItems = []
-        };
+        GetDeliveryItemsQueryResponse response = new() { DeliveryItems = [] };
+        response.Pagination = new(
+            request.Page,
+            request.PageSize,
+            (int)Math.Ceiling((double) count / request.PageSize)
+        );
 
         foreach (var item in deliveryItems)
-            response.DeliveryItems.Add(new DeliveryItemDto
+            response.DeliveryItems.Add(new()
             {
                 DeliveryItemId = item.Id.ToString(),
-                Sku = new SkuDto
+                Sku = new()
                 {
-                    Id = item.Sku.Id.ToString(),
-                    SKUName = item.Sku.SKUName,
+                    SkuId = item.Sku.Id.ToString(),
+                    SkuName = item.Sku.SKUName,
                     Barcode = item.Sku.Barcode,
                     UnitPrice = item.Sku.UnitPrice
                 },

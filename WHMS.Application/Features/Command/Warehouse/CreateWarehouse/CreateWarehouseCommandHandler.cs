@@ -53,7 +53,7 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
         };
 
         CreateWarehouseCommandResponse response = new() { Warnings = [] };
-        if (request.ManagerId is not null)
+        if (!string.IsNullOrWhiteSpace(request.ManagerId))
         {
             var user = await _authService.FindByIdAsync(request.ManagerId);
             if (user is null)

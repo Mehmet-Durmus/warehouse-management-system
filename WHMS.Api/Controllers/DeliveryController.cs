@@ -14,6 +14,7 @@ using WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
 using WHMS.Application.Features.Queries.Delivery.GetDeliveryItem;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using WHMS.Api.Common.Models;
+using WHMS.Api.Common.Models.Delivery;
 
 namespace WHMS.Api.Controllers;
 
@@ -33,18 +34,32 @@ public class DeliveryController : ControllerBase
     public async Task<IActionResult> GetDeliveries([FromQuery] GetDeliveriesQueryRequest request)
     {
         var result = await _mediator.Send(request);
-        return Ok(ApiResponse<List<GetDeliveriesResultDeliveryDto>>.SuccessList(result.Deliveries, new(result.Pagination)));
+        return Ok(ApiResponse<List<GetDeliveriesResultDeliveryDto>>
+            .SuccessList(result.Deliveries, new(result.Pagination)));
     }
 
     [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet("{deliveryId}")]
     public async Task<IActionResult> GetDelivery(string deliveryId)
-        => Ok(await _mediator.Send(new GetDeliveryQueryRequet {DeliveryId = deliveryId}));
+        => Ok(ApiResponse<GetDeliveryQueryResponse>
+            .Success(await _mediator.Send(new GetDeliveryQueryRequet {DeliveryId = deliveryId})));
 
     [Authorize(Policy = "DirectorManagerOrStaff")]
-    [HttpGet("delivery-items")]
-    public async Task<IActionResult> GetDeliveryItems([FromQuery] GetDeliveryItemsQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    [HttpGet("{deliveryId}/delivery-items")]
+    public async Task<IActionResult> GetDeliveryItems(string deliveryId, [FromQuery] GetDeliveryItemsRequestDto dto)
+    {
+        GetDeliveryItemsQueryRequest request = new()
+        {
+            DeliveryId = deliveryId,
+            SkuId = dto.SkuId,
+            MaxQuantity = dto.MaxQuantity,
+            MinQuantity = dto.MinQuantity,
+            Page = dto.Page,
+            PageSize = dto.PageSize
+        };
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<GetDeliveryItemsResultDeliveryItemDto>>.SuccessList(result.DeliveryItems, new(result.Pagination)));
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("delivery-items/{deliveryItemId}")]
