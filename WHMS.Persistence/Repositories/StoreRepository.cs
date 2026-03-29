@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Filtering.Extensions;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.Extensions;
-using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -25,11 +26,11 @@ public class StoreRepository : IStoreRepository
         return store!;
     }
 
-    public async Task<List<Store>> GetStores(StoreFilter filter)
-        => await _context.Stores.AsQueryable().ApplyStoreFilter(filter).ToListAsync();
+    public async Task<List<Store>> GetStores(StoreFilter filter, bool applyPagination)
+        => await _context.Stores.Apply(filter, applyPagination).ToListAsync();
 
     public async Task<int> GetStoresCount(StoreFilter filter)
-     => await _context.Stores.AsQueryable().ApplyStoreFilter(filter, false).CountAsync();
+     => await _context.Stores.Apply(filter, false).CountAsync();
 
     public async Task SoftDelete(Guid storeId)
     {

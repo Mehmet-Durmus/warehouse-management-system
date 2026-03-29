@@ -1,8 +1,8 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.DTOs.Store;
 using WHMS.Application.Features.Queries.Store.GetStores;
-using WHMS.Application.Filters;
 
 namespace WHMS.Application.Features.Queries.Store.GetStores;
 
@@ -21,35 +21,33 @@ public class GetStoresQueryHandler : IRequestHandler<GetStoresQueryRequest, GetS
     {
         StoreFilter filter = new StoreFilter
         {
+            Name = request.Name,
             CityId = request.CityId,
             DistrictId = request.DistrictId,
+            NeighborhoodId = request.NeighborhoodId,
             Page = request.Page,
             PageSize = request.PageSize
         };
 
-        var stores = await _storeRepository.GetStores(filter);
+        var stores = await _storeRepository.GetStores(filter, applyPagination: true);
 
         int count = await _storeRepository.GetStoresCount(filter);
 
-        GetStoresQueryResponse response = new() 
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            TotalPage = (int)Math.Ceiling((double)count / request.PageSize),
-            Stores = []
-        };
+        GetStoresQueryResponse response = new() { Stores = [] };
+        response.Pagination = new(
+            request.Page,
+            request.PageSize,
+            (int)Math.Ceiling((double) count / request.PageSize)
+        );
         
         foreach (var store in stores)
-            response.Stores.Add(new StoreDto
+            response.Stores.Add(new()
             {
                 StoreName = store.StoreName,
-                City = await _locationRepository.GetCityName(store.Address.CityId),
-                District = await _locationRepository.GetDistrictName(store.Address.DistrictId),
-                Neighborhood = await _locationRepository.GetNeighborhoodName(store.Address.NeighborhoodId),
-                AddressLine = store.Address.AddressLine,
-                PostalCode = store.Address.PostalCode,
-                CreatedAt = store.CreatedAt,
-                UpdatedAt = store.UpdatedAt
+                CityId = store.Address.CityId.ToString(),
+                DistrictId = store.Address.DistrictId.ToString(),
+                NeighborhoodId = store.Address.NeighborhoodId.ToString(),
+                Address = await _locationRepository.ConvertString(store.Address)                
             });
         return response;
     }

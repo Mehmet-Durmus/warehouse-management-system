@@ -17,7 +17,7 @@ public static class EmployeeFilterExtensions
             .ApplyCommonFilters(filter, applyPagination);
     }
 
-    public static IQueryable<ApplicationUser> ApplyEmployeeFilter(
+    private static IQueryable<ApplicationUser> ApplyEmployeeFilter(
         this IQueryable<ApplicationUser> query,
         EmployeeFilter filter
     )

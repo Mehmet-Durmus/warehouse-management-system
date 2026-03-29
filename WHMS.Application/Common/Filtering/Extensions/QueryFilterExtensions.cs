@@ -12,15 +12,16 @@ public static class QueryFilterExtensions
         bool applyPagination
     ) where T : IAuditable
     {
-        if (filter.CreatedAfter.HasValue)
-            query = query.Where(e => e.CreatedAt >= filter.CreatedAfter);
-        if (filter.CreatedBefore.HasValue)
-            query = query.Where(e => e.CreatedAt <= filter.CreatedBefore);
-        if (filter.UpdatedAfter.HasValue)
-            query = query.Where(e => e.UpdatedAt >= filter.UpdatedAfter);
-        if (filter.UpdatedBefore.HasValue)
-            query = query.Where(e => e.UpdatedAt <= filter.UpdatedBefore);
-
+        query = query
+            .WhereIf(filter.CreatedAfter.HasValue,
+                e => e.CreatedAt >= filter.CreatedAfter)
+            .WhereIf(filter.CreatedBefore.HasValue,
+                e => e.CreatedAt <= filter.CreatedBefore)
+            .WhereIf(filter.UpdatedAfter.HasValue,
+                e => e.CreatedAt >= filter.UpdatedAfter)
+            .WhereIf(filter.UpdatedBefore.HasValue,
+                e => e.CreatedAt <= filter.UpdatedBefore);
+                
         if (applyPagination)
             query = query
                 .Skip((filter.Page - 1) * filter.PageSize)

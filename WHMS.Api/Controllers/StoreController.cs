@@ -6,6 +6,7 @@ using WHMS.Application.Features.Command.Store.DeleteStore;
 using WHMS.Application.Features.Command.Store.UpdateStore;
 using WHMS.Application.Features.Queries.Store.GetStores;
 using WHMS.Application.Features.Queries.Store.GetStore;
+using WHMS.Api.Common.Models;
 
 namespace WHMS.Api.Controllers;
 
@@ -23,7 +24,10 @@ public class StoreController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet]
     public async Task<IActionResult> GetStores([FromQuery] GetStoresQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    {
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<GetStoresResultStoreDto>>.SuccessList(result.Stores!, new(result.Pagination)));
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{id}")]
