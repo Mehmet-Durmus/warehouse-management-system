@@ -3,6 +3,7 @@ using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.ValueObjects;
 using WHMS.Domain.Entities;
+using System.Globalization;
 
 namespace WHMS.Application.Features.Command.Store.CreateStore;
 
@@ -21,27 +22,36 @@ public class CreateStoreCommandHandler : IRequestHandler<CreateStoreCommandReque
 
     public async Task<CreateStoreCommandResponse> Handle(CreateStoreCommandRequest request, CancellationToken cancellationToken)
     {
-        // bool isAddressValid = await _locationRepository.IsAddressValid(
-        //     Guid.Parse(request.CityId!),
-        //     Guid.Parse(request.DistrictId!),
-        //     Guid.Parse(request.NeighborhoodId!));
-        // if (!isAddressValid)
-        //     throw new Exception("Address data is invalid.");
+        Address address = new(
+            request.CityId!,
+            request.DistrictId!,
+            request.NeighborhoodId!,
+            request.PostalCode!,
+            request.AddressLine!
+        );
 
-        // Address address = new()
-        // {
-        //     CityId = Guid.Parse(request.CityId!),
-        //     DistrictId = Guid.Parse(request.DistrictId!),
-        //     NeighborhoodId = Guid.Parse(request.NeighborhoodId!),
-        //     AddressLine = request.AddressLine!,
-        //     PostalCode = request.PostalCode!
-        // };
+        if (!await _locationRepository.IsAddressValid(address))
+            throw new Exception("Address data is invalid.");
 
-        // WHMS.Domain.Entities.Store store = new() { StoreName = request.StoreName!, Address = address};
+        string normalizedName = request.StoreName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
+        if (await _storeRepository.StoreNameExists(normalizedName))
+            throw new Exception("This name is being used for another store.");
 
-        // await _storeRepository.CreateStore(store);
-        // await _unitOfWork.CommitAsync();
+        Domain.Entities.Store  store = new()
+        {
+            StoreName = request.StoreName,
+            NormalizedName = normalizedName,
+            Address = address
+        };
 
-        return new();
+        await _storeRepository.CreateStore(store);
+        await _unitOfWork.CommitAsync();
+
+        return new()
+        {
+            StoreId = store.Id.ToString(),
+            StoreName = store.StoreName,
+            Address = await _locationRepository.ConvertString(store.Address)
+        };
     }
 }

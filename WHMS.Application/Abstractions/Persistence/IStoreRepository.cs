@@ -11,4 +11,5 @@ public interface IStoreRepository
     Task CreateStore(Store store);
     void Update(Store store);
     Task SoftDelete(Guid storeId);
+    Task<bool> StoreNameExists(string normalizedName);
 }

@@ -39,6 +39,9 @@ public class StoreRepository : IStoreRepository
         Update(store);
     }
 
+    public async Task<bool> StoreNameExists(string normalizedName)
+        => await _context.Stores.AnyAsync(s => s.NormalizedName == normalizedName);
+
     public void Update(Store store)
         => _context.Stores.Update(store);
 }

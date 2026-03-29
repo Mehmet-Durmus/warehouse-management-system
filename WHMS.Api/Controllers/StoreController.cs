@@ -37,7 +37,7 @@ public class StoreController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]
     public async Task<IActionResult> CreateStore(CreateStoreCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<CreateStoreCommandResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]

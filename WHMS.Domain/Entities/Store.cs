@@ -6,8 +6,9 @@ namespace WHMS.Domain.Entities;
 public class Store : IAuditable, ISoftDeletable
 {
     public Guid Id { get; set; }
-    public required string StoreName { get; set; }
-    public required Address Address { get; set; }
+    public string StoreName { get; set; } = null!;
+    public string NormalizedName { get; set; } = null!;
+    public Address Address { get; set; } = null!;
     public List<Shipment>? Shipments { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
 
@@ -24,7 +25,7 @@ public static class StoreFilterExtensions
     {
         return query
             .WhereIf(!string.IsNullOrWhiteSpace(filter.Name),
-                s => s.StoreName.Contains(filter.Name!))
+                s => s.NormalizedName.Contains(filter.Name!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"))))
             .WhereIf(!string.IsNullOrWhiteSpace(filter.CityId),
                 s => s.Address.CityId == Guid.Parse(filter.CityId!))
             .WhereIf(!string.IsNullOrWhiteSpace(filter.DistrictId),
