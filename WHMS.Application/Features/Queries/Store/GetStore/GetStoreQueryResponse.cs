@@ -4,12 +4,9 @@ namespace WHMS.Application.Features.Queries.Store.GetStore;
 
 public class GetStoreQueryResponse
 {
-    public string? StoreName { get; set; }
-    public string? City { get; set; }
-    public string? District { get; set; }
-    public string? Neighborhood { get; set; }
-    public string? AddressLine { get; set; }
-    public string? PostalCode { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public string StoreName { get; set; } = null!;
+    public string CityId { get; set; } = null!;
+    public string DistrictId { get; set; } = null!;
+    public string NeighborhoodId { get; set; } = null!;
+    public string Address { get; set; } = null!;
 }

@@ -2,6 +2,7 @@ namespace WHMS.Application.Features.Queries.Store.GetStores;
 
 public class GetStoresResultStoreDto
 {
+    public string StoreId { get; set; } = null!;
     public string StoreName { get; set; } = null!;
     public string CityId { get; set; } = null!;
     public string DistrictId { get; set; } = null!;

@@ -43,6 +43,7 @@ public class GetStoresQueryHandler : IRequestHandler<GetStoresQueryRequest, GetS
         foreach (var store in stores)
             response.Stores.Add(new()
             {
+                StoreId = store.Id.ToString(),
                 StoreName = store.StoreName,
                 CityId = store.Address.CityId.ToString(),
                 DistrictId = store.Address.DistrictId.ToString(),

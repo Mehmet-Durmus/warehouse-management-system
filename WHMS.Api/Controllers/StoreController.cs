@@ -32,7 +32,7 @@ public class StoreController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetStore(string id)
-        => Ok(await _mediator.Send(new GetStoreQueryRequest {StoreId = id}));
+        => Ok(ApiResponse<GetStoreQueryResponse>.Success(await _mediator.Send(new GetStoreQueryRequest {StoreId = id})));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]

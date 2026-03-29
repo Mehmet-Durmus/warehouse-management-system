@@ -24,13 +24,10 @@ public class GetStoreQueryHandler : IRequestHandler<GetStoreQueryRequest, GetSto
         return new()
         {
             StoreName = store.StoreName,
-            City = await _locationRepository.GetCityName(store.Address.CityId),
-            District = await _locationRepository.GetDistrictName(store.Address.DistrictId),
-            Neighborhood = await _locationRepository.GetNeighborhoodName(store.Address.NeighborhoodId),
-            AddressLine = store.Address.AddressLine,
-            PostalCode = store.Address.PostalCode,
-            CreatedAt = store.CreatedAt,
-            UpdatedAt = store.UpdatedAt
+            CityId = store.Address.CityId.ToString(),
+            DistrictId = store.Address.DistrictId.ToString(),
+            NeighborhoodId = store.Address.NeighborhoodId.ToString(),
+            Address = await _locationRepository.ConvertString(store.Address)
         };
     }
 }
