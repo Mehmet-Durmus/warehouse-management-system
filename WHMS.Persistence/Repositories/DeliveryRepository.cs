@@ -40,6 +40,7 @@ public class DeliveryRepository : IDeliveryRepository
     public async Task<List<Delivery>> GetDeliveries(DeliveryFilter filter, bool withPagination)
         => await _context.Deliveries
             .Apply(filter, withPagination)
+            .Include(d => d.Warehouse)
             .Include(d => d.DeliveryItems)!
             .ThenInclude(i => i.Sku)
             .ToListAsync();

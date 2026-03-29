@@ -44,6 +44,14 @@ public static class DeliveryFilterExtensions
             .WhereIf(filter.ExpectedArrivalAfter.HasValue,
                 d => d.ExpectedArrivalDate >= filter.ExpectedArrivalAfter)
             .WhereIf(filter.ExpectedArrivalBefore.HasValue,
-                d => d.ExpectedArrivalDate <= filter.ExpectedArrivalBefore);
+                d => d.ExpectedArrivalDate <= filter.ExpectedArrivalBefore)
+            .WhereIf(filter.CreatedAfter.HasValue,
+                d => d.CreatedAt >= filter.CreatedAfter)
+            .WhereIf(filter.CreatedBefore.HasValue,
+                d => d.CreatedAt <= filter.CreatedBefore)
+            .WhereIf(filter.UpdatedAfter.HasValue,
+                d => d.UpdatedAt >= filter.UpdatedAfter)
+            .WhereIf(filter.UpdatedBefore.HasValue,
+                d => d.UpdatedAt <= filter.UpdatedBefore);
     }
 }

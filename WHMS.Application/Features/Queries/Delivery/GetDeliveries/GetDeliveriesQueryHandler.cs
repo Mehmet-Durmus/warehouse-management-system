@@ -19,85 +19,63 @@ public class GetDeliveriesQueryHandler : IRequestHandler<GetDeliveriesQueryReque
     public async Task<GetDeliveriesQueryResponse> Handle(GetDeliveriesQueryRequest request, CancellationToken cancellationToken)
     {
         var userRoles = _currentUserService.Roles;
-        DeliveryFilter filter;
+        DeliveryFilter filter = new()
+        {
+            Page = request.Page,
+            PageSize = request.PageSize
+        };
         if (userRoles!.Contains("LogisticDirector"))
-            filter = new()
-            {
-                WarehouseId = request.WarehouseId,
-                CityId = request.CityId,
-                DistrictId = request.DistrictId,
-                IsReceived = request.IsReceived,
-                Page = request.Page,
-                PageSize = request.PageSize
-            };
+        {
+            filter.WarehouseId = request.WarehouseId;
+            filter.CityId = request.CityId;
+            filter.DistrictId = request.DistrictId;
+            filter.IsReceived = request.IsReceived;
+            filter.ReceivedAfter = request.ReceivedAfter;
+            filter.ReceivedBefore = request.ReceivedBefore;
+            filter.ExpectedArrivalAfter = request.ExpectedArrivalAfter;
+            filter.ExpectedArrivalBefore = request.ExpectedArrivalBefore;
+            filter.CreatedAfter = request.CreatedAfter;
+            filter.CreatedBefore = request.CreatedBefore;
+            filter.UpdatedAfter = request.UpdatedAfter;
+            filter.UpdatedBefore = request.UpdatedBefore;
+        }
         else if (userRoles.Contains("WarehouseManager"))
-            filter = new()
-            {
-                WarehouseId = _currentUserService.WarehouseId,
-                IsReceived = request.IsReceived,
-                Page = request.Page,
-                PageSize = request.PageSize
-            };
+        {
+            filter.WarehouseId = _currentUserService.WarehouseId;
+            filter.IsReceived = request.IsReceived;
+            filter.ReceivedAfter = request.ReceivedAfter;
+            filter.ReceivedBefore = request.ReceivedBefore;
+            filter.ExpectedArrivalAfter = request.ExpectedArrivalAfter;
+            filter.ExpectedArrivalBefore = request.ExpectedArrivalBefore;
+        }
         else if (userRoles.Contains("WarehouseStaff"))
-            filter = new()
-            {
-                WarehouseId = _currentUserService.WarehouseId,
-                IsReceived = false,
-                Page = request.Page,
-                PageSize = request.PageSize
-            };
+        {
+            filter.WarehouseId = _currentUserService.WarehouseId;
+            filter.IsReceived = false;
+        }
         else
             throw new Exception("Internal - Unauthorized");
     
         var deliveries = await _deliveryRepository.GetDeliveries(filter, true);
         int count = await _deliveryRepository.GetDeliveriesCount(filter);
-        GetDeliveriesQueryResponse response = new()
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            TotalPage = (int)Math.Ceiling((double)count / request.PageSize),
-            Deliveries = [] 
-        };
+        GetDeliveriesQueryResponse response = new() { Deliveries = [] };
+        response.Pagination = new(
+            request.Page,
+            request.PageSize,
+            (int)Math.Ceiling((double) count / request.PageSize)
+        );
 
         foreach (var delivery in deliveries)
-        {
-            var deliveryDto = new DTOs.Delivery.DeliveryDto
+            response.Deliveries.Add(new()
             {
                 DeliveryId = delivery.Id.ToString(),
                 WarehouseId = delivery.WarehouseId.ToString(),
-                DeliveryItems = [],
+                WarehouseName = delivery.Warehouse!.WarehouseName,
+                ExpectedArrivalDate = delivery.ExpectedArrivalDate,
+                IsReceived = delivery.ReceivedAt != null,
                 ReceivedAt = delivery.ReceivedAt,
-                ReceivedById = delivery.ReceivedById.ToString(),
-                CreatedAt = delivery.CreatedAt,
-                CreatedById = delivery.CreatedById.ToString()!,
-                CreatedByName = delivery.CreatedByName,
-                CreatedByUserName = delivery.CreatedByUserName,
-                UpdatedAt = delivery.UpdatedAt,
-                UpdatedById = delivery.UpdatedById.ToString(),
-                UpdatedByName = delivery.UpdatedByName,
-                UpdatedByUserName = delivery.UpdatedByUserName
-            };
-            response.Deliveries.Add(deliveryDto);
-
-            if (delivery.DeliveryItems is not null)
-            {
-                foreach (var item in delivery.DeliveryItems)
-                {
-                    deliveryDto.DeliveryItems.Add(new DTOs.Delivery.DeliveryItemDto
-                    {
-                        DeliveryItemId = item.Id.ToString(),
-                        Sku = new DTOs.Catalog.SkuDto
-                        {
-                            Id = item.SkuId.ToString(),
-                            SKUName = item.Sku.SKUName,
-                            Barcode = item.Sku.Barcode,
-                            UnitPrice = item.Sku.UnitPrice
-                        },
-                        Quantity = item.Quantity
-                    });
-                }
-            }
-        }
+                ReceivedById = delivery.ReceivedById.ToString()
+            });
         return response;
     }
 }

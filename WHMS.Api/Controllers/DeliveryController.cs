@@ -31,7 +31,10 @@ public class DeliveryController : ControllerBase
     [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet]
     public async Task<IActionResult> GetDeliveries([FromQuery] GetDeliveriesQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    {
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<GetDeliveriesResultDeliveryDto>>.SuccessList(result.Deliveries, new(result.Pagination)));
+    }
 
     [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet("{deliveryId}")]

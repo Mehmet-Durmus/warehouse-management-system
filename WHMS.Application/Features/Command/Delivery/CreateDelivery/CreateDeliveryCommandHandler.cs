@@ -34,10 +34,7 @@ public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryComman
             DeliveryId = delivery.Id.ToString(),
             WarehouseId = delivery.WarehouseId.ToString(),
             WarehouseName = warehouse.WarehouseName,
-            ExpectedArrivalDate = delivery.ExpectedArrivalDate,
-            IsReceived = delivery.ReceivedAt != null,
-            ReceivedAt = delivery.ReceivedAt,
-            ReceivedById = delivery.ReceivedById.ToString()
+            ExpectedArrivalDate = delivery.ExpectedArrivalDate
         };
     }
 }
