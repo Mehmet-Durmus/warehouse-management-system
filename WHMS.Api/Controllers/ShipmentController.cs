@@ -65,7 +65,7 @@ public class ShipmentController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut("shipment-items")]
     public async Task<IActionResult> UpdateShipmentItem(UpdateShipmentItemCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<UpdateShipmentItemCommandResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("{shipmentId}")]

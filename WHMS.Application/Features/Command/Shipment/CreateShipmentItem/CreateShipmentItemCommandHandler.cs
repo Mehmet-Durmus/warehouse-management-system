@@ -25,9 +25,6 @@ public class CreateShipmentItemCommandHandler : IRequestHandler<CreateShipmentIt
 
     public async Task<CreateShipmentItemCommandResponse> Handle(CreateShipmentItemCommandRequest request, CancellationToken cancellationToken)
     {
-        
-
-
         var shipment = await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!));
         if (shipment is null)
             throw new Exception("Shipment not found.");
