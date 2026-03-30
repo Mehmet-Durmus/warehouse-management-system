@@ -3,7 +3,7 @@ using WHMS.Application.Abstractions.Persistence;
 
 namespace WHMS.Application.Features.Command.Shipment.DeleteShipment;
 
-public class DeleteShipmentCommandHandler : IRequestHandler<DeleteShipmentCommandRequest, DeleteShipmentCommandResponse>
+public class DeleteShipmentCommandHandler : IRequestHandler<DeleteShipmentCommandRequest>
 {
     private readonly IShipmentRepository _shipmentRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -14,11 +14,14 @@ public class DeleteShipmentCommandHandler : IRequestHandler<DeleteShipmentComman
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<DeleteShipmentCommandResponse> Handle(DeleteShipmentCommandRequest request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteShipmentCommandRequest request, CancellationToken cancellationToken)
     {
         var shipment = await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!));
         if (shipment is null)
             throw new Exception("Shipment not found.");
+
+        if (shipment.SendingDate is not null)
+            throw new Exception("Shipment has already been sent.");
 
         if (shipment.ShipmentItems is not null)
             foreach (var item in shipment.ShipmentItems)
@@ -26,7 +29,5 @@ public class DeleteShipmentCommandHandler : IRequestHandler<DeleteShipmentComman
             
         await _shipmentRepository.DeleteShipment(shipment.Id);
         await _unitOfWork.CommitAsync();
-
-        return new();
     }
 }

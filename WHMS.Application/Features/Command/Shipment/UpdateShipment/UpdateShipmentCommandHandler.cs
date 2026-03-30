@@ -24,6 +24,9 @@ public class UpdateShipmentCommandHandler : IRequestHandler<UpdateShipmentComman
         if (shipment is null)
             throw new Exception("Shipment not found.");
 
+        if (shipment.SendingDate is not null)
+            throw new Exception("Shipment has already been sent.");
+
         var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
         if (warehouse is null)
             throw new Exception("Warehouse not found.");
