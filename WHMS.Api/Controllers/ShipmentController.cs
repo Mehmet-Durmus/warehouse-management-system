@@ -78,7 +78,10 @@ public class ShipmentController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("shipment-items/{shipmentItemId}")]
     public async Task<IActionResult> DeleteShipmentItem(string shipmentItemId)
-        => Ok(await _mediator.Send(new DeleteShipmentItemCommandRequest {ShipmentItemId = shipmentItemId}));
+    {
+        await _mediator.Send(new DeleteShipmentItemCommandRequest {ShipmentItemId = shipmentItemId});
+        return NoContent();
+    }
 
     [Authorize(Policy = "ManagerOrStaff")]
     [HttpPost("send-shipment")]
