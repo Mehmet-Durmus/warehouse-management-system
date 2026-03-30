@@ -29,6 +29,7 @@ public class GetDeliveriesQueryHandler : IRequestHandler<GetDeliveriesQueryReque
             filter.WarehouseId = request.WarehouseId;
             filter.CityId = request.CityId;
             filter.DistrictId = request.DistrictId;
+            filter.SkuIds = request.SkuIds;
             filter.IsReceived = request.IsReceived;
             filter.ReceivedAfter = request.ReceivedAfter;
             filter.ReceivedBefore = request.ReceivedBefore;
@@ -43,6 +44,7 @@ public class GetDeliveriesQueryHandler : IRequestHandler<GetDeliveriesQueryReque
         {
             filter.WarehouseId = _currentUserService.WarehouseId;
             filter.IsReceived = request.IsReceived;
+            filter.SkuIds = request.SkuIds;
             filter.ReceivedAfter = request.ReceivedAfter;
             filter.ReceivedBefore = request.ReceivedBefore;
             filter.ExpectedArrivalAfter = request.ExpectedArrivalAfter;

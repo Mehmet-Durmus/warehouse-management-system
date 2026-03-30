@@ -11,4 +11,5 @@ public class DeliveryFilter : QueryFilter
     public DateTime? ReceivedBefore { get; set; }
     public DateTime? ExpectedArrivalAfter { get; set; }
     public DateTime? ExpectedArrivalBefore { get; set; }
+    public List<string>? SkuIds { get; set; }
 }

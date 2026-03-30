@@ -14,6 +14,12 @@ public class StockStateRepository : IStockStateRepository
         _context = context;
     }
 
+    public async Task<int> GetStockQuantity(Guid warehouseId, Guid skuId)
+        => await _context.StockStates
+            .Where(s => s.WarehouseId == warehouseId && s.SkuId == skuId)
+            .Select(s => s.Quantity)
+            .SingleOrDefaultAsync();
+
     public async Task<bool> HasStockInAnyWarehouse(Guid skuId)
         => await _context.StockStates
             .AnyAsync(ss => ss.SkuId == skuId && ss.Quantity > 0);

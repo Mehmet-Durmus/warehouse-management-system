@@ -17,71 +17,73 @@ public class GetShipmentsQueryHandler : IRequestHandler<GetShipmentsQueryRequest
 
     public async Task<GetShipmentsQueryResponse> Handle(GetShipmentsQueryRequest request, CancellationToken cancellationToken)
     {
-        ShipmentFilter filter = new()
-        {
-            WarehouseId = request.WarehouseId,
-            WarehouseCityId = request.WarehouseCityId,
-            WarehouseDistrictId = request.WarehouseDistrictId,
-            StoreId = request.StoreId,
-            StoreCityId = request.StoreCityId,
-            StoreDistrictId = request.StoreDistrictId,
-            IsSent = request.IsSent,
-            Page = request.Page,
-            PageSize = request.PageSize
-        };
+        // ShipmentFilter filter = new()
+        // {
+        //     WarehouseId = request.WarehouseId,
+        //     WarehouseCityId = request.WarehouseCityId,
+        //     WarehouseDistrictId = request.WarehouseDistrictId,
+        //     StoreId = request.StoreId,
+        //     StoreCityId = request.StoreCityId,
+        //     StoreDistrictId = request.StoreDistrictId,
+        //     IsSent = request.IsSent,
+        //     Page = request.Page,
+        //     PageSize = request.PageSize
+        // };
         
-        int count = await _shipmentRepository.GetShipmentsCount(filter);
-        var shipments = await _shipmentRepository.GetShipments(filter, withPagination: true);
+        // int count = await _shipmentRepository.GetShipmentsCount(filter);
+        // var shipments = await _shipmentRepository.GetShipments(filter, withPagination: true);
 
-        GetShipmentsQueryResponse response = new()
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            TotalPage = (int)Math.Ceiling((double) count / request.PageSize),
-            Shipments = []
-        };
+        // GetShipmentsQueryResponse response = new()
+        // {
+        //     Page = request.Page,
+        //     PageSize = request.PageSize,
+        //     TotalPage = (int)Math.Ceiling((double) count / request.PageSize),
+        //     Shipments = []
+        // };
 
-        foreach (var shipment in shipments)
-        {
-            var shipmentResult = new ShipmentDto
-            {
-                ShipmentId = shipment.Id.ToString(),
-                WarehouseId = shipment.WarehouseId.ToString(),
-                StoreId = shipment.StoreId.ToString(),
-                ExpectedSendingDate = shipment.ExpectedSendingDate,
-                SendingDate = shipment.SendingDate,
-                SentById = shipment.SentById.ToString(),
-                ShipmentItems = [],
-                CreatedAt = shipment.CreatedAt,
-                CreatedById = shipment.CreatedById.ToString(),
-                CreatedByName = shipment.CreatedByName,
-                CreatedByUserName = shipment.CreatedByUserName,
-                UpdatedAt = shipment.UpdatedAt,
-                UpdatedById = shipment.UpdatedById.ToString(),
-                UpdatedByName = shipment.UpdatedByName,
-                UpdatedByUserName = shipment.UpdatedByUserName
-            };
+        // foreach (var shipment in shipments)
+        // {
+        //     var shipmentResult = new ShipmentDto
+        //     {
+        //         ShipmentId = shipment.Id.ToString(),
+        //         WarehouseId = shipment.WarehouseId.ToString(),
+        //         StoreId = shipment.StoreId.ToString(),
+        //         ExpectedSendingDate = shipment.ExpectedSendingDate,
+        //         SendingDate = shipment.SendingDate,
+        //         SentById = shipment.SentById.ToString(),
+        //         ShipmentItems = [],
+        //         CreatedAt = shipment.CreatedAt,
+        //         CreatedById = shipment.CreatedById.ToString(),
+        //         CreatedByName = shipment.CreatedByName,
+        //         CreatedByUserName = shipment.CreatedByUserName,
+        //         UpdatedAt = shipment.UpdatedAt,
+        //         UpdatedById = shipment.UpdatedById.ToString(),
+        //         UpdatedByName = shipment.UpdatedByName,
+        //         UpdatedByUserName = shipment.UpdatedByUserName
+        //     };
 
-            response.Shipments.Add(shipmentResult);
+        //     response.Shipments.Add(shipmentResult);
 
-            if (shipment.ShipmentItems is not null)
-                foreach (var item in shipment.ShipmentItems)
-                    shipmentResult.ShipmentItems.Add(new ShipmentItemDto
-                    {
-                        ShipmentItemId = item.Id.ToString(),
-                        Sku = new SkuDto
-                        {
-                            Id = item.SkuId.ToString(),
-                            SKUName = item.SKU!.SKUName,
-                            Barcode = item.SKU.Barcode,
-                            UnitPrice = item.SKU.UnitPrice
-                        },
-                        Quantity = item.Quantity
-                    });
+        //     if (shipment.ShipmentItems is not null)
+        //         foreach (var item in shipment.ShipmentItems)
+        //             shipmentResult.ShipmentItems.Add(new ShipmentItemDto
+        //             {
+        //                 ShipmentItemId = item.Id.ToString(),
+        //                 Sku = new SkuDto
+        //                 {
+        //                     Id = item.SkuId.ToString(),
+        //                     SKUName = item.SKU!.SKUName,
+        //                     Barcode = item.SKU.Barcode,
+        //                     UnitPrice = item.SKU.UnitPrice
+        //                 },
+        //                 Quantity = item.Quantity
+        //             });
 
-        }
+        // }
 
-        return response;
+        // return response;
+
+        return new();
         
     }
 }

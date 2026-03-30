@@ -8,6 +8,7 @@ public class GetDeliveriesQueryRequest : IRequest<GetDeliveriesQueryResponse>
     public string? CityId { get; set; }
     public string? DistrictId { get; set; }
     public string? NeighborhoodId { get; set; }
+    public List<string>? SkuIds { get; set; }
     public bool? IsReceived { get; set; }
     public DateTime? ReceivedAfter { get; set; }
     public DateTime? ReceivedBefore { get; set; }

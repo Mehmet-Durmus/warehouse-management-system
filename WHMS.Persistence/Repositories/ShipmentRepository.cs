@@ -4,6 +4,7 @@ using WHMS.Application.Extensions;
 using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
+using WHMS.Application.Common.Filtering.Extensions;
 
 namespace WHMS.Persistence.Repositories;
 
@@ -57,9 +58,9 @@ public class ShipmentRepository : IShipmentRepository
         return item!;
     }
 
-    public async Task<List<ShipmentItem>> GetShipmentItems(ShipmentItemFilter filter, bool withPagination)
+    public async Task<List<ShipmentItem>> GetShipmentItems(ShipmentItemFilter filter, bool applyPagination)
         => await _context.ShipmentItems
-            .ApplyShipmentItemFilter(filter, withPagination)
+            .ApplyShipmentItemFilter(filter, applyPagination)
             .Include(i => i.SKU)
             .ToListAsync();
 
@@ -68,18 +69,18 @@ public class ShipmentRepository : IShipmentRepository
             .ApplyShipmentItemFilter(filter, withPagination: false)
             .CountAsync();
 
-    public async Task<List<Shipment>> GetShipments(ShipmentFilter filter, bool withPagination)
+    public async Task<List<Shipment>> GetShipments(Application.Common.Filtering.Filters.ShipmentFilter filter, bool withPagination)
         => await _context.Shipments
-            .ApplyShipmentFilter(filter, withPagination)
+            .Apply(filter, withPagination)
             .Include(s => s.Warehouse)
             .Include(s => s.Store)
             .Include(s => s.ShipmentItems)!
             .ThenInclude(i => i.SKU)
             .ToListAsync();
 
-    public async Task<int> GetShipmentsCount(ShipmentFilter filter)
+    public async Task<int> GetShipmentsCount(Application.Common.Filtering.Filters.ShipmentFilter filter)
         => await _context.Shipments
-            .ApplyShipmentFilter(filter, false)
+            .Apply(filter, false)
             .CountAsync();
 
     public void UpdateShipment(Shipment shipment)

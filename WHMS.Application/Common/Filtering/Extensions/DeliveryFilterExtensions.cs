@@ -33,6 +33,8 @@ public static class DeliveryFilterExtensions
             .WhereIf(string.IsNullOrWhiteSpace(filter.WarehouseId)
                 && !string.IsNullOrWhiteSpace(filter.NeighborhoodId),
                 d => d.Warehouse!.Address.NeighborhoodId == Guid.Parse(filter.NeighborhoodId!))
+            .WhereIf(filter.SkuIds != null && filter.SkuIds.Count > 0,
+                d => d.DeliveryItems != null && d.DeliveryItems.Any(di => filter.SkuIds!.Contains(di.SkuId.ToString())))
             .WhereIf(filter.IsReceived.HasValue && filter.IsReceived == true,
                 d => d.ReceivedAt != null)
             .WhereIf(filter.IsReceived.HasValue && filter.IsReceived == false,
