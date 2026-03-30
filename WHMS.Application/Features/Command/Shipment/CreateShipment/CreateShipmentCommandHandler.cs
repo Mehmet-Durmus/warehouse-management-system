@@ -7,15 +7,27 @@ public class CreateShipmentCommandHandler : IRequestHandler<CreateShipmentComman
 {
     private readonly IShipmentRepository _shipmentRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IWarehouseRepository _warehouseRepository;
+    private readonly IStoreRepository _storeRepository;
 
-    public CreateShipmentCommandHandler(IShipmentRepository shipmentRepository, IUnitOfWork unitOfWork)
+    public CreateShipmentCommandHandler(IShipmentRepository shipmentRepository, IUnitOfWork unitOfWork, IWarehouseRepository warehouseRepository, IStoreRepository storeRepository)
     {
         _shipmentRepository = shipmentRepository;
         _unitOfWork = unitOfWork;
+        _warehouseRepository = warehouseRepository;
+        _storeRepository = storeRepository;
     }
 
     public async Task<CreateShipmentCommandResponse> Handle(CreateShipmentCommandRequest request, CancellationToken cancellationToken)
     {
+        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
+        if (warehouse is null)
+            throw new Exception("Warehouse not found");
+
+        var store = await _storeRepository.GetStore(Guid.Parse(request.StoreId!));
+        if (store is null)
+            throw new Exception("Store not found.");
+
         var shipment = new Domain.Entities.Shipment
         {
             WarehouseId = Guid.Parse(request.WarehouseId!),

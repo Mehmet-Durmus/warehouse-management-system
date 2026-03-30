@@ -72,9 +72,9 @@ public class DeliveryRepository : IDeliveryRepository
         return deliveryItem!;
     }
 
-    public async Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter, bool withPagination)
+    public async Task<List<DeliveryItem>> GetDeliveryItems(DeliveryItemFilter filter, bool applyPagination)
         => await _context.DeliveryItems
-            .Apply(filter, withPagination)
+            .Apply(filter, applyPagination)
             .Include(i => i.Sku)
             .ToListAsync();
 

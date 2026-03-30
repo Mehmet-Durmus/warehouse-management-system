@@ -50,7 +50,7 @@ public class ShipmentController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]
     public async Task<IActionResult> CreateShipment(CreateShipmentCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<CreateShipmentCommandResponse>.Success(await _mediator.Send(request)));
     
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("shipment-items")]
