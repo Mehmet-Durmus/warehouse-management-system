@@ -12,7 +12,7 @@ public class WarehouseAssignedHandler : AuthorizationHandler<WarehouseAssignedRe
             return Task.CompletedTask;
         }
 
-        var warehouseId = context.User.FindFirst("WarehouseId")?.Value;
+        var warehouseId = context.User.FindFirst("Warehouse")?.Value;
 
         if (!string.IsNullOrEmpty(warehouseId))
             context.Succeed(requirement);

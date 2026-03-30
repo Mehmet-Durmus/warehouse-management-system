@@ -66,6 +66,7 @@ public class DeliveryRepository : IDeliveryRepository
     {
         var deliveryItem = await _context.DeliveryItems
             .Where(i => i.Id == deliveryItemId)
+            .Include(i => i.Delivery)
             .Include(i => i.Sku)
             .SingleOrDefaultAsync();
         return deliveryItem!;

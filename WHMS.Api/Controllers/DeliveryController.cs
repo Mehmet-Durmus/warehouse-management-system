@@ -61,10 +61,11 @@ public class DeliveryController : ControllerBase
         return Ok(ApiResponse<List<GetDeliveryItemsResultDeliveryItemDto>>.SuccessList(result.DeliveryItems, new(result.Pagination)));
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet("delivery-items/{deliveryItemId}")]
     public async Task<IActionResult> GetDeliveryItem(string deliveryItemId)
-        => Ok(await _mediator.Send(new GetDeliveryItemQueryRequest {DeliveryItemId = deliveryItemId}));
+        => Ok(ApiResponse<GetDeliveryItemQueryResponse>
+        .Success(await _mediator.Send(new GetDeliveryItemQueryRequest {DeliveryItemId = deliveryItemId})));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost]

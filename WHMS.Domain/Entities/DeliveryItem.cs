@@ -7,6 +7,7 @@ public class DeliveryItem : IAuditable, ISoftDeletable
 {
     public Guid Id { get; set; }
     public Guid DeliveryId { get; set; }
+    public Delivery Delivery { get; set; } = null!;
     public Guid SkuId { get; set; }
     public SKU Sku { get; set; } = null!;
     public int Quantity { get; set; }

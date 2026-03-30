@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Application.Features.Command.Login;
+using WHMS.Application.Features.Queries.CurrentUserInfo;
 
 namespace WHMS.Api.Controllers;
 
@@ -21,8 +22,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login(LoginCommandRequest request)
         => Ok(await _mediator.Send(request));
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet("isloggedin")]
-    public async Task<IActionResult> IsLoggedin() => Ok();
+    public async Task<IActionResult> IsLoggedin() 
+        => Ok(await _mediator.Send(new CurrentUserInfoQueryRequest()));
 
 }
