@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WHMS.Api.Common.Models;
 using WHMS.Application.Features.Command.Shipment.CreateShipment;
 using WHMS.Application.Features.Command.Shipment.CreateShipmentItem;
 using WHMS.Application.Features.Command.Shipment.DeleteShipment;
@@ -54,7 +55,7 @@ public class ShipmentController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("shipment-items")]
     public async Task<IActionResult> CreateShipmentItem(CreateShipmentItemCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<CreateShipmentItemCommandResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
