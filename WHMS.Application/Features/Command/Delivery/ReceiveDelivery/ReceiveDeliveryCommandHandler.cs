@@ -34,7 +34,7 @@ public class ReceiveDeliveryCommandHandler : IRequestHandler<ReceiveDeliveryComm
 
         if (delivery.DeliveryItems is not null)
             foreach (var item in delivery.DeliveryItems)
-                await _stockStateRepository.SetQuantity(delivery.WarehouseId, item.SkuId, item.Quantity);
+                await _stockStateRepository.UpdateQuantity(delivery.WarehouseId, item.SkuId, item.Quantity);
 
         await _unitOfWork.CommitAsync();
 

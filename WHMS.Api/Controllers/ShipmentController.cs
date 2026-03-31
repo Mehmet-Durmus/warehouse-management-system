@@ -107,9 +107,8 @@ public class ShipmentController : ControllerBase
     public async Task<IActionResult> SendShipment(SendShipmentCommandRequest request)
     {
         var result = await _mediator.Send(request);
-        if (result.Errors is null)
+        if (result.Errors is null || result.Errors?.Count == 0)
             return NoContent();
-        return Ok(result);
+        return Ok(ApiResponse.Failure(result.Errors!));
     }
-    
 }

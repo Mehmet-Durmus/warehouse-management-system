@@ -37,7 +37,7 @@ public class SendShipmentCommandHandler : IRequestHandler<SendShipmentCommandReq
             int affectedRow = 0;
             foreach (var item in shipment.ShipmentItems)
             {
-                affectedRow = await _stockStateRepository.SetQuantity(shipment.WarehouseId, item.SkuId, -item.Quantity);
+                affectedRow = await _stockStateRepository.UpdateQuantity(shipment.WarehouseId, item.SkuId, -item.Quantity);
                 if (affectedRow == 0)
                     errors.Add($"Insufficient stock for {item.SKU!.SKUName}.");
             }
