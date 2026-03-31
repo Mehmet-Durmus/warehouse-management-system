@@ -27,10 +27,13 @@ public class ShipmentController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet]
     public async Task<IActionResult> GetShipments([FromQuery] GetShipmentsQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    {
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<GetShipmentsResultShipmentDto>>.SuccessList(result.Shipments, new(result.Pagination)));
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{shipmentId}")]
