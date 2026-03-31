@@ -1,11 +1,10 @@
+using WHMS.Application.Common.DTOs;
 using WHMS.Application.DTOs.Shipment;
 
 namespace WHMS.Application.Features.Queries.Shipment.GetShipmentItems;
 
 public class GetShipmentItemsQueryResponse
 {
-    public int Page { get; set; }
-    public int PageSize { get; set; }
-    public int TotalPage { get; set; }
-    public List<ShipmentItemDto>? ShipmentItems { get; set; }
+    public PaginationDto Pagination { get; set; } = null!;
+    public List<GetShipmentItemsResultShipmentItemDto> ShipmentItems { get; set; } = null!;
 }

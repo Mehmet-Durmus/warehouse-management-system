@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Extensions;
-using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 using WHMS.Application.Common.Filtering.Extensions;
+using WHMS.Application.Common.Filtering.Filters;
 
 namespace WHMS.Persistence.Repositories;
 
@@ -60,25 +60,25 @@ public class ShipmentRepository : IShipmentRepository
 
     public async Task<List<ShipmentItem>> GetShipmentItems(ShipmentItemFilter filter, bool applyPagination)
         => await _context.ShipmentItems
-            .ApplyShipmentItemFilter(filter, applyPagination)
+            .Apply(filter, applyPagination)
             .Include(i => i.SKU)
             .ToListAsync();
 
     public async Task<int> GetShipmentItemsCount(ShipmentItemFilter filter)
         => await _context.ShipmentItems
-            .ApplyShipmentItemFilter(filter, withPagination: false)
+            .Apply(filter, applyPagination: false)
             .CountAsync();
 
-    public async Task<List<Shipment>> GetShipments(Application.Common.Filtering.Filters.ShipmentFilter filter, bool withPagination)
+    public async Task<List<Shipment>> GetShipments(ShipmentFilter filter, bool applyPagination)
         => await _context.Shipments
-            .Apply(filter, withPagination)
+            .Apply(filter, applyPagination)
             .Include(s => s.Warehouse)
             .Include(s => s.Store)
             .Include(s => s.ShipmentItems)!
             .ThenInclude(i => i.SKU)
             .ToListAsync();
 
-    public async Task<int> GetShipmentsCount(Application.Common.Filtering.Filters.ShipmentFilter filter)
+    public async Task<int> GetShipmentsCount(ShipmentFilter filter)
         => await _context.Shipments
             .Apply(filter, false)
             .CountAsync();

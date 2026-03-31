@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Api.Common.Models;
+using WHMS.Api.Common.Models.Shipment;
 using WHMS.Application.Features.Command.Shipment.CreateShipment;
 using WHMS.Application.Features.Command.Shipment.CreateShipmentItem;
 using WHMS.Application.Features.Command.Shipment.DeleteShipment;
@@ -41,10 +42,23 @@ public class ShipmentController : ControllerBase
         => Ok(ApiResponse<GetShipmentQueryResponse>
         .Success(await _mediator.Send(new GetShipmentQueryRequest {ShipmentId = shipmentId})));
 
-    [Authorize(Policy = "LogisticDirector")]
-    [HttpGet("shipment-items")]
-    public async Task<IActionResult> GetShipmentItems([FromQuery] GetShipmentItemsQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    [Authorize(Policy = "DirectorManagerOrStaff")]
+    [HttpGet("{shipmentId}/shipment-items")]
+    public async Task<IActionResult> GetShipmentItems(string shipmentId, [FromQuery] GetShipmentItemsRequestDto dto)
+    {
+        GetShipmentItemsQueryRequest request = new()
+        {
+            ShipmentId = shipmentId,
+            SkuId = dto.SkuId,
+            MaxQuantity = dto.MaxQuantity,
+            MinQuantity = dto.MinQuantity,
+            Page = dto.Page,
+            PageSize = dto.PageSize
+        };
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<GetShipmentItemsResultShipmentItemDto>>
+        .SuccessList(result.ShipmentItems, new(result.Pagination)));
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("shipment-items/{shipmentItemId}")]

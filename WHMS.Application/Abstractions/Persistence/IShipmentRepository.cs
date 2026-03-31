@@ -1,6 +1,5 @@
 
 using WHMS.Application.Common.Filtering.Filters;
-using WHMS.Application.Filters;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Abstractions.Persistence;
@@ -13,8 +12,8 @@ public interface IShipmentRepository
     void UpdateShipmentItem(ShipmentItem shipmentItem);
     Task DeleteShipment(Guid shipmentId);
     Task DeleteShipmentItem(Guid shipmentItemId);
-    Task<List<Shipment>> GetShipments(Common.Filtering.Filters.ShipmentFilter filter, bool applyPagination);
-    Task<int> GetShipmentsCount(Common.Filtering.Filters.ShipmentFilter filter);
+    Task<List<Shipment>> GetShipments(ShipmentFilter filter, bool applyPagination);
+    Task<int> GetShipmentsCount(ShipmentFilter filter);
     Task<Shipment> GetShipment(Guid shipmentId);
     Task<List<ShipmentItem>> GetShipmentItems(ShipmentItemFilter filter, bool applyPagination);
     Task<int> GetShipmentItemsCount(ShipmentItemFilter filter);
