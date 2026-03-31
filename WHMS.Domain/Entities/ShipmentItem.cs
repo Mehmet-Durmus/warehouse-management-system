@@ -6,6 +6,7 @@ public class ShipmentItem : IAuditable, ISoftDeletable
 {
     public Guid Id { get; set; }
     public Guid ShipmentId { get; set; }
+    public Shipment? Shipment { get; set; }
     public Guid SkuId { get; set; }
     public SKU? SKU { get; set; }
     public int Quantity { get; set; }

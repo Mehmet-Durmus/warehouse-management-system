@@ -52,6 +52,7 @@ public class ShipmentRepository : IShipmentRepository
     {
         var item = await _context.ShipmentItems
             .Where(i => i.Id == shipmentItemId)
+            .Include(i => i.Shipment)
             .Include(i => i.SKU)
             .SingleOrDefaultAsync();
 
