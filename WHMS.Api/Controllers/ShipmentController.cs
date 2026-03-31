@@ -35,10 +35,11 @@ public class ShipmentController : ControllerBase
         return Ok(ApiResponse<List<GetShipmentsResultShipmentDto>>.SuccessList(result.Shipments, new(result.Pagination)));
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet("{shipmentId}")]
     public async Task<IActionResult> GetShipment(string shipmentId)
-        => Ok(await _mediator.Send(new GetShipmentQueryRequest {ShipmentId = shipmentId}));
+        => Ok(ApiResponse<GetShipmentQueryResponse>
+        .Success(await _mediator.Send(new GetShipmentQueryRequest {ShipmentId = shipmentId})));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("shipment-items")]

@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
 using MediatR;
+using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.DTOs.Catalog;
 using WHMS.Application.DTOs.Shipment;
@@ -9,51 +10,42 @@ namespace WHMS.Application.Features.Queries.Shipment.GetShipment;
 public class GetShipmentQueryHandler : IRequestHandler<GetShipmentQueryRequest, GetShipmentQueryResponse>
 {
     private readonly IShipmentRepository _shipmentRepository;
+    private readonly ICurrentUserService _currentUserService;
 
-    public GetShipmentQueryHandler(IShipmentRepository shipmentRepository)
+    public GetShipmentQueryHandler(IShipmentRepository shipmentRepository, ICurrentUserService currentUserService)
     {
         _shipmentRepository = shipmentRepository;
+        _currentUserService = currentUserService;
     }
 
     public async Task<GetShipmentQueryResponse> Handle(GetShipmentQueryRequest request, CancellationToken cancellationToken)
     {
         var shipment = await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!));
-        if (shipment is null)
-            throw new Exception("Shipment not found.");
-
-        GetShipmentQueryResponse response = new()
+        bool notFound = shipment switch
         {
-            WarehouseId = shipment.WarehouseId.ToString(),
-            StoreId = shipment.StoreId.ToString(),
-            ExpectedSendingDate = shipment.ExpectedSendingDate,
-            SendingDate = shipment.SendingDate,
-            SentById = shipment.SentById.ToString(),
-            ShipmentItems = [],
-            CreatedAt = shipment.CreatedAt,
-            CreatedById = shipment.CreatedById.ToString(),
-            CreatedByName = shipment.CreatedByName,
-            CreatedByUserName = shipment.CreatedByUserName,
-            UpdatedAt = shipment.UpdatedAt,
-            UpdatedById = shipment.UpdatedById.ToString(),
-            UpdatedByName = shipment.UpdatedByName,
-            UpdatedByUserName = shipment.UpdatedByUserName,
+            null => true,
+            not null when _currentUserService.Roles!.Contains("WarehouseManager")
+                && shipment.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
+            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+                && shipment.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
+            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+                && shipment.WarehouseId == Guid.Parse(_currentUserService.WarehouseId!)
+                && shipment.SendingDate != null => true,
+            _ => false
         };
 
-        if (shipment.ShipmentItems is not null)
-            foreach (var item in shipment.ShipmentItems)
-                response.ShipmentItems.Add(new ShipmentItemDto 
-                {  
-                    ShipmentItemId = item.Id.ToString(),
-                    Sku = new SkuDto
-                    {
-                        Id = item.SkuId.ToString(),
-                        SKUName = item.SKU!.SKUName,
-                        Barcode = item.SKU.Barcode,
-                        UnitPrice = item.SKU.UnitPrice
-                    },
-                    Quantity = item.Quantity
-                });
+        if (notFound)
+            throw new Exception("Shipment not found.");
 
-        return response;
+        return new()
+        {
+            WarehouseId = shipment!.WarehouseId.ToString(),
+            WarehouseName = shipment!.Warehouse!.WarehouseName,
+            StoreId = shipment!.StoreId.ToString(),
+            StoreName = shipment!.Store!.StoreName,
+            ExpectedSendingDate = shipment!.ExpectedSendingDate,
+            SendingDate = shipment!.SendingDate,
+            SentById = shipment!.SentById.ToString()
+        };
     }
 }
