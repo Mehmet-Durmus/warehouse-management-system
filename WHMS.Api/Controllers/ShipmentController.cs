@@ -60,7 +60,7 @@ public class ShipmentController : ControllerBase
         .SuccessList(result.ShipmentItems, new(result.Pagination)));
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet("shipment-items/{shipmentItemId}")]
     public async Task<IActionResult> GetShipmentItem(string shipmentItemId)
         => Ok(ApiResponse<GetShipmentItemQueryResponse>
