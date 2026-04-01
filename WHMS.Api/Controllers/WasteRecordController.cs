@@ -1,10 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.VisualBasic;
+using WHMS.Api.Common.Models;
 using WHMS.Application.Features.Command.WasteRecord.CreateWasteRecord;
 using WHMS.Application.Features.Command.WasteRecord.DeleteWasteRecord;
 using WHMS.Application.Features.Command.WasteRecord.UpdateWasteRecord;
-using WHMS.Application.Features.Queries.WasteRecord.GetWasteRecord;
 using WHMS.Application.Features.Queries.WasteRecord.GetWasteRecords;
 
 namespace WHMS.Api.Controllers;
@@ -25,15 +27,14 @@ public class WasteRecordController : ControllerBase
     public async Task<IActionResult> CreateWasteRecord(CreateWasteRecordCommandRequest request)
         => Ok(await _mediator.Send(request));
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet]
     public async Task<IActionResult> GetWasteRecords([FromQuery] GetWasteRecordsQueryRequest request)
-        => Ok(await _mediator.Send(request));
-    
-    [Authorize(Policy = "LogisticDirector")]
-    [HttpGet("{wasteRecordId}")]
-    public async Task<IActionResult> GetWasteRecord(string wasteRecordId)
-        => Ok(await _mediator.Send(new GetWasteRecordQueryRequest { WasteRecordId = wasteRecordId }));
+    {
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<GetWasteRecordsResultWasteRecordDto>>
+        .SuccessList(result.WasteRecords, new(result.Pagination)));
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPut]

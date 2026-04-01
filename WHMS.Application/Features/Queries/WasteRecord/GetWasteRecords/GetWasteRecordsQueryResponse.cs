@@ -1,11 +1,10 @@
+using WHMS.Application.Common.DTOs;
 using WHMS.Application.DTOs.WasteRecord;
 
 namespace WHMS.Application.Features.Queries.WasteRecord.GetWasteRecords;
 
 public class GetWasteRecordsQueryResponse
 {
-    public int Page { get; set; }
-    public int PageSize { get; set; }
-    public int TotalPage { get; set; }
-    public List<WasteRecordDto>? WasteRecords { get; set; }
+    public PaginationDto Pagination { get; set; } = null!;
+    public List<GetWasteRecordsResultWasteRecordDto> WasteRecords { get; set; } = null!;
 }

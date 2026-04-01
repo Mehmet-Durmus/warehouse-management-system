@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
-using WHMS.Application.Extensions;
-using WHMS.Application.Filters;
+using WHMS.Application.Common.Filtering.Extensions;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -33,11 +33,12 @@ public class WasteRecordRepository : IWasteRecordRepository
 
     public async Task<int> GetWasteRecordCount(WasteRecordFilter filter)
         => await _context.WasteRecords
-            .ApplyWasteRecordFilter(filter, withPagination: false)
+            .Apply(filter, applyPagination: false)
             .CountAsync();
 
-    public async Task<List<WasteRecord>> GetWasteRecords(WasteRecordFilter filter, bool withPagination)
+    public async Task<List<WasteRecord>> GetWasteRecords(WasteRecordFilter filter, bool applyPagination)
         => await _context.WasteRecords
-            .ApplyWasteRecordFilter(filter)
+            .Apply(filter, applyPagination)
+            .Include(w => w.Sku)
             .ToListAsync();
 }
