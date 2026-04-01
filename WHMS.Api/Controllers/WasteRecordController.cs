@@ -22,10 +22,10 @@ public class WasteRecordController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "ManagerOrStaff")]
     [HttpPost]
     public async Task<IActionResult> CreateWasteRecord(CreateWasteRecordCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<CreateWasteRecordCommandResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet]
