@@ -36,10 +36,10 @@ public class WasteRecordController : ControllerBase
         .SuccessList(result.WasteRecords, new(result.Pagination)));
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "ManagerOrStaff")]
     [HttpPut]
     public async Task<IActionResult> UpdateWasteRecords(UpdateWasteRecordCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<UpdateWasteRecordCommandResponse>.Success(await _mediator.Send(request)));
     
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("{wasteRecordId}")]

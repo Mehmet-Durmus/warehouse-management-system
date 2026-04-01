@@ -29,6 +29,9 @@ public static class InventoryCountFilterExtensions
                 c => c.IsCompleted)
 
             .WhereIf(filter.IsDone.HasValue && filter.IsDone == false,
-                c => !c.IsCompleted);
+                c => !c.IsCompleted)
+
+            .WhereIf(filter.SkuIds != null && filter.SkuIds.Count > 0,
+                c => c.InventoryCountLines != null && c.InventoryCountLines.Any(cl => filter.SkuIds!.Contains(cl.SkuId.ToString())));
     }
 }

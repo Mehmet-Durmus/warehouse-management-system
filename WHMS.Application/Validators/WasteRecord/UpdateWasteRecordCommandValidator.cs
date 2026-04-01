@@ -10,10 +10,6 @@ public class UpdateWasteRecordCommandValidator : AbstractValidator<UpdateWasteRe
         RuleFor(x => x.WasteRecordId)
             .NotEmpty().WithMessage("The WasteRecordId is required.")
             .Must(x => Guid.TryParse(x, out _)).WithMessage("The WasteRecordId must be a valid GUID.");
-
-        RuleFor(x => x.WarehouseId)
-            .NotEmpty().WithMessage("The WarehouseId is required.")
-            .Must(x => Guid.TryParse(x, out _)).WithMessage("The WarehouseId must be a valid GUID.");
             
         RuleFor(x => x.SkuId)
             .NotEmpty().WithMessage("The SkuId is required.")
