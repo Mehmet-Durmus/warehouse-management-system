@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
-using WHMS.Application.Extensions;
-using WHMS.Application.Filters;
+using WHMS.Application.Common.Filtering.Extensions;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 
@@ -18,13 +18,13 @@ public class InventoryCountRepository : IInventoryCountRepository
 
     public async Task<int> CountInventoryCountLines(InventoryCountLineFilter filter)
         => await _context.InventoryCountLines   
-            .ApplyInventoryCountLineFilter(filter, withPagination: false)
+            .Apply(filter, applyPagination: false)
             .CountAsync();
     
 
     public async Task<int> CountInventoryCounts(InventoryCountFilter filter)
         => await _context.InventoryCounts
-            .ApplyInventoryCountFilter(filter, false)
+            .Apply(filter, applyPagination: false)
             .CountAsync();
 
     public async Task CreateInventoryCounLine(InventoryCountLine inventoryCountLine)
@@ -56,15 +56,15 @@ public class InventoryCountRepository : IInventoryCountRepository
         return inventoryCountLine!;
     }
 
-    public async Task<List<InventoryCountLine>> GetInventoryCountLines(InventoryCountLineFilter filter, bool withPagination)
+    public async Task<List<InventoryCountLine>> GetInventoryCountLines(InventoryCountLineFilter filter, bool applyPagination)
         => await _context.InventoryCountLines
-            .ApplyInventoryCountLineFilter(filter, withPagination)
+            .Apply(filter, applyPagination)
             .Include(l => l.Sku)
             .ToListAsync();
 
-    public async Task<List<InventoryCount>> GetInventoryCounts(InventoryCountFilter filter, bool withPagination)
+    public async Task<List<InventoryCount>> GetInventoryCounts(InventoryCountFilter filter, bool applyPagination)
         => await _context.InventoryCounts
-            .ApplyInventoryCountFilter(filter, withPagination)
+            .Apply(filter, applyPagination)
             .Include(i => i.InventoryCountLines)!
                 .ThenInclude(l => l.Sku)
             .ToListAsync();

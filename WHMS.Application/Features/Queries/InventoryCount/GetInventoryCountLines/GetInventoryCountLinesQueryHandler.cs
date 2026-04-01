@@ -1,7 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.DTOs.InventoryCount;
-using WHMS.Application.Filters;
 
 namespace WHMS.Application.Features.Queries.InventoryCount.GetInventoryCountLines;
 
@@ -27,7 +27,7 @@ public class GetInventoryCountLinesQueryHandler : IRequestHandler<GetInventoryCo
         };
 
         int count = await _inventoryCountRepository.CountInventoryCountLines(filter);
-        var inventoryCountLines = await _inventoryCountRepository.GetInventoryCountLines(filter, withPagination: true);
+        var inventoryCountLines = await _inventoryCountRepository.GetInventoryCountLines(filter, applyPagination: true);
 
         GetInventoryCountLinesQueryResponse response = new()
         {

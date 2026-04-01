@@ -6,11 +6,7 @@ namespace WHMS.Application.Validators.WasteRecord;
 public class CreateWasteRecordCommandValidator : AbstractValidator<CreateWasteRecordCommandRequest>
 {
     public CreateWasteRecordCommandValidator()
-    {
-        RuleFor(x => x.WarehouseId)
-            .NotEmpty().WithMessage("The WarehouseId is required.")
-            .Must(x => Guid.TryParse(x, out _)).WithMessage("The WarehouseId must be a valid GUID.");
-            
+    {       
         RuleFor(x => x.SkuId)
             .NotEmpty().WithMessage("The SkuId is required.")
             .Must(x => Guid.TryParse(x, out _)).WithMessage("The SkuId must be a valid GUID.");
