@@ -1,3 +1,0 @@
-namespace WHMS.Application.Features.Command.InventoryCount.DeleteInventoryCountLine;
-
-public class DeleteInventoryCountLineCommandResponse {}

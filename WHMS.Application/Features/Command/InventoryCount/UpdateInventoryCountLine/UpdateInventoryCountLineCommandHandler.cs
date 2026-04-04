@@ -23,9 +23,7 @@ public class UpdateInventoryCountLineCommandHandler : IRequestHandler<UpdateInve
         bool notFoundNewInventoryCount = newInventoryCount switch
         {
             null => true,
-            not null when (_currentUserService.Roles!.Contains("WarehouseManager")
-                || _currentUserService.Roles!.Contains("WarehouseStaff"))
-                && newInventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
+            not null when newInventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
             _ => false
         };
         if (notFoundNewInventoryCount)
@@ -52,9 +50,7 @@ public class UpdateInventoryCountLineCommandHandler : IRequestHandler<UpdateInve
             bool notFoundOldInventoryCount = oldInventoryCount switch
             {
                 null => true,
-                not null when (_currentUserService.Roles!.Contains("WarehouseManager")
-                    || _currentUserService.Roles!.Contains("WarehouseStaff"))
-                    && oldInventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
+                not null when oldInventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
                 _ => false
             };
             if (notFoundOldInventoryCount)

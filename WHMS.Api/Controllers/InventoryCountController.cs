@@ -94,8 +94,11 @@ public class InventoryCountController : ControllerBase
         return NoContent();
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "ManagerOrStaff")]
     [HttpDelete("inventory-count-line/{inventoryCountLineId}")]
     public async Task<IActionResult> DeleteInventoryCountLine(string inventoryCountLineId)
-        => Ok(await _mediator.Send(new DeleteInventoryCountLineCommandRequest { InventoryCountLineId = inventoryCountLineId }));
+    {
+        await _mediator.Send(new DeleteInventoryCountLineCommandRequest { InventoryCountLineId = inventoryCountLineId });
+        return NoContent();
+    }
 }
