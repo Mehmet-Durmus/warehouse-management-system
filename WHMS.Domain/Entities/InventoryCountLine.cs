@@ -9,6 +9,7 @@ public class InventoryCountLine : IAuditable, ISoftDeletable
     public Guid SkuId { get; set; }
     public SKU? Sku { get; set; }
     public int Quantity { get; set; }
+    public int Variance { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }
     public string? CreatedByName { get; set; }
