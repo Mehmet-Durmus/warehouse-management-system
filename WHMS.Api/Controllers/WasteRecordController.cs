@@ -44,5 +44,8 @@ public class WasteRecordController : ControllerBase
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("{wasteRecordId}")]
     public async Task<IActionResult> DeleteWasteRecords(string wasteRecordId)
-        => Ok(await _mediator.Send(new DeleteWasteRecordCommandRequest { WasteRecordId = wasteRecordId }));
+    {
+        await _mediator.Send(new DeleteWasteRecordCommandRequest { WasteRecordId = wasteRecordId });
+        return NoContent();
+    }
 }
