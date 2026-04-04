@@ -5,7 +5,7 @@ using WHMS.Application.Abstractions.Persistence;
 
 namespace WHMS.Application.Features.Command.InventoryCount.CompleteInventoryCount;
 
-public class CompleteInventoryCountCommandHandler : IRequestHandler<CompleteInventoryCountCommandRequest, CompleteInventoryCountCommandResponse>
+public class CompleteInventoryCountCommandHandler : IRequestHandler<CompleteInventoryCountCommandRequest>
 {
     private readonly IInventoryCountRepository _inventoryCountRepository;
     private readonly IStockStateRepository _stockStateRepository;
@@ -20,7 +20,7 @@ public class CompleteInventoryCountCommandHandler : IRequestHandler<CompleteInve
         _currentUserService = currentUserService;
     }
 
-    public async Task<CompleteInventoryCountCommandResponse> Handle(CompleteInventoryCountCommandRequest request, CancellationToken cancellationToken)
+    public async Task Handle(CompleteInventoryCountCommandRequest request, CancellationToken cancellationToken)
     {
         Guid warehouseId = Guid.Parse(_currentUserService.WarehouseId!);
         var inventoryCount = await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!));
@@ -34,6 +34,5 @@ public class CompleteInventoryCountCommandHandler : IRequestHandler<CompleteInve
                 await _stockStateRepository.SetQuantity(warehouseId, countLine.SkuId, countLine.Quantity);
         
         await _unitOfWork.CommitAsync();
-        return new();
     }
 }
