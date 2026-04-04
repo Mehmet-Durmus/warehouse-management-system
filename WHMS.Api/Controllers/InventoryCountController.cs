@@ -11,7 +11,6 @@ using WHMS.Application.Features.Command.InventoryCount.DeleteInventoryCountLine;
 using WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCount;
 using WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCountLine;
 using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCount;
-using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCountLine;
 using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCountLines;
 using WHMS.Application.Features.Queries.InventoryCount.GetInventoryCounts;
 
@@ -64,11 +63,6 @@ public class InventoryCountController : ControllerBase
         .SuccessList(result.InventoryCountLines, new(result.Pagination)));
 
     }
-
-    [Authorize(Policy = "LogisticDirector")]
-    [HttpGet("inventory-count-line/{inventoryCountLineId}")]
-    public async Task<IActionResult> GetInventoryCountLine(string inventoryCountLineId)
-        => Ok(await _mediator.Send(new GetInventoryCountLineQueryRequest { InventoryCountLineId = inventoryCountLineId }));
 
     [Authorize(Policy = "WarehouseManager")]
     [HttpPost]
