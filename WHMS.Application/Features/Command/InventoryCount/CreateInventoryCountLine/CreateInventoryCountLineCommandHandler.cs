@@ -47,7 +47,7 @@ public class CreateInventoryCountLineCommandHandler : IRequestHandler<CreateInve
             InventoryCountLineId = inventoryCountLine.Id.ToString(),
             SkuId = inventoryCountLine.SkuId.ToString(),
             Quantity = inventoryCountLine.Quantity,
-            Varience = inventoryCountLine.Variance
+            Variance = inventoryCountLine.Variance
         };
     }
 }

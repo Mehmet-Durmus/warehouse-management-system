@@ -81,10 +81,10 @@ public class InventoryCountController : ControllerBase
     public async Task<IActionResult> CreateInventoryCountLine(CreateInventoryCountLineCommandRequest request)
         => Ok(ApiResponse<CreateInventoryCountLineCommandResponse>.Success(await _mediator.Send(request)));
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "ManagerOrStaff")]
     [HttpPut("inventory-count-line")]
     public async Task<IActionResult> UpdateInventoryCountLine(UpdateInventoryCountLineCommandRequest request)
-        => Ok(await _mediator.Send(request));
+        => Ok(ApiResponse<UpdateInventoryCountLineCommandResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("{inventoryCountId}")]

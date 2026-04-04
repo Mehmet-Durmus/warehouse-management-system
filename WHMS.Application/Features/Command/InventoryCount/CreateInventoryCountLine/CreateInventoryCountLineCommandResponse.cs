@@ -6,5 +6,5 @@ public class CreateInventoryCountLineCommandResponse
     public string InventoryCountId { get; set; } = null!;
     public string SkuId { get; set; } = null!;
     public int Quantity { get; set; }
-    public int Varience { get; set; }
+    public int Variance { get; set; }
 }
