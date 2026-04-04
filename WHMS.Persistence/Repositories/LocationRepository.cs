@@ -46,10 +46,11 @@ public class LocationRepository : ILocationRepository
         return name;
     }
 
-    public Task<List<string>> GetDistrictsByCity(Guid cityId)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<City>> GetLocationData()
+        => await _whmsContext.Cities
+            .Include(c => c.Districts)!
+            .ThenInclude(d => d.Neighborhoods)
+            .ToListAsync();
 
     public async Task<string> GetNeighborhoodName(Guid neighborhoodId)
     {
@@ -60,11 +61,6 @@ public class LocationRepository : ILocationRepository
         if (name is null)
             throw new Exception("Neighborhood not found.");
         return name;
-    }
-
-    public Task<List<string>> GetNeighborhoodsByDistrict(Guid districtId)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<bool> IsAddressValid(Address address)
