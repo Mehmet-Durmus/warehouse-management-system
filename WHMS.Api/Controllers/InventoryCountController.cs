@@ -28,10 +28,14 @@ public class InventoryCountController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet]
     public async Task<IActionResult> GetInventoryCounts([FromQuery] GetInventoryCountsQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    {
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<GetInventoryCountsResultInventoryCountDto>>
+        .SuccessList(result.InventoryCounts, new(result.Pagination)));
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{inventoryCountId}")]
