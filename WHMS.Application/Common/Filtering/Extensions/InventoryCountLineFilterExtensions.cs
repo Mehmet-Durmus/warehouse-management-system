@@ -32,6 +32,13 @@ public static class InventoryCountLineFilterExtensions
                 l => l.Quantity <= filter.MaxQuantity)
             
             .WhereIf(filter.MinQuantity.HasValue,
-                l => l.Quantity >= filter.MinQuantity);
+                l => l.Quantity >= filter.MinQuantity)
+
+            .WhereIf(filter.MaxVariance.HasValue,
+                l => l.Variance <= filter.MaxVariance)
+            
+            .WhereIf(filter.MinVariance.HasValue,
+                l => l.Variance >= filter.MinVariance);
+
     }
 }

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Api.Common.Models;
+using WHMS.Api.Common.Models.InventoryCount;
 using WHMS.Application.Features.Command.InventoryCount.CompleteInventoryCount;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCount;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCountLine;
@@ -43,10 +44,26 @@ public class InventoryCountController : ControllerBase
         => Ok(ApiResponse<GetInventoryCountQueryResponse>
         .Success(await _mediator.Send(new GetInventoryCountQueryRequest {InventoryCountId = inventoryCountId})));
 
-    [Authorize(Policy = "LogisticDirector")]
-    [HttpGet("inventory-count-line")]
-    public async Task<IActionResult> GetInventoryCountLines([FromQuery] GetInventoryCountLinesQueryRequest request)
-        => Ok(await _mediator.Send(request));
+    [Authorize(Policy = "DirectorManagerOrStaff")]
+    [HttpGet("{inventoryCountId}/inventory-count-lines")]
+    public async Task<IActionResult> GetInventoryCountLines(string inventoryCountId, [FromQuery] GetInventoryCountLinesRequestDto dto)
+    {
+        GetInventoryCountLinesQueryRequest request = new()
+        {
+            InventoryCountId = inventoryCountId,
+            SkuId = dto.SkuId,
+            MaxQuantity = dto.MaxQuantity,
+            MinQuantity = dto.MinQuantity,
+            MaxVariance = dto.MaxVariance,
+            MinVariance = dto.MinVariance,
+            Page = dto.Page,
+            PageSize = dto.PageSize
+        };
+        var result = await _mediator.Send(request);
+        return Ok(ApiResponse<List<GetInventoryCountLinesResultInventoryCountLineDto>>
+        .SuccessList(result.InventoryCountLines, new(result.Pagination)));
+
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("inventory-count-line/{inventoryCountLineId}")]

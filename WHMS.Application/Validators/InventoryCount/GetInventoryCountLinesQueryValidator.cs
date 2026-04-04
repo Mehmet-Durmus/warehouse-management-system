@@ -8,10 +8,8 @@ public class GetInventoryCountLinesQueryValidator : AbstractValidator<GetInvento
     public GetInventoryCountLinesQueryValidator()
     {
         RuleFor(x => x.InventoryCountId)
-            .Must(x =>
-                string.IsNullOrWhiteSpace(x) ||
-                Guid.TryParse(x, out _))
-            .WithMessage("The InventoryCountId must be a valid GUID or empty.");
+            .Must(x => Guid.TryParse(x, out _))
+            .WithMessage("The InventoryCountId must be a valid GUID.");
 
         RuleFor(x => x.SkuId)
             .Must(x =>
