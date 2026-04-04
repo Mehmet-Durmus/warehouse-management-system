@@ -33,6 +33,9 @@ public class CreateInventoryCountCommandHandler : IRequestHandler<CreateInventor
 
         await _inventoryCountRepository.CreateInventoryCount(inventoryCount);
         await _unitOfWork.CommitAsync();
-        return new();
+        return new()
+        {
+            InventoryCountId = inventoryCount.Id.ToString()
+        };
     }
 }

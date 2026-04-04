@@ -66,8 +66,8 @@ public class InventoryCountController : ControllerBase
 
     [Authorize(Policy = "WarehouseManager")]
     [HttpPost]
-    public async Task<IActionResult> CreateInventoryCount(CreateInventoryCountCommandRequest request)
-        => Ok(await _mediator.Send(request));
+    public async Task<IActionResult> CreateInventoryCount()
+        => Ok(ApiResponse<CreateInventoryCountCommandResponse>.Success(await _mediator.Send(new CreateInventoryCountCommandRequest())));
 
     [Authorize(Policy = "ManagerOrStaff")]
     [HttpPost("complete-inventory-count")]
