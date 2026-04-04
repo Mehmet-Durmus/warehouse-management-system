@@ -37,10 +37,11 @@ public class InventoryCountController : ControllerBase
         .SuccessList(result.InventoryCounts, new(result.Pagination)));
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet("{inventoryCountId}")]
     public async Task<IActionResult> GetInventoryCount(string inventoryCountId)
-        => Ok(await _mediator.Send(new GetInventoryCountQueryRequest {InventoryCountId = inventoryCountId}));
+        => Ok(ApiResponse<GetInventoryCountQueryResponse>
+        .Success(await _mediator.Send(new GetInventoryCountQueryRequest {InventoryCountId = inventoryCountId})));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpGet("inventory-count-line")]
