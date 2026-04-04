@@ -86,14 +86,16 @@ public class InventoryCountController : ControllerBase
     public async Task<IActionResult> UpdateInventoryCountLine(UpdateInventoryCountLineCommandRequest request)
         => Ok(ApiResponse<UpdateInventoryCountLineCommandResponse>.Success(await _mediator.Send(request)));
 
-    [Authorize(Policy = "LogisticDirector")]
+    [Authorize(Policy = "WarehouseManager")]
     [HttpDelete("{inventoryCountId}")]
     public async Task<IActionResult> DeleteInventoryCount(string inventoryCountId)
-        => Ok(await _mediator.Send(new DeleteInventoryCountCommandRequest { InventoryCountId = inventoryCountId }));
+    {
+        await _mediator.Send(new DeleteInventoryCountCommandRequest { InventoryCountId = inventoryCountId });
+        return NoContent();
+    }
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("inventory-count-line/{inventoryCountLineId}")]
     public async Task<IActionResult> DeleteInventoryCountLine(string inventoryCountLineId)
         => Ok(await _mediator.Send(new DeleteInventoryCountLineCommandRequest { InventoryCountLineId = inventoryCountLineId }));
-
 }

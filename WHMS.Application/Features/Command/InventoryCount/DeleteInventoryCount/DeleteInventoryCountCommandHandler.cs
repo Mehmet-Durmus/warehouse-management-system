@@ -1,33 +1,45 @@
 using MediatR;
+using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 
 namespace WHMS.Application.Features.Command.InventoryCount.DeleteInventoryCount;
 
-public class DeleteInventoryCountCommandHandler : IRequestHandler<DeleteInventoryCountCommandRequest, DeleteInventoryCountCommandResponse>
+public class DeleteInventoryCountCommandHandler : IRequestHandler<DeleteInventoryCountCommandRequest>
 {
     private readonly IInventoryCountRepository _inventoryCountRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICurrentUserService _currentUserService;
 
-    public DeleteInventoryCountCommandHandler(IInventoryCountRepository inventoryCountRepository, IUnitOfWork unitOfWork)
+    public DeleteInventoryCountCommandHandler(IInventoryCountRepository inventoryCountRepository, IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
     {
         _inventoryCountRepository = inventoryCountRepository;
         _unitOfWork = unitOfWork;
+        _currentUserService = currentUserService;
     }
 
-    public async Task<DeleteInventoryCountCommandResponse> Handle(DeleteInventoryCountCommandRequest request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteInventoryCountCommandRequest request, CancellationToken cancellationToken)
     {
         var inventoryCount = await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!));
-        if (inventoryCount is null)
-            throw new Exception("Inventory count not found.");
+        bool notFound = inventoryCount switch
+        {
+            null => true,
+            not null when inventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
+            _ => false
+        };
         
-        _inventoryCountRepository.DeleteInventoryCount(inventoryCount);
+        if (notFound)
+            throw new Exception("Inventory count not found.");
 
-        if (inventoryCount.InventoryCountLines is not null)
+        if (inventoryCount!.IsCompleted)
+            throw new Exception("Inventory count has already been completed.");
+        
+        _inventoryCountRepository.DeleteInventoryCount(inventoryCount!);
+
+        if (inventoryCount!.InventoryCountLines is not null)
             foreach (var inventoryCountLine in inventoryCount.InventoryCountLines)
                 _inventoryCountRepository.DeleteInventoryCountLine(inventoryCountLine);
 
         await _unitOfWork.CommitAsync();
 
-        return new();
     }
 }
