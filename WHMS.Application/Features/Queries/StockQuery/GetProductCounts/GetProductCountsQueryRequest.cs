@@ -1,6 +1,8 @@
-namespace WHMS.Application.Common.Filtering.Filters;
+using MediatR;
 
-public class TotalProductCountFilter : QueryFilter
+namespace WHMS.Application.Features.Queries.StockQuery.GetProductCounts;
+
+public class GetProductCountsQueryRequest : IRequest<GetProductCountsQueryResponse>
 {
     public string? WarehouseId { get; set; }
     public string? CityId { get; set; }

@@ -22,6 +22,7 @@ using WHMS.Persistence.UnitOfWork;
 using WHMS.Application.Abstractions.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using WHMS.Application.Authorization;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +57,10 @@ builder.Services.AddSingleton<IAuthorizationHandler, WarehouseAssignedHandler>()
 
 builder.Services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 {

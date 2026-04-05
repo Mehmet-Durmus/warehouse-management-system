@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Extensions;
 using WHMS.Application.Common.Filtering.Filters;
+using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 using WHMS.Persistence.Migrations;
 
@@ -16,13 +17,21 @@ public class StockStateRepository : IStockStateRepository
         _context = context;
     }
 
+    public async Task<List<StockState>> GetProductCounts(ProductCountFilter filter)
+        => await _context.StockStates
+            .Apply(filter)
+            .Include(ss => ss.Warehouse)
+            .Include(ss => ss.Sku)
+            .ThenInclude(sku => sku!.Category)
+            .ToListAsync();
+
     public async Task<int> GetStockQuantity(Guid warehouseId, Guid skuId)
         => await _context.StockStates
             .Where(s => s.WarehouseId == warehouseId && s.SkuId == skuId)
             .Select(s => s.Quantity)
             .SingleOrDefaultAsync();
 
-    public async Task<int> GetTotalProductCount(TotalProductCountFilter filter)
+    public async Task<int> GetTotalProductCount(ProductCountFilter filter)
         => await _context.StockStates
             .Apply(filter)
             .SumAsync(ss => ss.Quantity);

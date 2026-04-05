@@ -3,11 +3,11 @@ using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Common.Filtering.Extensions;
 
-public static class TotalProductCountFilterExtensions
+public static class ProductCountFilterExtensions
 {
     public static IQueryable<StockState> Apply(
         this IQueryable<StockState> query,
-        TotalProductCountFilter filter
+        ProductCountFilter filter
     )
     {
         return query.ApplyTotalProductCountFilter(filter);
@@ -15,7 +15,7 @@ public static class TotalProductCountFilterExtensions
 
     private static IQueryable<StockState> ApplyTotalProductCountFilter(
         this IQueryable<StockState> query,
-        TotalProductCountFilter filter
+        ProductCountFilter filter
     )
     {
         return query

@@ -15,7 +15,7 @@ public class GetTotalProductCountQueryHandler : IRequestHandler<GetTotalProductC
 
     public async Task<GetTotalProductCountQueryResponse> Handle(GetTotalProductCountQueryRequest request, CancellationToken cancellationToken)
     {
-        TotalProductCountFilter filter = new()
+        ProductCountFilter filter = new()
         {
             WarehouseId = request.WarehouseId,
             CityId = request.CityId,
