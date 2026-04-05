@@ -13,11 +13,13 @@ using WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
 using WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
 using WHMS.Application.Features.Queries.Warehouse.GetAllWarehouses;
 using WHMS.Application.Features.Queries.Warehouse.GetWarehouse;
+using WHMS.Application.Features.Queries.Warehouse.GetWarehouseCount;
 
 namespace WHMS.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Policy = "LogisticDirector")]
 public class WarehouseController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -27,7 +29,11 @@ public class WarehouseController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize(Policy = "LogisticDirector")]
+    [HttpGet("counts")]
+    public async Task<IActionResult> GetWarehouseCount()
+        => Ok(ApiResponse<GetWarehouseCountQueryResponse>
+        .Success(await _mediator.Send(new GetWarehouseCountQueryRequest())));
+
     [HttpGet]
     public async Task<IActionResult> GetAllWarehouses([FromQuery] GetAllWarehousesQueryRequest request)
     {
@@ -35,13 +41,11 @@ public class WarehouseController : ControllerBase
         return Ok(ApiResponse<List<WarehouseDto>>.SuccessList(result.Warehouses, new(result.Pagination)));
     }
 
-    [Authorize(Policy = "LogisticDirector")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetWarehouse(string id)
         => Ok(ApiResponse<GetWarehouseQueryResponse>.
             Success(await _mediator.Send(new GetWarehouseQueryRequest {WarehouseId = id})));
 
-    [Authorize(Policy = "LogisticDirector")]
     [HttpPost]
     public async Task<IActionResult> CreateWarehouse(CreateWarehouseCommandRequest request)
     {
@@ -53,13 +57,11 @@ public class WarehouseController : ControllerBase
         return Ok(response);
     }
 
-    [Authorize(Policy = "LogisticDirector")]
     [HttpPut]
     public async Task<IActionResult> UpdateWarehouse(UpdateWarehouseCommandRequest request)
         => Ok(ApiResponse<UpdateWarehouseCommandResponse>.Success(await _mediator.Send(request)));
     
 
-    [Authorize(Policy = "LogisticDirector")]
     [HttpDelete("{warehouseId}")]
     public async Task<IActionResult> DeleteWarehouse(string warehouseId)
     {
@@ -67,7 +69,6 @@ public class WarehouseController : ControllerBase
         return NoContent();
     }
 
-    [Authorize(Policy = "LogisticDirector")]
     [HttpPost("{id}/employees")]
     public async Task<IActionResult> AssignEmployees(string id, AssignEmployeesRequestDto dto)
     {
