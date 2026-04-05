@@ -11,6 +11,7 @@ using WHMS.Application.Features.Command.Shipment.SendShipment;
 using WHMS.Application.Features.Command.Shipment.UpdateShipment;
 using WHMS.Application.Features.Command.Shipment.UpdateShipmentItem;
 using WHMS.Application.Features.Queries.Shipment.GetShipment;
+using WHMS.Application.Features.Queries.Shipment.GetShipmentCount;
 using WHMS.Application.Features.Queries.Shipment.GetShipmentItem;
 using WHMS.Application.Features.Queries.Shipment.GetShipmentItems;
 using WHMS.Application.Features.Queries.Shipment.GetShipments;
@@ -27,6 +28,11 @@ public class ShipmentController : ControllerBase
     {
         _mediator = mediator;
     }
+
+    [Authorize(Policy = "LogisticDirector")]
+    [HttpGet("counts")]
+    public async Task<IActionResult> GetShipmentCount([FromQuery] GetShipmentCountQueryRequest request)
+        => Ok(ApiResponse<GetShipmentCountQueryResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet]
