@@ -10,14 +10,6 @@ public static class ProductCountFilterExtensions
         ProductCountFilter filter
     )
     {
-        return query.ApplyTotalProductCountFilter(filter);
-    }
-
-    private static IQueryable<StockState> ApplyTotalProductCountFilter(
-        this IQueryable<StockState> query,
-        ProductCountFilter filter
-    )
-    {
         return query
             .WhereIf(!string.IsNullOrWhiteSpace(filter.WarehouseId),
                 s => s.WarehouseId == Guid.Parse(filter.WarehouseId!))

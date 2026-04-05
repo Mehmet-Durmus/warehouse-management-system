@@ -15,6 +15,7 @@ using WHMS.Application.Features.Queries.Delivery.GetDeliveryItem;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using WHMS.Api.Common.Models;
 using WHMS.Api.Common.Models.Delivery;
+using WHMS.Application.Features.Queries.Delivery.GetDeliveryCount;
 
 namespace WHMS.Api.Controllers;
 
@@ -28,6 +29,11 @@ public class DeliveryController : ControllerBase
     {
         _mediator = mediator;
     }
+
+    [Authorize(Policy = "LogisticDirector")]
+    [HttpGet("counts")]
+    public async Task<IActionResult> GetDeliveryCount([FromQuery] GetDeliveryCountQueryRequest request)
+        => Ok(ApiResponse<GetDeliveryCountQueryResponse>.Success(await _mediator.Send(request)));
 
     [Authorize(Policy = "DirectorManagerOrStaff")]
     [HttpGet]

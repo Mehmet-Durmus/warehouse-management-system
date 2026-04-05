@@ -1,6 +1,6 @@
 namespace WHMS.Application.Common.Filtering.Filters;
 
-public class ProductCountFilter : QueryFilter
+public class ProductCountFilter
 {
     public string? WarehouseId { get; set; }
     public string? CityId { get; set; }
