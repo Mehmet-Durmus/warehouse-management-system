@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace WHMS.Application.Features.Command.Login;
+namespace WHMS.Application.Features.Command.Auth.Login;
 
 public class LoginCommandRequest : IRequest<LoginCommandResponse>
 {

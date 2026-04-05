@@ -6,7 +6,7 @@ using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 using Microsoft.IdentityModel.Tokens;
 using WHMS.Persistence.SeedData;
-using WHMS.Application.Features.Command.Login;
+using WHMS.Application.Features.Command.Auth.Login;
 using WHMS.Application.Configurations;
 using WHMS.Infrastructure.Services;
 using Microsoft.Extensions.Options;

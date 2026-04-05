@@ -6,7 +6,7 @@ using WHMS.Application.Configurations;
 using WHMS.Application.DTOs;
 using WHMS.Domain.Entities;
 
-namespace WHMS.Application.Features.Command.Login;
+namespace WHMS.Application.Features.Command.Auth.Login;
 
 public class LoginCommandHandler : IRequestHandler<LoginCommandRequest, LoginCommandResponse>
 {

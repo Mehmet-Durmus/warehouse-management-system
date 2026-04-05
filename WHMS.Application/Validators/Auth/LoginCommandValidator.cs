@@ -1,5 +1,5 @@
 using FluentValidation;
-using WHMS.Application.Features.Command.Login;
+using WHMS.Application.Features.Command.Auth.Login;
 
 namespace WHMS.Application.Validators.Auth;
 
