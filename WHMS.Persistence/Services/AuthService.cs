@@ -15,6 +15,9 @@ public class AuthService : IAuthService
         _signInManager = signInManager;
     }
 
+    public async Task<IdentityResult> ChangePasswordAsync(ApplicationUser user, string currentPassword, string newPassword)
+        => await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
     public async Task<SignInResult> CheckPasswordSignInAsync(ApplicationUser user, string password, bool lockoutOnFailure)
         => await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure);
 
@@ -26,4 +29,6 @@ public class AuthService : IAuthService
 
     public Task<IList<string>> GetRolesAsync(ApplicationUser user)
         => _userManager.GetRolesAsync(user);
+
+    
 }

@@ -54,11 +54,15 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
         builder.HasSequence<int>("WarehouseStaffSequence").StartsAt(1);
             
 
-        builder.Entity<ApplicationUser>()
-            .HasOne(u => u.Warehouse)
-            .WithMany(w => w.ApplicationUsers)
-            .HasForeignKey(u => u.WarehouseId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<ApplicationUser>(u =>
+        {
+            u.Property(p => p.PasswordChangedAt).HasColumnType("timestamp without time zone");
+            u.HasOne(u => u.Warehouse)
+                .WithMany(w => w.ApplicationUsers)
+                .HasForeignKey(u => u.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+            
 
 
         builder.Entity<Warehouse>(e =>

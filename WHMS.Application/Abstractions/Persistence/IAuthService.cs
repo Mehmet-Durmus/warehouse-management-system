@@ -9,4 +9,5 @@ public interface IAuthService
     Task<SignInResult> CheckPasswordSignInAsync(ApplicationUser user, string password, bool lockoutOnFailure);
     Task<IList<string>> GetRolesAsync(ApplicationUser user);
     Task <ApplicationUser?> FindByIdAsync(string userId);
+    Task<IdentityResult> ChangePasswordAsync(ApplicationUser user, string currentPassword, string newPassword);
 }

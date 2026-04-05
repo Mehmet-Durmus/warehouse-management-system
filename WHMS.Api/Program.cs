@@ -21,8 +21,9 @@ using WHMS.Persistence.Repositories;
 using WHMS.Persistence.UnitOfWork;
 using WHMS.Application.Abstractions.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
-using WHMS.Application.Authorization;
+using WHMS.Application.Authorization.WarehouseAssigned;
 using System.Text.Json.Serialization;
+using WHMS.Application.Authorization.PasswordChanged;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +55,7 @@ builder.Services.AddScoped<IInventoryCountRepository, InventoryCountRepository>(
 builder.Services.AddScoped<IWasteRecordRepository, WasteRecordRepository>();
 builder.Services.AddScoped<IStockStateRepository, StockStateRepository>();
 builder.Services.AddSingleton<IAuthorizationHandler, WarehouseAssignedHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, PasswordChangedHandler>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -100,12 +102,21 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     var warehouseAssigned = new WarehouseAssignedRequirement();
-    options.AddPolicy("LogisticDirector", p => p.RequireRole("LogisticDirector"));
-    options.AddPolicy("WarehouseManager", p => p.RequireRole("WarehouseManager").AddRequirements(warehouseAssigned));
-    options.AddPolicy("WarehouseStaff", p => p.RequireRole("WarehouseStaff").AddRequirements(warehouseAssigned));
-    options.AddPolicy("DirectorOrManager", p => p.RequireRole("LogisticDirector", "WarehouseManager").AddRequirements(warehouseAssigned));
-    options.AddPolicy("ManagerOrStaff", p => p.RequireRole("WarehouseManager", "WarehouseStaff").AddRequirements(warehouseAssigned));
-    options.AddPolicy("DirectorManagerOrStaff", p => p.RequireRole("LogisticDirector", "WarehouseManager", "WarehouseStaff").AddRequirements(warehouseAssigned));
+    var passwordChanged = new PasswordChangedRequirement();
+    options.AddPolicy("LogisticDirector", p => 
+        p.RequireRole("LogisticDirector").AddRequirements(passwordChanged));
+    options.AddPolicy("WarehouseManager", p => 
+        p.RequireRole("WarehouseManager").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+    options.AddPolicy("WarehouseStaff", p => 
+        p.RequireRole("WarehouseStaff").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+    options.AddPolicy("DirectorOrManager", p => 
+        p.RequireRole("LogisticDirector", "WarehouseManager").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+    options.AddPolicy("ManagerOrStaff", p => 
+        p.RequireRole("WarehouseManager", "WarehouseStaff").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+    options.AddPolicy("DirectorManagerOrStaff", p => 
+        p.RequireRole("LogisticDirector", "WarehouseManager", "WarehouseStaff").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+    options.AddPolicy("PasswordChange", p => 
+        p.RequireRole("LogisticDirector", "WarehouseManager", "WarehouseStaff"));
 });
 
 builder.Services.AddEndpointsApiExplorer();

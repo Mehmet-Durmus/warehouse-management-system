@@ -8,6 +8,8 @@ public class ApplicationUser : IdentityUser<Guid>, IAuditable, ISoftDeletable
     public string FullName { get; set; } = null!;
     public Guid? WarehouseId { get; set; }
     public Warehouse? Warehouse { get; set; }
+    public bool IsPasswordChanged { get; set; }
+    public DateTime PasswordChangedAt { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid? CreatedById { get; set; }

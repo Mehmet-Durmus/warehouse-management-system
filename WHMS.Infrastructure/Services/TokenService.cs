@@ -26,7 +26,9 @@ public class TokenService : ITokenService
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.FullName),
             new Claim("UserName", user.UserName ?? String.Empty),
-            new Claim("Warehouse", user.WarehouseId.ToString() ?? String.Empty)
+            new Claim("Warehouse", user.WarehouseId.ToString() ?? String.Empty),
+            new Claim("IsPasswordChanged", user.IsPasswordChanged.ToString()),
+            new Claim("PasswordChangedAt", user.PasswordChangedAt.ToString("O"))
         };
 
         foreach (var role in roles)
