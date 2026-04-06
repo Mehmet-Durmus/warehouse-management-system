@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
-using WHMS.Application.Extensions;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 using WHMS.Application.Common.Filtering.Extensions;

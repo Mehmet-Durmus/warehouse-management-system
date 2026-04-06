@@ -1,5 +1,4 @@
 using WHMS.Application.Common.Filtering.Filters;
-using WHMS.Application.Extensions;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Common.Filtering.Extensions;

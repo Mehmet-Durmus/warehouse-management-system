@@ -4,7 +4,6 @@ using WHMS.Application.Common.Filtering.Extensions;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
-using WHMS.Persistence.Migrations;
 
 namespace WHMS.Persistence.Repositories;
 

@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Domain.Entities;
