@@ -5,6 +5,7 @@ using WHMS.Api.Common.Models;
 using WHMS.Application.Features.Command.Employee.CreateEmployee;
 using WHMS.Application.Features.Command.Employee.CreateStaffMember;
 using WHMS.Application.Features.Command.Employee.DeleteEmployee;
+using WHMS.Application.Features.Command.Employee.UpdateEmployeePassword;
 using WHMS.Application.Features.Command.Employee.UpdateManager;
 using WHMS.Application.Features.Command.Employee.UpdateStaffMember;
 using WHMS.Application.Features.Queries.Employee.GetAllEmployees;
@@ -86,5 +87,15 @@ public class EmployeeController : ControllerBase
     {
         await _mediator.Send(request);
         return NoContent();
+    }
+
+    [Authorize(Policy = "LogisticDirector")]
+    [HttpPut("update-employee-password")]
+    public async Task<IActionResult> UpdateEmployeePassword(UpdateEmployeePasswordCommandRequest request)
+    {
+        var result = await _mediator.Send(request);
+        if (result.Errors is not null || result.Errors?.Count > 0)
+            return BadRequest(ApiResponse.Failure(result.Errors));
+        return Ok(ApiResponse<UpdateEmployeePasswordResultSuccessDto>.Success(result.Result!));
     }
 }

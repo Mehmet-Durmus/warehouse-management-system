@@ -27,8 +27,12 @@ public class AuthService : IAuthService
     public async Task<ApplicationUser?> FindByNameAsync(string userName)
         => await _userManager.FindByNameAsync(userName);
 
+    public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
+        => await _userManager.GeneratePasswordResetTokenAsync(user);
+
     public Task<IList<string>> GetRolesAsync(ApplicationUser user)
         => _userManager.GetRolesAsync(user);
 
-    
+    public async Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword)
+        => await _userManager.ResetPasswordAsync(user, token, newPassword);
 }
