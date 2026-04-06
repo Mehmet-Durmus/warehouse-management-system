@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
 
 namespace WHMS.Application.Features.Command.WasteRecord.DeleteWasteRecord;
@@ -29,9 +30,9 @@ public class DeleteWasteRecordCommandHandler : IRequestHandler<DeleteWasteRecord
         bool notFound = wasteRecord switch
         {
             null => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseManager") 
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseManager) 
                 && wasteRecord.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && (wasteRecord.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) 
                 || wasteRecord.CreatedById != _currentUserService.UserId) => true,
             _ => false

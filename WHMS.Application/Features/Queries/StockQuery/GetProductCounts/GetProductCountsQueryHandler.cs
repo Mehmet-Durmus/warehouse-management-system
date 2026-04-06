@@ -2,6 +2,7 @@ using System.Runtime.Intrinsics.X86;
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
 
 namespace WHMS.Application.Features.Queries.StockQuery.GetProductCounts;
@@ -20,7 +21,7 @@ public class GetProductCountsQueryHandler : IRequestHandler<GetProductCountsQuer
     public async Task<GetProductCountsQueryResponse> Handle(GetProductCountsQueryRequest request, CancellationToken cancellationToken)
     {
         ProductCountFilter filter = new();
-        if (_currentUserService.Roles!.Contains("LogisticDirector"))
+        if (_currentUserService.Roles!.Contains(ApplicationRole.LogisticDirector))
         {
             filter.WarehouseId = request.WarehouseId;
             filter.CityId = request.CityId;

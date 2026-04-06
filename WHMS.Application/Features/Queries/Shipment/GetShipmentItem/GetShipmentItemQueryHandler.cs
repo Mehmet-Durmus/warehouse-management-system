@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 
 namespace WHMS.Application.Features.Queries.Shipment.GetShipmentItem;
 
@@ -21,11 +22,11 @@ public class GetShipmentItemQueryHandler : IRequestHandler<GetShipmentItemQueryR
         bool notFound = shipmentItem switch
         {
             null => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseManager")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseManager)
                 && shipmentItem.Shipment!.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && shipmentItem.Shipment!.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && shipmentItem.Shipment!.WarehouseId == Guid.Parse(_currentUserService.WarehouseId!)
                 && shipmentItem.Shipment!.SendingDate != null => true,
             _ => false

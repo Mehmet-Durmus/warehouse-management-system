@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Extensions;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
@@ -23,7 +24,7 @@ public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQueryR
 
     public async Task<GetAllEmployeesQueryResponse> Handle(GetAllEmployeesQueryRequest request, CancellationToken cancellationToken)
     {
-        bool isLogisticDirector = _currentUserService.Roles!.Contains("LogisticDirector");
+        bool isLogisticDirector = _currentUserService.Roles!.Contains(ApplicationRole.LogisticDirector);
 
         // CurrnetUser Manager ise sadece staff alabilir, Director ise filtre uygulayabilir
         request.IsManager = isLogisticDirector ? request.IsManager : false;

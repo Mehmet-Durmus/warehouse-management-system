@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
 
 namespace WHMS.Application.Features.Queries.Delivery.GetDeliveries;
@@ -24,7 +25,7 @@ public class GetDeliveriesQueryHandler : IRequestHandler<GetDeliveriesQueryReque
             Page = request.Page,
             PageSize = request.PageSize
         };
-        if (userRoles!.Contains("LogisticDirector"))
+        if (userRoles!.Contains(ApplicationRole.LogisticDirector))
         {
             filter.WarehouseId = request.WarehouseId;
             filter.CityId = request.CityId;
@@ -40,7 +41,7 @@ public class GetDeliveriesQueryHandler : IRequestHandler<GetDeliveriesQueryReque
             filter.UpdatedAfter = request.UpdatedAfter;
             filter.UpdatedBefore = request.UpdatedBefore;
         }
-        else if (userRoles.Contains("WarehouseManager"))
+        else if (userRoles.Contains(ApplicationRole.WarehouseManager))
         {
             filter.WarehouseId = _currentUserService.WarehouseId;
             filter.IsReceived = request.IsReceived;
@@ -50,7 +51,7 @@ public class GetDeliveriesQueryHandler : IRequestHandler<GetDeliveriesQueryReque
             filter.ExpectedArrivalAfter = request.ExpectedArrivalAfter;
             filter.ExpectedArrivalBefore = request.ExpectedArrivalBefore;
         }
-        else if (userRoles.Contains("WarehouseStaff"))
+        else if (userRoles.Contains(ApplicationRole.WarehouseStaff))
         {
             filter.WarehouseId = _currentUserService.WarehouseId;
             filter.IsReceived = false;

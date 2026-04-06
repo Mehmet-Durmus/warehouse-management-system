@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.DTOs.Catalog;
 using WHMS.Application.DTOs.Delivery;
@@ -25,11 +26,11 @@ public class GetDeliveryItemsQueryHandler : IRequestHandler<GetDeliveryItemsQuer
         bool notFound = delivery switch
         {
             null => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseManager")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseManager)
                 && delivery.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && delivery.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && delivery.WarehouseId == Guid.Parse(_currentUserService.WarehouseId!)
                 && delivery.ReceivedAt != null => true,
             _ => false

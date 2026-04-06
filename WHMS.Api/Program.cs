@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Authorization;
 using WHMS.Application.Authorization.WarehouseAssigned;
 using System.Text.Json.Serialization;
 using WHMS.Application.Authorization.PasswordChanged;
+using WHMS.Application.Common.Constants;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -103,20 +104,23 @@ builder.Services.AddAuthorization(options =>
 {
     var warehouseAssigned = new WarehouseAssignedRequirement();
     var passwordChanged = new PasswordChangedRequirement();
+    var LogisticDirector = ApplicationRole.LogisticDirector;
+    var WarehouseManager = ApplicationRole.WarehouseManager;
+    var WarehouseStaff = ApplicationRole.WarehouseStaff;
     options.AddPolicy("LogisticDirector", p => 
-        p.RequireRole("LogisticDirector").AddRequirements(passwordChanged));
+        p.RequireRole(LogisticDirector).AddRequirements(passwordChanged));
     options.AddPolicy("WarehouseManager", p => 
-        p.RequireRole("WarehouseManager").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+        p.RequireRole(WarehouseManager).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
     options.AddPolicy("WarehouseStaff", p => 
-        p.RequireRole("WarehouseStaff").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+        p.RequireRole(WarehouseStaff).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
     options.AddPolicy("DirectorOrManager", p => 
-        p.RequireRole("LogisticDirector", "WarehouseManager").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+        p.RequireRole(LogisticDirector, WarehouseManager).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
     options.AddPolicy("ManagerOrStaff", p => 
-        p.RequireRole("WarehouseManager", "WarehouseStaff").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+        p.RequireRole(WarehouseManager, WarehouseStaff).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
     options.AddPolicy("DirectorManagerOrStaff", p => 
-        p.RequireRole("LogisticDirector", "WarehouseManager", "WarehouseStaff").AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
+        p.RequireRole(LogisticDirector, WarehouseManager, WarehouseStaff).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
     options.AddPolicy("PasswordChange", p => 
-        p.RequireRole("LogisticDirector", "WarehouseManager", "WarehouseStaff"));
+        p.RequireRole(LogisticDirector, WarehouseManager, WarehouseStaff));
 });
 
 builder.Services.AddEndpointsApiExplorer();

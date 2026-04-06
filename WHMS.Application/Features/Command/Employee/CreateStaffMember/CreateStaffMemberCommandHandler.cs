@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Command.Employee.CreateStaffMember;
@@ -45,7 +46,7 @@ public class CreateStaffMemberCommandHandler : IRequestHandler<CreateStaffMember
         string tempPassword = await _passwordCreator.CreateTempPassword();
         var result = await _userManager.CreateAsync(staff, tempPassword);
         if (result.Succeeded)
-            await _userManager.AddToRoleAsync(staff, "WarehouseStaff");
+            await _userManager.AddToRoleAsync(staff, ApplicationRole.WarehouseStaff);
         else
             throw new Exception("Staff member could not be created.");
         

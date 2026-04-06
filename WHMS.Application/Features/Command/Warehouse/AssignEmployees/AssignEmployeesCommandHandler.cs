@@ -2,6 +2,7 @@ using FluentValidation.Validators;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 
 namespace WHMS.Application.Features.Command.Warehouse.AssignEmployees;
 
@@ -27,7 +28,7 @@ public class AssignEmployeesCommandHandler : IRequestHandler<AssignEmployeesComm
             else
             {
                 var roles = await _authService.GetRolesAsync(user);
-                if (!roles.Contains("WarehouseManager"))
+                if (!roles.Contains(ApplicationRole.WarehouseManager))
                     response.Warnings.Add($"{user.FullName} is not a manager.");
                 else
                 {
@@ -48,7 +49,7 @@ public class AssignEmployeesCommandHandler : IRequestHandler<AssignEmployeesComm
                 else
                 {
                     var roles = await _authService.GetRolesAsync(user);
-                    if (!roles.Contains("WarehouseStaff"))
+                    if (!roles.Contains(ApplicationRole.WarehouseStaff))
                         response.Warnings.Add($"{user.FullName} is not a staff member.");
                     else
                     {

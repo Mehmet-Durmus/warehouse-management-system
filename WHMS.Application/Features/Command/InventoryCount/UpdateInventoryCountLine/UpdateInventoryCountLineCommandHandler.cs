@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 
 namespace WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCountLine;
 
@@ -36,7 +37,7 @@ public class UpdateInventoryCountLineCommandHandler : IRequestHandler<UpdateInve
         bool notFoundInventoryCountLine = inventoryCountLine switch
         {
             null => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && inventoryCountLine.CreatedById != _currentUserService.UserId => true,
             _ => false
         };

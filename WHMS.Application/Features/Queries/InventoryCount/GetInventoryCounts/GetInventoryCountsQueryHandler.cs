@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.DTOs.InventoryCount;
 
@@ -28,7 +29,7 @@ public class GetInventoryCountsQueryHandler : IRequestHandler<GetInventoryCounts
             PageSize = request.PageSize
         };
 
-        if (roles!.Contains("LogisticDirector"))
+        if (roles!.Contains(ApplicationRole.LogisticDirector))
         {
             filter.WarehouseId = request.WarehouseId;
             filter.IsDone = request.IsDone;
@@ -37,7 +38,7 @@ public class GetInventoryCountsQueryHandler : IRequestHandler<GetInventoryCounts
             filter.UpdatedAfter = request.UpdatedAfter;
             filter.UpdatedBefore = request.UpdatedBefore;
         }
-        else if (roles!.Contains("WarehouseManager"))
+        else if (roles!.Contains(ApplicationRole.WarehouseManager))
         {
             filter.WarehouseId = _currentUserService.WarehouseId;
             filter.IsDone = request.IsDone;

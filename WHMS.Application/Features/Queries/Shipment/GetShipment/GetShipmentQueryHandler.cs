@@ -2,6 +2,7 @@ using System.Runtime.Serialization;
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.DTOs.Catalog;
 using WHMS.Application.DTOs.Shipment;
 
@@ -24,11 +25,11 @@ public class GetShipmentQueryHandler : IRequestHandler<GetShipmentQueryRequest, 
         bool notFound = shipment switch
         {
             null => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseManager")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseManager)
                 && shipment.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && shipment.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && shipment.WarehouseId == Guid.Parse(_currentUserService.WarehouseId!)
                 && shipment.SendingDate != null => true,
             _ => false

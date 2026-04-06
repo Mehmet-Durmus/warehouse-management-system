@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 
 namespace WHMS.Application.Features.Queries.Employee.GetEmployee;
 
@@ -17,7 +18,7 @@ public class GetEmployeeQueryHandler : IRequestHandler<GetEmployeeQueryRequest, 
 
     public async Task<GetEmployeeQueryResponse> Handle(GetEmployeeQueryRequest request, CancellationToken cancellationToken)
     {
-        bool isLogisticDirector = _currentUserService.Roles!.Contains("LogisticDirector");
+        bool isLogisticDirector = _currentUserService.Roles!.Contains(ApplicationRole.LogisticDirector);
         var employee = await _employeeRepository.GetEmployee(Guid.Parse(request.EmployeeId!));
         
         if (employee is null)
@@ -25,7 +26,7 @@ public class GetEmployeeQueryHandler : IRequestHandler<GetEmployeeQueryRequest, 
 
         var employeeRole = await _employeeRepository.GetEmployeeRole(employee.Id);
         
-        if (!isLogisticDirector && employeeRole != "WarehouseStaff")
+        if (!isLogisticDirector && employeeRole != ApplicationRole.WarehouseStaff)
             throw new Exception("Employee not found.");
 
         if (!isLogisticDirector && employee.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!))

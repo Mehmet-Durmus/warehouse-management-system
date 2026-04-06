@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.Features.Command.Employee.CreateEmployee;
 using WHMS.Domain.Entities;
 
@@ -50,7 +51,7 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommandR
         var tempPassword = await _passwordCreator.CreateTempPassword();
         var result = await _userManager.CreateAsync(manager, tempPassword);
         if (result.Succeeded)
-            await _userManager.AddToRoleAsync(manager, "WarehouseManager");
+            await _userManager.AddToRoleAsync(manager, ApplicationRole.WarehouseManager);
         else
             throw new Exception("Manager could not be created.");
         return new()

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.DTOs.InventoryCount;
 
@@ -24,11 +25,11 @@ public class GetInventoryCountLinesQueryHandler : IRequestHandler<GetInventoryCo
         bool notFound = inventoryCount switch
         {
             null => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseManager")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseManager)
                 && inventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && inventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains("WarehouseStaff")
+            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
                 && inventoryCount.WarehouseId == Guid.Parse(_currentUserService.WarehouseId!)
                 && !inventoryCount.IsCompleted => true,
             _ => false

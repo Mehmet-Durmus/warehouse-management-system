@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Domain.Entities;
 
@@ -36,13 +37,13 @@ public class GetWasteRecordsQueryHandler : IRequestHandler<GetWasteRecordsQueryR
         if (request.CreatedById is not null)
         {
             var employee = await _employeeRepository.GetEmployee(Guid.Parse(request.CreatedById!));
-            if (roles!.Contains("WarehouseManager") && employee.WarehouseId.ToString() != _currentUserService.WarehouseId)
+            if (roles!.Contains(ApplicationRole.WarehouseManager) && employee.WarehouseId.ToString() != _currentUserService.WarehouseId)
                 throw new Exception("Employee not found.");
         }
 
-        if (roles!.Contains("WarehouseManager"))
+        if (roles!.Contains(ApplicationRole.WarehouseManager))
             filter.WarehouseId = _currentUserService.WarehouseId;
-        else if (roles!.Contains("WarehouseStaff"))
+        else if (roles!.Contains(ApplicationRole.WarehouseStaff))
         {
             filter.WarehouseId = _currentUserService.WarehouseId;
             filter.CreatedById = _currentUserService.UserId.ToString();
