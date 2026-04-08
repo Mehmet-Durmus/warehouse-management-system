@@ -1,0 +1,65 @@
+{
+    "CreatedBy" : "Osman Arı",
+    "Categories" : [
+        {
+            "CategoryName" : "Gömlek",
+            "Skus" : [
+                {
+                    "SKUName" : "Keten - Haki | XL",
+                    "Barcode" : "8694179620460",
+                    "UnitPrice" : 445
+                },
+                {
+                    "SKUName" : "Keten - Haki | L",
+                    "Barcode" : "8691843307788",
+                    "UnitPrice" : 445
+                },
+                {
+                    "SKUName" : "Pamuk - Siyah | M",
+                    "Barcode" : "8695837033820",
+                    "UnitPrice" : 530
+                }
+            ]
+        },
+        {
+            "CategoryName" : "Hoodie",
+            "Skus" : [
+                {
+                    "SKUName" : "AC/DC - Siyah | L",
+                    "Barcode" : "8694184059309",
+                    "UnitPrice" : 600
+                },
+                {
+                    "SKUName" : "Rick and Morty - Mavi | M",
+                    "Barcode" : "8699026238348",
+                    "UnitPrice" : 580
+                },
+                {
+                    "SKUName" : "Basic - Siyah | M",
+                    "Barcode" : "8692949630770",
+                    "UnitPrice" : 550
+                }
+            ]
+        },
+        {
+            "CategoryName" : "Jean",
+            "Skus" : [
+                {
+                    "SKUName" : "Slim - Mavi | 32-30",
+                    "Barcode" : "8696623994158",
+                    "UnitPrice" : 720
+                },
+                {
+                    "SKUName" : "Regular - Mavi | 34-32",
+                    "Barcode" : "8695992236883",
+                    "UnitPrice" : 700
+                },
+                {
+                    "SKUName" : "Regular - Siyah | 32-32",
+                    "Barcode" : "8690214417903",
+                    "UnitPrice" : 690
+                }
+            ]
+        }
+    ]
+}

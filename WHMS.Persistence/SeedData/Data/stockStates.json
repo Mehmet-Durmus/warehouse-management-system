@@ -1,0 +1,108 @@
+{
+    "StockStates" : [
+        {
+            "Warehouse" : "Pendik Depo",
+            "Data": [
+                {
+                    "Sku" : "8694179620460",
+                    "Quantity" : 98
+                },
+                {
+                    "Sku" : "8691843307788",
+                    "Quantity" : 45
+                },
+                {
+                    "Sku" : "8694184059309",
+                    "Quantity" : 102
+                },
+                {
+                    "Sku" : "8695992236883",
+                    "Quantity" : 330
+                },
+                {
+                    "Sku" : "8696623994158",
+                    "Quantity" : 88
+                },
+                {
+                    "Sku" : "8692949630770",
+                    "Quantity" : 109
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Kadıköy Depo",
+            "Data" : [
+                {
+                    "Sku" : "8696623994158",
+                    "Quantity" : 42
+                },
+                {
+                    "Sku" : "8692949630770",
+                    "Quantity" : 60
+                },
+                {
+                    "Sku" : "8694179620460",
+                    "Quantity" : 45
+                },
+                {
+                    "Sku" : "8695992236883",
+                    "Quantity" : 88
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Karabük Depo",
+            "Data" : [
+                {
+                    "Sku" : "8694179620460",
+                    "Quantity" : 60
+                },
+                {
+                    "Sku" : "8691843307788",
+                    "Quantity" : 70
+                },
+                {
+                    "Sku" : "8694184059309",
+                    "Quantity" : 79
+                },
+                {
+                    "Sku" : "8695992236883",
+                    "Quantity" : 170
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Ostim Depo",
+            "Data" : [
+                {
+                    "Sku" : "8696623994158",
+                    "Quantity" : 125
+                },
+                {
+                    "Sku" : "8692949630770",
+                    "Quantity" : 163
+                },
+                {
+                    "Sku" : "8694184059309",
+                    "Quantity" : 165
+                },
+                {
+                    "Sku" : "8695837033820",
+                    "Quantity" : 120
+                },
+                {
+                    "Sku" : "8695992236883",
+                    "Quantity" : 285
+                },
+                {
+                    "Sku" : "8694179620460",
+                    "Quantity" : 96
+                },
+                {
+                    "Sku" : "8691843307788",
+                    "Quantity" : 100
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "CreatedBy" : "Osman Arı",
+    "Managers" : [
+        {
+            "FullName" : "Halil Yavuz",
+            "Warehouse" : "Pendik Depo"
+        },
+        {
+            "FullName" : "Fadime Şimşek",
+            "Warehouse" : "Kadıköy Depo"
+        },
+        {
+            "FullName" : "Ali Kurt",
+            "Warehouse" : "Karabük Depo"
+        },
+        {
+            "FullName" : "Ramazan Yıldız",
+            "Warehouse" : "Ostim Depo"
+        }
+    ],
+    "Staff" : [
+        {
+            "FullName" : "Metin Polat",
+            "Warehouse" : "Pendik Depo"
+        },
+        {
+            "FullName" : "Hasan Yıldız",
+            "Warehouse" : "Pendik Depo"
+        },
+        {
+            "FullName" : "Murat Özkan",
+            "Warehouse" : "Kadıköy Depo"
+        },
+        {
+            "FullName" : "İbrahim Çetin",
+            "Warehouse" : "Karabük Depo"
+        },
+        {
+            "FullName" : "Süleyman Özcan",
+            "Warehouse" : "Ostim Depo"
+        },
+        {
+            "FullName" : "Emre Özdemir",
+            "Warehouse" : "Ostim Depo"
+        },
+        {
+            "FullName" : "Burak Şahin",
+            "Warehouse" : "Ostim Depo"
+        }
+    ]
+}

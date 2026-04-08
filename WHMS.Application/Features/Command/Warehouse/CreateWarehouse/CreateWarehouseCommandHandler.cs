@@ -29,9 +29,9 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
     public async Task<CreateWarehouseCommandResponse> Handle(CreateWarehouseCommandRequest request, CancellationToken cancellationToken)
     {
         Address address = new Address(
-            request.CityId!,
-            request.DistrictId!,
-            request.NeighborhoodId!,
+            Guid.Parse(request.CityId!),
+            Guid.Parse(request.DistrictId!),
+            Guid.Parse(request.NeighborhoodId!),
             request.PostalCode!,
             request.AddressLine!
         );

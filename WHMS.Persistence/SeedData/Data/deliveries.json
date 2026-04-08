@@ -1,0 +1,180 @@
+{
+    "CreatedBy" : "Osman Arı",
+    "Deliveries" : [
+        {
+            "Warehouse" : "Pendik Depo",
+            "ExpectedArrivalDate" : "2025-03-24",
+            "ReceivedAt" : "2025-03-24",
+            "ReceivedBy" : "Halil Yavuz",
+            "CreatedAt" : "2025-03-20",
+            "DeliveryItems" : [
+                {
+                    "SkuBarcode" : "8694179620460",
+                    "Quantity" : 100
+                },
+                {
+                    "SkuBarcode" : "8691843307788",
+                    "Quantity" : 100
+                },
+                {
+                    "SkuBarcode" : "8694184059309",
+                    "Quantity" : 80
+                },
+                {
+                    "SkuBarcode" : "8695992236883",
+                    "Quantity" : 170
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Pendik Depo",
+            "ExpectedArrivalDate" : "2025-05-13",
+            "ReceivedAt" : "2025-05-13",
+            "ReceivedBy" : "Metin Polat",
+            "CreatedAt" : "2025-05-12",
+            "DeliveryItems" : [
+                {
+                    "SkuBarcode" : "8696623994158",
+                    "Quantity" : 88
+                },
+                {
+                    "SkuBarcode" : "8692949630770",
+                    "Quantity" : 110
+                },
+                {
+                    "SkuBarcode" : "8694184059309",
+                    "Quantity" : 85
+                },
+                {
+                    "SkuBarcode" : "8695992236883",
+                    "Quantity" : 160
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Kadıköy Depo",
+            "ExpectedArrivalDate" : "2025-03-25",
+            "ReceivedAt" : "2025-03-25",
+            "ReceivedBy" : "Fadime Şimşek",
+            "CreatedAt" : "2025-03-20",
+            "DeliveryItems" : [
+                {
+                    "SkuBarcode" : "8696623994158",
+                    "Quantity" : 88
+                },
+                {
+                    "SkuBarcode" : "8692949630770",
+                    "Quantity" : 110
+                },
+                {
+                    "SkuBarcode" : "8694179620460",
+                    "Quantity" : 85
+                },
+                {
+                    "SkuBarcode" : "8695992236883",
+                    "Quantity" : 160
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Karabük Depo",
+            "ExpectedArrivalDate" : "2025-04-05",
+            "ReceivedAt" : "2025-04-05",
+            "ReceivedBy" : "Ali Kurt",
+            "CreatedAt" : "2025-04-02",
+            "DeliveryItems" : [
+                {
+                    "SkuBarcode" : "8694179620460",
+                    "Quantity" : 100
+                },
+                {
+                    "SkuBarcode" : "8691843307788",
+                    "Quantity" : 100
+                },
+                {
+                    "SkuBarcode" : "8694184059309",
+                    "Quantity" : 80
+                },
+                {
+                    "SkuBarcode" : "8695992236883",
+                    "Quantity" : 170
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Ostim Depo",
+            "ExpectedArrivalDate" : "2025-04-06",
+            "ReceivedAt" : "2025-04-06",
+            "ReceivedBy" : "Süleyman Özcan",
+            "CreatedAt" : "2025-04-02",
+            "DeliveryItems" : [
+                {
+                    "SkuBarcode" : "8696623994158",
+                    "Quantity" : 88
+                },
+                {
+                    "SkuBarcode" : "8692949630770",
+                    "Quantity" : 110
+                },
+                {
+                    "SkuBarcode" : "8694184059309",
+                    "Quantity" : 85
+                },
+                {
+                    "SkuBarcode" : "8695837033820",
+                    "Quantity" : 160
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Ostim Depo",
+            "ExpectedArrivalDate" : "2025-06-16",
+            "ReceivedAt" : "2025-06-16",
+            "ReceivedBy" : "Burak Şahin",
+            "CreatedAt" : "2025-06-14",
+            "DeliveryItems" : [
+                {
+                    "SkuBarcode" : "8696623994158",
+                    "Quantity" : 88
+                },
+                {
+                    "SkuBarcode" : "8692949630770",
+                    "Quantity" : 110
+                },
+                {
+                    "SkuBarcode" : "8695837033820",
+                    "Quantity" : 85
+                },
+                {
+                    "SkuBarcode" : "8695992236883",
+                    "Quantity" : 160
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Ostim Depo",
+            "ExpectedArrivalDate" : "2025-08-24",
+            "ReceivedAt" : "2025-08-24",
+            "ReceivedBy" : "Süleyman Özcan",
+            "CreatedAt" : "2025-08-21",
+            "DeliveryItems" : [
+                {
+                    "SkuBarcode" : "8694179620460",
+                    "Quantity" : 100
+                },
+                {
+                    "SkuBarcode" : "8691843307788",
+                    "Quantity" : 100
+                },
+                {
+                    "SkuBarcode" : "8694184059309",
+                    "Quantity" : 80
+                },
+                {
+                    "SkuBarcode" : "8695992236883",
+                    "Quantity" : 170
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,37 @@
+{
+    "CreatedBy" : "Osman Arı",
+    "Warehouses" : [
+        {
+            "WarehouseName" : "Pendik Depo",
+            "City" : "İstanbul",
+            "District" : "Pendik",
+            "Neighborhood" : "Çamçeşme",
+            "PostalCode" : "34899",
+            "AddressLine" : "Yolcu Cad. Ressam Sk. No: 21"
+        },
+        {
+            "WarehouseName" : "Kadıköy Depo",
+            "City" : "İstanbul",
+            "District" : "Kadıköy",
+            "Neighborhood" : "Hasanpaşa",
+            "PostalCode" : "34722",
+            "AddressLine" : "Faik Bey Cad. Çavdar Sk. No: 12"
+        },
+        {
+            "WarehouseName" : "Karabük Depo",
+            "City" : "Karabük",
+            "District" : "Merkez",
+            "Neighborhood" : "Kurtuluş",
+            "PostalCode" : "78200",
+            "AddressLine" : "Doğantepe Cad. Fidan Sk. No: 34"
+        },
+        {
+            "WarehouseName" : "Ostim Depo",
+            "City" : "Ankara",
+            "District" : "Yanimahalle",
+            "Neighborhood" : "Ostim OSB",
+            "PostalCode" : "06374",
+            "AddressLine" : "1133 Sk. No: 24"
+        }
+    ]
+}

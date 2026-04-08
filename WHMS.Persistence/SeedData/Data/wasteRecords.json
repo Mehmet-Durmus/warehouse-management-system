@@ -1,0 +1,68 @@
+{
+    "WasteRecords" : [
+        {
+            "Warehouse" : "Pendik Depo",
+            "Sku" : "8692949630770",
+            "Quantity" : 1,
+            "Description" : "İş kazası",
+            "CreatedAt" : "2025-05-14",
+            "CreatedBy" : "Metin Polat"
+        },
+        {
+            "Warehouse" : "Pendik Depo",
+            "Sku" : "8694184059309",
+            "Quantity" : 3,
+            "Description" : "İş kazası",
+            "CreatedAt" : "2025-04-03",
+            "CreatedBy" : "Halil Yavuz"
+        },
+        {
+            "Warehouse" : "Kadıköy Depo",
+            "Sku" : "8695992236883",
+            "Quantity" : 2,
+            "Description" : "İş kazası",
+            "CreatedAt" : "2025-04-05",
+            "CreatedBy" : "Fadime Şimşek"
+        },
+        {
+            "Warehouse" : "Kadıköy Depo",
+            "Sku" : "8696623994158",
+            "Quantity" : 1,
+            "Description" : "İş kazası",
+            "CreatedAt" : "2025-06-19",
+            "CreatedBy" : "Murat Özkan"
+        },
+        {
+            "Warehouse" : "Karabük Depo",
+            "Sku" : "8694184059309",
+            "Quantity" : 1,
+            "Description" : "İş kazası",
+            "CreatedAt" : "2025-04-20",
+            "CreatedBy" : "İbrahim Çetin"
+        },
+        {
+            "Warehouse" : "Karabük Depo",
+            "Sku" : "8695992236883",
+            "Quantity" : 2,
+            "Description" : "İş kazası",
+            "CreatedAt" : "2025-05-10",
+            "CreatedBy" : "İbrahim Çetin"
+        },
+        {
+            "Warehouse" : "Ostim Depo",
+            "Sku" : "8694179620460",
+            "Quantity" : 4,
+            "Description" : "İş kazası",
+            "CreatedAt" : "2025-09-12",
+            "CreatedBy" : "Süleyman Özcan"
+        },
+        {
+            "Warehouse" : "Ostim Depo",
+            "Sku" : "8692949630770",
+            "Quantity" : 2,
+            "Description" : "İş kazası",
+            "CreatedAt" : "2025-05-02",
+            "CreatedBy" : "Burak Şahin"
+        }
+    ]
+}

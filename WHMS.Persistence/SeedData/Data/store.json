@@ -1,0 +1,29 @@
+{
+    "CreatedBy" : "Osman Arı",
+    "Stores" : [
+        {
+            "StoreName" : "Kadıköy Mağaza",
+            "City" : "İstanbul",
+            "District" : "Kadıköy",
+            "Neighborhood" : "Bostancı",
+            "PostalCode" : "34744",
+            "AddressLine" : "Akasya Sk. No: 3"
+        },
+        {
+            "StoreName" : "Armada AVM",
+            "City" : "Ankara",
+            "District" : "Yenimahalle",
+            "Neighborhood" : "Beştepe",
+            "PostalCode" : "06560",
+            "AddressLine" : "Dumlupınar Blv. No: 6"
+        },
+        {
+            "StoreName" : "Kares AVM",
+            "City" : "Karabük",
+            "District" : "Merkez",
+            "Neighborhood" : "Bayır",
+            "PostalCode" : "78100",
+            "AddressLine" : "Kıbrıs Şehitleri Cad. No: 20"
+        }
+    ]
+}

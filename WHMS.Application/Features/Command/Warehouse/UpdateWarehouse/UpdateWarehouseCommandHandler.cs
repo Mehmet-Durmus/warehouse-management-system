@@ -26,9 +26,10 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
             throw new Exception("Warehouse not found.");
 
         Address address = new(
-            request.CityId!,
-            request.DistrictId!,
-            request.NeighborhoodId!,request.PostalCode!,
+            Guid.Parse(request.CityId!),
+            Guid.Parse(request.DistrictId!),
+            Guid.Parse(request.NeighborhoodId!),
+            request.PostalCode!,
             request.AddressLine!);
 
         bool isAddressValid = await _locationRepository.IsAddressValid(address);

@@ -25,6 +25,11 @@ using WHMS.Application.Authorization.WarehouseAssigned;
 using System.Text.Json.Serialization;
 using WHMS.Application.Authorization.PasswordChanged;
 using WHMS.Application.Common.Constants;
+using WHMS.Persistence.SeedData.Dto;
+using WHMS.Persistence;
+using WHMS.Persistence.SeedData.Core;
+using WHMS.Persistence.SeedData.Seeders;
+using WHMS.Persistence.SeedData.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +40,10 @@ options.UseNpgsql(
     builder.Configuration.GetConnectionString("PostgreSQL")
 ));
 
-builder.Services.Configure<SeedSettings>(builder.Configuration.GetSection("SeedSettings"));
+
+builder.Services.AddPersistenceServices(builder.Configuration, builder.Environment);
+builder.Services.AddSeedDataServices();
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<JwtSettings>>().Value);
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -57,6 +65,7 @@ builder.Services.AddScoped<IWasteRecordRepository, WasteRecordRepository>();
 builder.Services.AddScoped<IStockStateRepository, StockStateRepository>();
 builder.Services.AddSingleton<IAuthorizationHandler, WarehouseAssignedHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, PasswordChangedHandler>();
+builder.Services.AddSingleton<IJsonDataLoader, JsonDataLoader>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -151,6 +160,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    await app.SeedDevelopmentDataAsync();
 }
 
 app.UseHttpsRedirection();
@@ -159,6 +169,7 @@ app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 
-await app.InitializeAsync();
+await app.SeedEssentialDataAsync();
+
 app.Run();
 

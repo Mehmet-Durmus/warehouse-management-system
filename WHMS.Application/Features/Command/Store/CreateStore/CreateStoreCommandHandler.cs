@@ -23,9 +23,9 @@ public class CreateStoreCommandHandler : IRequestHandler<CreateStoreCommandReque
     public async Task<CreateStoreCommandResponse> Handle(CreateStoreCommandRequest request, CancellationToken cancellationToken)
     {
         Address address = new(
-            request.CityId!,
-            request.DistrictId!,
-            request.NeighborhoodId!,
+            Guid.Parse(request.CityId!),
+            Guid.Parse(request.DistrictId!),
+            Guid.Parse(request.NeighborhoodId!),
             request.PostalCode!,
             request.AddressLine!
         );

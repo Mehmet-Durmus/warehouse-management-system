@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using WHMS.Application.Common.Constants;
 using WHMS.Domain.Entities;
 using WHMS.Persistence.Contexts;
 using WHMS.Persistence.SeedData;
@@ -22,8 +23,7 @@ public static class SeedData
         var seedOptions = scope.ServiceProvider.GetRequiredService<IOptions<SeedSettings>>();
 
         // Roles
-        List<string> roles =  ["Admin", "LogisticDirector", "WarehouseManager", "WarehouseStaff"];
-        foreach (var role in roles)
+        foreach (var role in ApplicationRole.All)
         {
             if (!await roleManager.RoleExistsAsync(role))
                 await roleManager.CreateAsync(new IdentityRole<Guid> {Name = role});

@@ -25,9 +25,9 @@ public class UpdateStoreCommandHandler : IRequestHandler<UpdateStoreCommandReque
             throw new Exception("Store not found.");
 
         Address address = new(
-            request.CityId!,
-            request.DistrictId!,
-            request.NeighborhoodId!,
+            Guid.Parse(request.CityId!),
+            Guid.Parse(request.DistrictId!),
+            Guid.Parse(request.NeighborhoodId!),
             request.PostalCode!,
             request.AddressLine!
         );

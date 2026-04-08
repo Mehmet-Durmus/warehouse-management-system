@@ -1,88 +1,88 @@
 {
-    "Cities": [
+    "Cities" : [
         {
-            "Name": "İstabbul",
-            "Districts": [
+            "Name" : "İstanbul",
+            "Districts" : [
                 {
-                    "Name": "Adalar",
-                    "Neighborhoods": [
-                        {"Name":"Burgazada"},
-                        {"Name":"Heybeliada"},
-                        {"Name":"Kınalıada"}
+                    "Name" : "Başakşehir",
+                    "Neighborhoods" : [
+                        { "Name" : "Altınşehir" },
+                        { "Name" : "Bahçeşehir 2. Kısım" },
+                        { "Name" : "Başak" }
                     ]
                 },
                 {
-                    "Name": "Başakşehir",
-                    "Neighborhoods": [
-                        {"Name":"Altınşehir"},
-                        {"Name":"Başak"},
-                        {"Name":"Güvercintepe"}
+                    "Name" : "Kadıköy",
+                    "Neighborhoods" : [
+                        { "Name" : "Bostancı" },
+                        { "Name" : "Cafeağa" },
+                        { "Name" : "Hasanpaşa" }
                     ]
                 },
                 {
-                    "Name": "Çatalca",
-                    "Neighborhoods": [
-                        {"Name":"Akalan"},
-                        {"Name":"Belgrat"},
-                        {"Name":"Çakıl"}
+                    "Name" : "Pendik",
+                    "Neighborhoods" : [
+                        { "Name" : "Bahçelievler" },
+                        { "Name" : "Sapan Bağları" },
+                        { "Name" : "Çamçeşme" }
                     ]
                 }
             ]
         },
         {
-            "Name": "Ankara",
-            "Districts": [
+            "Name" : "Karabük",
+            "Districts" : [
                 {
-                    "Name": "Altındağ",
-                    "Neighborhoods": [
-                        {"Name":"Doğantepe"},
-                        {"Name":"Hacı Bayram"},
-                        {"Name":"Kavaklı"}
+                    "Name" : "Merkez",
+                    "Neighborhoods" : [
+                        { "Name" : "Bayır" },
+                        { "Name" : "Karabük" },
+                        { "Name" : "Kurtuluş" }
                     ]
                 },
                 {
-                    "Name": "Çankaya",
-                    "Neighborhoods": [
-                        {"Name":"Akarlar"},
-                        {"Name":"Bahçelievler"},
-                        {"Name":"Cebeci"}
+                    "Name" : "Eskipazar",
+                    "Neighborhoods" : [
+                        { "Name" : "Bahçepınar" },
+                        { "Name" : "Mermer" },
+                        { "Name" : "Yamanlar" }
                     ]
                 },
                 {
-                    "Name": "Gölbaşı",
-                    "Neighborhoods": [
-                        {"Name":"Bezirhane"},
-                        {"Name":"Dikilitaş"},
-                        {"Name":"Hacılar"}
+                    "Name" : "Safranbolu",
+                    "Neighborhoods" : [
+                        { "Name" : "Merkez Bostanbükü Köyü" },
+                        { "Name" : "Akçasu" },
+                        { "Name" : "Barış" }
                     ]
                 }
             ]
         },
         {
-            "Name": "Karabük",
-            "Districts": [
+            "Name" : "Ankara",
+            "Districts" : [
                 {
-                    "Name": "Karabük",
-                    "Neighborhoods": [
-                        {"Name":"Atatürk"},
-                        {"Name":"Bayır"},
-                        {"Name":"Kurtuluş"}
+                    "Name" : "Yenimahalle",
+                    "Neighborhoods" : [
+                        { "Name" : "Ostim OSB" },
+                        { "Name" : "Beştepe" },
+                        { "Name" : "Demetevler" }
                     ]
                 },
                 {
-                    "Name": "Safranbolu",
-                    "Neighborhoods": [
-                        {"Name":"Babasultan"},
-                        {"Name":"Barış"},
-                        {"Name":"İsmetpaşa"}
+                    "Name" : "Gölbaşı",
+                    "Neighborhoods" : [
+                        { "Name" : "Ahiboz" },
+                        { "Name" : "Bahçelievler" },
+                        { "Name" : "Eymir" }
                     ]
                 },
                 {
-                    "Name": "Yenice",
-                    "Neighborhoods": [
-                        {"Name":"Karşıyaka"},
-                        {"Name":"Özal"},
-                        {"Name":"Sipahiler"}
+                    "Name" : "Keçiören",
+                    "Neighborhoods" : [
+                        { "Name" : "Aktepe" },
+                        { "Name" : "Hisar" },
+                        { "Name" : "Esertepe" }
                     ]
                 }
             ]

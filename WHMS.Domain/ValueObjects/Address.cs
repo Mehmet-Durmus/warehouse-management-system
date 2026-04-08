@@ -8,11 +8,11 @@ public sealed record Address
     public string? PostalCode { get; init; } 
     public string? AddressLine { get; init; }
 
-    public Address(string cityId, string districtId, string neighborhoodId, string postalCode, string addressLine)
+    public Address(Guid cityId, Guid districtId, Guid neighborhoodId, string postalCode, string addressLine)
     {
-        CityId = Guid.Parse(cityId);
-        DistrictId = Guid.Parse(districtId);
-        NeighborhoodId = Guid.Parse(neighborhoodId);
+        CityId = cityId;
+        DistrictId = districtId;
+        NeighborhoodId = neighborhoodId;
         AddressLine = addressLine;
         PostalCode = postalCode;
     }

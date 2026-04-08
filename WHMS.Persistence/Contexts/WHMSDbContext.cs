@@ -150,14 +150,17 @@ public class WHMSDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Gui
             switch (auditable.State)
                 {
                     case EntityState.Added:
-                        auditable.Entity.CreatedAt = DateTime.Now;
-                        auditable.Entity.CreatedById = _currentUserService!.UserId!;
-                        auditable.Entity.CreatedByName = _currentUserService.FullName!;
-                        auditable.Entity.CreatedByUserName = _currentUserService.UserName!;
-                        auditable.Entity.UpdatedAt = DateTime.Now;
-                        auditable.Entity.UpdatedById = _currentUserService.UserId;
-                        auditable.Entity.UpdatedByName = _currentUserService.FullName!;
-                        auditable.Entity.UpdatedByUserName = _currentUserService.UserName!;
+                        if (auditable.Entity.CreatedById == null)
+                        {
+                            auditable.Entity.CreatedAt = DateTime.Now;
+                            auditable.Entity.CreatedById = _currentUserService!.UserId!;
+                            auditable.Entity.CreatedByName = _currentUserService.FullName!;
+                            auditable.Entity.CreatedByUserName = _currentUserService.UserName!;
+                            auditable.Entity.UpdatedAt = DateTime.Now;
+                            auditable.Entity.UpdatedById = _currentUserService.UserId;
+                            auditable.Entity.UpdatedByName = _currentUserService.FullName!;
+                            auditable.Entity.UpdatedByUserName = _currentUserService.UserName!;                        
+                        }
                         break;
                     case EntityState.Modified:
                         auditable.Entity.UpdatedAt = DateTime.Now;

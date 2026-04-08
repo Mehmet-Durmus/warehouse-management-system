@@ -1,0 +1,136 @@
+{
+    "CreatedBy" : "Osman Arı",
+    "Counts" : [
+        {
+            "Warehouse" : "Pendik Depo",
+            "IsCompleted" : true,
+            "CreatedAt" : "2025-04-05",
+            "CountLines" : [
+                {
+                    "Sku" : "8694179620460",
+                    "Quantity" : 98,
+                    "Variance" : -2,
+                    "CreatedBy" : "Metin Polat"
+                },
+                {
+                    "Sku" : "8691843307788",
+                    "Quantity" : 45,
+                    "Variance" : 0,
+                    "CreatedBy" : "Metin Polat"
+                },
+                {
+                    "Sku" : "8694184059309",
+                    "Quantity" : 17,
+                    "Variance" : 0,
+                    "CreatedBy" : "Hasan Yıldız"
+                },
+                {
+                    "Sku" : "8695992236883",
+                    "Quantity" : 170,
+                    "Variance" : 0,
+                    "CreatedAt" : "Halil Yavuz",
+                    "CreatedBy" : "Metin Polat"
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Kadıköy Depo",
+            "IsCompleted" : true,
+            "CreatedAt" : "2025-07-15",
+            "CountLines" : [
+                {
+                    "Sku" : "8696623994158",
+                    "Quantity" : 42,
+                    "Variance" : 0,
+                    "CreatedBy" : "Fadime Şimşek"
+                },
+                {
+                    "Sku" : "8692949630770",
+                    "Quantity" : 60,
+                    "Variance" : 0,
+                    "CreatedBy" : "Fadime Şimşek"
+                },
+                {
+                    "Sku" : "8694179620460",
+                    "Quantity" : 45,
+                    "Variance" : 0,
+                    "CreatedBy" : "Murat Özkan"
+                },
+                {
+                    "Sku" : "8695992236883",
+                    "Quantity" : 88,
+                    "Variance" : 0,
+                    "CreatedBy" : "Murat Özkan"
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Karabük Depo",
+            "IsCompleted" : true,
+            "CreatedAt" : "2025-05-15",
+            "CountLines" : [
+                {
+                    "Sku" : "8694179620460",
+                    "Quantity" : 60,
+                    "Variance" : 0,
+                    "CreatedBy" : "Ali Kurt"
+                },
+                {
+                    "Sku" : "8691843307788",
+                    "Quantity" : 70,
+                    "Variance" : 0,
+                    "CreatedBy" : "İbrahim Çetin"
+                },
+                {
+                    "Sku" : "8694184059309",
+                    "Quantity" : 79,
+                    "Variance" : 0,
+                    "CreatedBy" : "İbrahim Çetin"
+                },
+                {
+                    "Sku" : "8695992236883",
+                    "Quantity" : 170,
+                    "Variance" : 2,
+                    "CreatedBy" : "İbrahim Çetin"
+                }
+            ]
+        },
+        {
+            "Warehouse" : "Ostim Depo",
+            "IsCompleted" : true,
+            "CreatedAt" : "2025-07-15",
+            "CountLines" : [
+                {
+                    "Sku" : "8696623994158",
+                    "Quantity" : 125,
+                    "Variance" : -1,
+                    "CreatedBy" : "Süleyman Özcan"
+                },
+                {
+                    "Sku" : "8692949630770",
+                    "Quantity" : 163,
+                    "Variance" : 0,
+                    "CreatedBy" : "Emre Özdemir"
+                },
+                {
+                    "Sku" : "8694184059309",
+                    "Quantity" : 85,
+                    "Variance" : 0,
+                    "CreatedBy" : "Burak Şahin"
+                },
+                {
+                    "Sku" : "8695837033820",
+                    "Quantity" : 120,
+                    "Variance" : 0,
+                    "CreatedBy" : "Burak Şahin"
+                },
+                {
+                    "Sku" : "8695992236883",
+                    "Quantity" : 115,
+                    "Variance" : -5,
+                    "CreatedBy" : "Ramazan Yıldız"
+                }
+            ]
+        }
+    ]
+}
