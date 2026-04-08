@@ -1,156 +1,19 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using WHMS.Domain.Entities;
-using WHMS.Persistence.Contexts;
-using Microsoft.IdentityModel.Tokens;
-using WHMS.Persistence.SeedData;
-using WHMS.Application.Features.Command.Auth.Login;
-using WHMS.Application.Configurations;
-using WHMS.Infrastructure.Services;
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi;
-using WHMS.Persistence.Services;
-using WHMS.Application.Validators.Auth;
-using MediatR;
-using WHMS.Application.Behaviors;
-using FluentValidation;
-using WHMS.Application.Abstractions.Persistence;
-using WHMS.Persistence.Repositories;
-using WHMS.Persistence.UnitOfWork;
-using WHMS.Application.Abstractions.Infrastructure;
-using Microsoft.AspNetCore.Authorization;
-using WHMS.Application.Authorization.WarehouseAssigned;
-using System.Text.Json.Serialization;
-using WHMS.Application.Authorization.PasswordChanged;
-using WHMS.Application.Common.Constants;
-using WHMS.Persistence.SeedData.Dto;
 using WHMS.Persistence;
 using WHMS.Persistence.SeedData.Core;
-using WHMS.Persistence.SeedData.Seeders;
 using WHMS.Persistence.SeedData.Extensions;
+using WHMS.Application;
+using WHMS.Infrastructure;
+using WHMS.Api;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddDbContext<WHMSDbContext>(options => 
-options.UseNpgsql(
-    builder.Configuration.GetConnectionString("PostgreSQL")
-));
-
-
+builder.Services.AddPresentationServices(builder.Configuration);
+builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddInfrastructureServices();
 builder.Services.AddPersistenceServices(builder.Configuration, builder.Environment);
 builder.Services.AddSeedDataServices();
 
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<JwtSettings>>().Value);
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
-builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
-builder.Services.AddScoped<ILocationRepository, LocationRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IPasswordCreator, PasswordCreator>();
-builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
-builder.Services.AddScoped<IStoreRepository, StoreRepository>();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
-builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
-builder.Services.AddScoped<IInventoryCountRepository, InventoryCountRepository>();
-builder.Services.AddScoped<IWasteRecordRepository, WasteRecordRepository>();
-builder.Services.AddScoped<IStockStateRepository, StockStateRepository>();
-builder.Services.AddSingleton<IAuthorizationHandler, WarehouseAssignedHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, PasswordChangedHandler>();
-builder.Services.AddSingleton<IJsonDataLoader, JsonDataLoader>();
-
-builder.Services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-});
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
-{
-    options.Password.RequiredLength = 6;
-    options.Password.RequireDigit = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-})
-.AddEntityFrameworkStores<WHMSDbContext>()
-.AddDefaultTokenProviders();
-
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options => {
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ClockSkew = TimeSpan.Zero
-    };
-});
-
-builder.Services.AddAuthorization(options =>
-{
-    var warehouseAssigned = new WarehouseAssignedRequirement();
-    var passwordChanged = new PasswordChangedRequirement();
-    var LogisticDirector = ApplicationRole.LogisticDirector;
-    var WarehouseManager = ApplicationRole.WarehouseManager;
-    var WarehouseStaff = ApplicationRole.WarehouseStaff;
-    options.AddPolicy("LogisticDirector", p => 
-        p.RequireRole(LogisticDirector).AddRequirements(passwordChanged));
-    options.AddPolicy("WarehouseManager", p => 
-        p.RequireRole(WarehouseManager).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
-    options.AddPolicy("WarehouseStaff", p => 
-        p.RequireRole(WarehouseStaff).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
-    options.AddPolicy("DirectorOrManager", p => 
-        p.RequireRole(LogisticDirector, WarehouseManager).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
-    options.AddPolicy("ManagerOrStaff", p => 
-        p.RequireRole(WarehouseManager, WarehouseStaff).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
-    options.AddPolicy("DirectorManagerOrStaff", p => 
-        p.RequireRole(LogisticDirector, WarehouseManager, WarehouseStaff).AddRequirements(warehouseAssigned).AddRequirements(passwordChanged));
-    options.AddPolicy("PasswordChange", p => 
-        p.RequireRole(LogisticDirector, WarehouseManager, WarehouseStaff));
-});
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT Authorization header. Example: \"Bearer {token}\""
-    });
-
-    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-    {
-        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
-    });
-});
-builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 var app = builder.Build();
