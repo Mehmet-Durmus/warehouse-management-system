@@ -14,7 +14,7 @@ namespace WHMS.Persistence.SeedData.Extensions;
 public static class SeedDataExtensions
 {
 
-    public static async Task SeedDevelopmentDataAsync(this IApplicationBuilder app)
+    public static async Task SeedEssentialDataAsync(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateAsyncScope();
 
@@ -80,7 +80,7 @@ public static class SeedDataExtensions
 
     }
 
-    public static async Task SeedEssentialDataAsync(this IApplicationBuilder app)
+    public static async Task SeedDevelopmentDataAsync(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateAsyncScope();
         var runner = scope.ServiceProvider.GetRequiredService<SeedRunner>();

@@ -17,6 +17,7 @@ builder.Services.AddSeedDataServices();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 var app = builder.Build();
+await app.SeedEssentialDataAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -32,7 +33,6 @@ app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 
-await app.SeedEssentialDataAsync();
 
 app.Run();
 
