@@ -2,7 +2,7 @@ namespace WHMS.Application.Features.Queries.Employee.GetAllEmployees;
 
 public class GetAllEmployeesResultUserDto
 {
-    public string UserId { get; set; } = null!;
+    public string EmployeeId { get; set; } = null!;
     public string UserName { get; set; } = null!;
     public string FullName { get; set; } = null!;
     public string Role { get; set; } = null!;

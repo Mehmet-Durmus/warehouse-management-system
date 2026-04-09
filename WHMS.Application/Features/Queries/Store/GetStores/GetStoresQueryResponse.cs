@@ -1,5 +1,4 @@
 using WHMS.Application.Common.DTOs;
-using WHMS.Application.DTOs.Store;
 
 namespace WHMS.Application.Features.Queries.Store.GetStores;
 

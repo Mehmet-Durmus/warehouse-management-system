@@ -1,4 +1,4 @@
-namespace WHMS.Application.Configurations;
+namespace WHMS.Application.Common.Configurations;
 
 public class JwtSettings
 {

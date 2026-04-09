@@ -2,8 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
-using WHMS.Application.Configurations;
-using WHMS.Application.DTOs;
+using WHMS.Application.Common.Configurations;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Command.Auth.Login;

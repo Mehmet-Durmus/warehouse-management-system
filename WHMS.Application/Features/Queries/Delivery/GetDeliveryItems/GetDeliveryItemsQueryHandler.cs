@@ -3,8 +3,6 @@ using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
-using WHMS.Application.DTOs.Catalog;
-using WHMS.Application.DTOs.Delivery;
 
 namespace WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
 

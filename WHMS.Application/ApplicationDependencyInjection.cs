@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using WHMS.Application.Authorization.PasswordChanged;
 using WHMS.Application.Authorization.WarehouseAssigned;
 using WHMS.Application.Behaviors;
-using WHMS.Application.Configurations;
+using WHMS.Application.Common.Configurations;
 
 namespace WHMS.Application;
 

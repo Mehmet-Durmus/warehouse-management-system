@@ -1,5 +1,4 @@
 using WHMS.Application.Common.DTOs;
-using WHMS.Application.DTOs.InventoryCount;
 
 namespace WHMS.Application.Features.Queries.InventoryCount.GetInventoryCountLines;
 

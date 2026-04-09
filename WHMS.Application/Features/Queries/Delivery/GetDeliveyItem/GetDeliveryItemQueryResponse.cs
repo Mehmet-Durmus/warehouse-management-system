@@ -1,5 +1,3 @@
-using WHMS.Application.DTOs.Catalog;
-
 namespace WHMS.Application.Features.Queries.Delivery.GetDeliveryItem;
 
 public class GetDeliveryItemQueryResponse

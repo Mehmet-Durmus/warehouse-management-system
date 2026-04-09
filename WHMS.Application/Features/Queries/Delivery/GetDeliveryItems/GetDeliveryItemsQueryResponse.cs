@@ -1,5 +1,4 @@
 using WHMS.Application.Common.DTOs;
-using WHMS.Application.DTOs.Delivery;
 
 namespace WHMS.Application.Features.Queries.Delivery.GetDeliveryItems;
 

@@ -3,7 +3,6 @@ using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
-using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Queries.WasteRecord.GetWasteRecords;
 

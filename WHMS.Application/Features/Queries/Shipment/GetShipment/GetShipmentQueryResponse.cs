@@ -1,5 +1,3 @@
-using WHMS.Application.DTOs.Shipment;
-
 namespace WHMS.Application.Features.Queries.Shipment.GetShipment;
 
 public class GetShipmentQueryResponse

@@ -1,9 +1,7 @@
-using System.Security.Cryptography.X509Certificates;
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
-using WHMS.Application.DTOs.Catalog;
 
 namespace WHMS.Application.Features.Queries.Delivery.GetDelivery;
 

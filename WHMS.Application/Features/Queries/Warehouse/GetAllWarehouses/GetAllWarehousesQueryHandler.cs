@@ -1,7 +1,6 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Filters;
-using WHMS.Application.DTOs.Warehouse;
 
 namespace WHMS.Application.Features.Queries.Warehouse.GetAllWarehouses;
 

@@ -1,4 +1,4 @@
-using WHMS.Application.DTOs;
+using WHMS.Application.Common.DTOs;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Abstractions.Infrastructure;

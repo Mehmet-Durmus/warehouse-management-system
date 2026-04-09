@@ -83,7 +83,7 @@ public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQueryR
         foreach (var employee in employees)
             response.Employees.Add(new()
             {
-                UserId = employee.Id.ToString(),
+                EmployeeId = employee.Id.ToString(),
                 UserName = employee.UserName!,
                 FullName = employee.FullName,
                 Role = roles.GetValueOrDefault(employee.Id)!,

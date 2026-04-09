@@ -34,7 +34,7 @@ public class GetEmployeeQueryHandler : IRequestHandler<GetEmployeeQueryRequest, 
 
         return new()
         {
-            UserName = employee.UserName!,
+            EmployeeId = employee.UserName!,
             FullName = employee.FullName,
             Role = employeeRole!,
             WarehouseId = employee.WarehouseId.ToString() ?? "",

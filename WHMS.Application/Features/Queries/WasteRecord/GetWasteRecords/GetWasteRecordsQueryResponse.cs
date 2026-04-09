@@ -1,5 +1,4 @@
 using WHMS.Application.Common.DTOs;
-using WHMS.Application.DTOs.WasteRecord;
 
 namespace WHMS.Application.Features.Queries.WasteRecord.GetWasteRecords;
 

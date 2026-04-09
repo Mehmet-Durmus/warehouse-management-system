@@ -1,6 +1,6 @@
-namespace WHMS.Application.DTOs.Catalog;
+namespace WHMS.Application.Features.Queries.Catalog.GetCatalogData;
 
-public class SkuDto
+public class GetCatalogDataResultSkuDto
 {
     public string Id { get; set; } = null!;
     public string SKUName { get; set; } = null!;

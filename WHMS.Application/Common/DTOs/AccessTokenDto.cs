@@ -1,4 +1,4 @@
-namespace WHMS.Application.DTOs;
+namespace WHMS.Application.Common.DTOs;
 
 public class AccessTokenDto
 {

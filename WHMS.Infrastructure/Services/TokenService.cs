@@ -1,11 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using WHMS.Application.Abstractions.Infrastructure;
-using WHMS.Application.Configurations;
-using WHMS.Application.DTOs;
+using WHMS.Application.Common.Configurations;
+using WHMS.Application.Common.DTOs;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Infrastructure.Services;

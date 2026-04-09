@@ -1,8 +1,6 @@
-using WHMS.Domain.ValueObjects;
+namespace WHMS.Application.Features.Queries.Warehouse.GetAllWarehouses;
 
-namespace WHMS.Application.DTOs.Warehouse;
-
-public class WarehouseDto
+public class GetAllWarehousesResultWarehouseDto
 {
     public string WarehouseId { get; set; } = null!;
     public string WarehouseName { get; set; } = null!;

@@ -1,8 +1,6 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Filters;
-using WHMS.Application.DTOs.Store;
-using WHMS.Application.Features.Queries.Store.GetStores;
 
 namespace WHMS.Application.Features.Queries.Store.GetStores;
 

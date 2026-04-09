@@ -1,6 +1,5 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
-using WHMS.Application.DTOs.Catalog;
 
 namespace WHMS.Application.Features.Queries.Catalog.GetCatalogData;
 
@@ -20,7 +19,7 @@ public class GetCatalogDataQueryHandler : IRequestHandler<GetCatalogDataQueryReq
 
         foreach (var category in categories)
         {
-            var dto = new CategoryDto
+            var dto = new GetCatalogDataResultCategoryDto
             {
                 Id = category.Id.ToString(),
                 CategoryName = category.CategoryName,
@@ -31,7 +30,7 @@ public class GetCatalogDataQueryHandler : IRequestHandler<GetCatalogDataQueryReq
             if (category.Skus is not null)
             {
                 foreach (var sku in category.Skus)
-                    dto.Skus.Add(new SkuDto
+                    dto.Skus.Add(new GetCatalogDataResultSkuDto
                     {
                         Id = sku.Id.ToString(),
                         SKUName = sku.SKUName,

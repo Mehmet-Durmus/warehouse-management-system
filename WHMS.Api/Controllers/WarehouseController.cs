@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WHMS.Api.Common.Models;
 using WHMS.Api.Common.Models.Warehouse;
-using WHMS.Application.DTOs.Warehouse;
 using WHMS.Application.Features.Command.Warehouse.AssignEmployees;
 using WHMS.Application.Features.Command.Warehouse.CreateWarehouse;
 using WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
@@ -38,7 +37,8 @@ public class WarehouseController : ControllerBase
     public async Task<IActionResult> GetAllWarehouses([FromQuery] GetAllWarehousesQueryRequest request)
     {
         var result = await _mediator.Send(request);
-        return Ok(ApiResponse<List<WarehouseDto>>.SuccessList(result.Warehouses, new(result.Pagination)));
+        return Ok(ApiResponse<List<GetAllWarehousesResultWarehouseDto>>
+            .SuccessList(result.Warehouses, new(result.Pagination)));
     }
 
     [HttpGet("{id}")]

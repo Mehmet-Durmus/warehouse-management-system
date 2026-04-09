@@ -10,10 +10,6 @@ using WHMS.Application.Features.Command.Employee.UpdateManager;
 using WHMS.Application.Features.Command.Employee.UpdateStaffMember;
 using WHMS.Application.Features.Queries.Employee.GetAllEmployees;
 using WHMS.Application.Features.Queries.Employee.GetEmployee;
-using WHMS.Application.Features.Queries.Employee.GetManager;
-using WHMS.Application.Features.Queries.Employee.GetManagers;
-using WHMS.Application.Features.Queries.Employee.GetStaff;
-using WHMS.Application.Features.Queries.Employee.GetStaffMember;
 
 namespace WHMS.Api.Controllers;
 
@@ -40,26 +36,6 @@ public class EmployeeController : ControllerBase
     [HttpGet("{employeeId}")]
     public async Task<IActionResult> GetEmployee(string employeeId)
         => Ok(ApiResponse<GetEmployeeQueryResponse>.Success(await _mediator.Send(new GetEmployeeQueryRequest { EmployeeId = employeeId })));
-
-    [Authorize(Policy = "LogisticDirector")]
-    [HttpGet("managers")]
-    public async Task<IActionResult> GetManagers()
-        => Ok(await _mediator.Send(new GetManagersQueryRequest()));
-
-    [Authorize(Policy = "LogisticDirector")]
-    [HttpGet("staff")]
-    public async Task<IActionResult> GetStaff()
-        => Ok(await _mediator.Send(new GetStaffQueryRequest()));
-
-    [Authorize(Policy = "LogisticDirector")]
-    [HttpGet("managers/{id}")]
-    public async Task<IActionResult> GetManager(string id)
-        => Ok(await _mediator.Send(new GetManagerQueryRequest {ManagerId = id}));
-
-    [Authorize(Policy = "LogisticDirector")]
-    [HttpGet("staff/{id}")]
-    public async Task<IActionResult> GetStaffMember(string id)
-        => Ok(await _mediator.Send(new GetStaffMemberQueryRequest {StaffMemberId = id}));
 
     [Authorize(Policy = "LogisticDirector")]
     [HttpPost("manager")]

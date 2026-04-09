@@ -1,6 +1,4 @@
 
-using WHMS.Application.DTOs.Delivery;
-
 namespace WHMS.Application.Features.Queries.Delivery.GetDelivery;
 
 public class GetDeliveryQueryResponse
