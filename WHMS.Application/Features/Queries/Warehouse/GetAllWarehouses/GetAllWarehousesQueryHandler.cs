@@ -27,7 +27,7 @@ public class GetAllWarehousesQueryHandler : IRequestHandler<GetAllWarehousesQuer
             Name = request.Name,
             CityId = request.CityId,
             DistrictId = request.DistrictId,
-            NeighborhoodId = request.DistrictId,
+            NeighborhoodId = request.NeighborhoodId,
             Page = request.Page,
             SkuIds = request.SkuIds,
             PageSize = request.PageSize,
