@@ -26,6 +26,14 @@ subfolders mirroring the existing projects (`Domain/`, `Application/`, `Api/`,
   file's path within its project. Test method names follow
   `MethodName_Scenario_ExpectedResult`.
 - Structure: Arrange-Act-Assert, one behavior per test.
+- Review cadence: after the first several handlers were reviewed one at a time and
+  approved, the project owner relaxed this to continuous mode - write tests for the
+  remaining handlers in the target list without stopping for approval after each one,
+  running `dotnet test` after every file and committing per handler as usual. Only
+  interrupt this flow to flag something that needs a decision: a suspicious/buggy
+  behavior found while writing a characterization test (per the rule below), a
+  namespace collision or similar structural surprise worth a heads-up, or finishing
+  a whole feature group.
 - Goal: lock in the **current** behavior of command/query handlers, validators,
   filter extensions, the validation pipeline behavior, and the two authorization
   handlers — before anything moves. See the "Test target list" section below.
