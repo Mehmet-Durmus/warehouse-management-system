@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
@@ -10,14 +9,14 @@ namespace WHMS.Application.Features.Command.Employee.CreateStaffMember;
 public class CreateStaffMemberCommandHandler : IRequestHandler<CreateStaffMemberCommandRequest, CreateStaffMemberCommandResponse>
 {
     private readonly IEmployeeRepository _employeeRepository;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IAuthService _authService;
     private readonly IPasswordCreator _passwordCreator;
     private readonly IWarehouseRepository _warehouseRepository;
 
-    public CreateStaffMemberCommandHandler(IEmployeeRepository employeeRepository, UserManager<ApplicationUser> userManager, IPasswordCreator passwordCreator, IWarehouseRepository warehouseRepository)
+    public CreateStaffMemberCommandHandler(IEmployeeRepository employeeRepository, IAuthService authService, IPasswordCreator passwordCreator, IWarehouseRepository warehouseRepository)
     {
         _employeeRepository = employeeRepository;
-        _userManager = userManager;
+        _authService = authService;
         _passwordCreator = passwordCreator;
         _warehouseRepository = warehouseRepository;
     }
@@ -44,9 +43,9 @@ public class CreateStaffMemberCommandHandler : IRequestHandler<CreateStaffMember
         }
 
         string tempPassword = await _passwordCreator.CreateTempPassword();
-        var result = await _userManager.CreateAsync(staff, tempPassword);
+        var result = await _authService.CreateAsync(staff, tempPassword);
         if (result.Succeeded)
-            await _userManager.AddToRoleAsync(staff, ApplicationRole.WarehouseStaff);
+            await _authService.AddToRoleAsync(staff, ApplicationRole.WarehouseStaff);
         else
             throw new Exception("Staff member could not be created.");
         

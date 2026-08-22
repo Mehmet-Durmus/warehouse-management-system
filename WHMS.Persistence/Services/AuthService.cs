@@ -35,4 +35,10 @@ public class AuthService : IAuthService
 
     public async Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword)
         => await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+    public async Task<IdentityResult> CreateAsync(ApplicationUser user, string password)
+        => await _userManager.CreateAsync(user, password);
+
+    public async Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role)
+        => await _userManager.AddToRoleAsync(user, role);
 }
