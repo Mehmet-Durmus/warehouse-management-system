@@ -49,7 +49,7 @@ public class UpdateWasteRecordCommandHandler : IRequestHandler<UpdateWasteRecord
             CreatedAfter = wasteRecord!.CreatedAt
         };
         var uncompletedCounts = await _inventoryCountRepository.GetInventoryCounts(uncompletedFilter, applyPagination: false);
-        if (uncompletedCounts is not null)
+        if (uncompletedCounts.Count > 0)
             throw new Exception("Cannot update waste record while an active inventory count exists after its creation date.");
 
         InventoryCountFilter completedFilter = new()
@@ -60,7 +60,7 @@ public class UpdateWasteRecordCommandHandler : IRequestHandler<UpdateWasteRecord
             CreatedAfter = wasteRecord.CreatedAt
         };
         var completedCounts = await _inventoryCountRepository.GetInventoryCounts(completedFilter, applyPagination: false);
-        if (completedCounts is not null)
+        if (completedCounts.Count > 0)
             throw new Exception("Waste record cannot be updated because a completed inventory count including this SKU exists after its creation date.");
 
         var sku = await _catalogRepository.GetSku(Guid.Parse(request.SkuId!));
