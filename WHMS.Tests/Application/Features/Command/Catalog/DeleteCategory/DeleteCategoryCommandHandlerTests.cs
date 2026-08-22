@@ -125,16 +125,16 @@ public class DeleteCategoryCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_CategoryNotFound_ThrowsNullReferenceException()
+    public async Task Handle_CategoryNotFound_ThrowsNotFoundException()
     {
-        // Documents a current gap rather than intended behavior: the handler never
-        // null-checks the repository result before touching category.Skus, so a
-        // missing category surfaces as an unhandled NullReferenceException instead
-        // of a domain-level "not found" error.
         _catalogRepository.Setup(r => r.GetCategory(_categoryId)).ReturnsAsync((Category)null!);
 
         var request = new DeleteCategoryCommandRequest { CategoryId = _categoryId.ToString() };
 
-        await Assert.ThrowsAsync<NullReferenceException>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+
+        Assert.Equal("Category not found.", exception.Message);
+        _catalogRepository.Verify(r => r.DeleteCategory(It.IsAny<Guid>()), Times.Never);
+        _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
     }
 }

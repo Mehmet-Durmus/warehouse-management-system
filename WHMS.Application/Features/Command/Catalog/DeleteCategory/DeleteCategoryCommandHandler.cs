@@ -20,6 +20,9 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
     public async Task<DeleteCategoryCommandResponse> Handle(DeleteCategoryCommandRequest request, CancellationToken cancellationToken)
     {
         var category = await _catalogRepository.GetCategory(Guid.Parse(request.CategoryId!));
+        if (category is null)
+            throw new Exception("Category not found.");
+
         bool inStock = false;
         bool inDelivery = false;
         if (category.Skus is not null)
