@@ -22,7 +22,7 @@ public class DeleteStoreCommandHandlerTests
     [Fact]
     public async Task Handle_StoreHasUnsentShipments_DeactivatesThemBeforeSoftDeletingStore()
     {
-        var pendingShipment = new Shipment { Id = Guid.NewGuid(), IsActive = true };
+        var pendingShipment = new WHMS.Domain.Entities.Shipment { Id = Guid.NewGuid(), IsActive = true };
         _shipmentRepository
             .Setup(r => r.GetShipments(
                 It.Is<ShipmentFilter>(f => f.StoreId == _storeId.ToString() && f.IsSent == false),
