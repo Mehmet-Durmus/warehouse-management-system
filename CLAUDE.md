@@ -34,9 +34,9 @@ subfolders mirroring the existing projects (`Domain/`, `Application/`, `Api/`,
   behavior found while writing a characterization test (per the rule below), a
   namespace collision or similar structural surprise worth a heads-up, or finishing
   a whole feature group.
-- Goal: lock in the **current** behavior of command/query handlers, validators,
-  filter extensions, the validation pipeline behavior, and the two authorization
-  handlers — before anything moves. See the "Test target list" section below.
+- Goal: lock in the **current** behavior of command handlers, the query handlers that
+  have guard/throw logic, and the two authorization handlers — before anything moves.
+  See the "Test target list" section below.
 - **No business logic changes in this phase.** `WHMS.Domain`, `WHMS.Application`
   handler logic, `WHMS.Persistence`, and `WHMS.Api` behavior must stay exactly as
   they are. If a test reveals a suspicious or seemingly buggy behavior (e.g. a
@@ -96,24 +96,24 @@ Do not start Phase 2 for an aggregate until its Phase 1 tests exist and pass.
 
 ## Test target list (Phase 1)
 
-Full list agreed with the user, grouped by priority:
+Command handlers are done (all groups under `WHMS.Application/Features/Command/**`).
+Revised list, agreed with the user after that pass:
 
-1. **Command handlers** (highest priority — these hold the business rules being
-   moved): all handlers under `WHMS.Application/Features/Command/**` (Delivery,
-   Shipment, InventoryCount, Catalog, WasteRecord, Warehouse, Store, Employee, Auth).
-   Cover: happy path, not-found/wrong-warehouse branch, invalid state-transition
-   branch (already received/sent/completed), uniqueness/conflict branch, and
-   warning-collection branches (e.g. `AssignEmployeesCommandHandler`).
-2. **Filter extensions**: `WHMS.Application/Common/Filtering/Extensions/*` — pure
-   `IQueryable` predicate logic, no mocks needed.
-3. **Query handlers with real logic** (pagination/sorting), lower priority than 1-2.
-4. **`ValidationBehavior`**: aggregates validator failures correctly; passes through
-   when there are no validators for a request.
-5. **Authorization handlers**: `PasswordChangedHandler`, `WarehouseAssignedHandler`.
-6. **Validators**: all classes under `WHMS.Application/Validators/**` — table-driven,
-   one valid case + one case per rule.
-7. **`PasswordCreator`**: generated password satisfies its length/character-class
-   constraints.
+1. **Query handlers with a guard/throw branch** (not-found, cross-warehouse access,
+   role-based visibility): `GetDelivery`, `GetDeliveries`, `GetDeliveryItem`,
+   `GetDeliveryItems`, `GetEmployee`, `GetInventoryCount`, `GetInventoryCountLines`,
+   `GetShipment`, `GetShipmentItem`, `GetShipmentItems`, `GetStore`, `GetWarehouse`,
+   `GetWasteRecords`. Same guard-focused coverage style as command handlers.
+2. **Authorization handlers**: `PasswordChangedHandler`
+   (`WHMS.Application/Authorization/PasswordChanged/`), `WarehouseAssignedHandler`
+   (`WHMS.Application/Authorization/WarehouseAssigned/`).
 
-Out of scope for Phase 1: `WHMS.Persistence` repositories/DbContext, `WHMS.Api`
-controllers, `TokenService` signing logic.
+Explicitly out of scope (decided after the command-handler pass, not just
+deprioritized): `ValidationBehavior`, all `WHMS.Application/Validators/**`,
+`WHMS.Application/Common/Filtering/Extensions/*`, and `PasswordCreator`. Also out of
+scope: query handlers with no guard/throw branch (pure list/count/lookup
+pass-throughs — e.g. `GetCatalogData`, `GetAllEmployees`, `GetLocationData`, the
+`*Count` queries) — not enough behavior to characterize.
+
+Out of scope for Phase 1 regardless: `WHMS.Persistence` repositories/DbContext,
+`WHMS.Api` controllers, `TokenService` signing logic.
