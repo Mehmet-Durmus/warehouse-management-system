@@ -108,26 +108,23 @@ public class GetWasteRecordsQueryHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ManagerFilteringByNonExistentCreator_ThrowsNullReferenceException()
+    public async Task Handle_ManagerFilteringByNonExistentCreator_ThrowsNotFound()
     {
-        // Documents a current gap, not intended behavior: when the manager-only
-        // check runs, "employee" is never null-checked before "employee.WarehouseId"
-        // is read. A CreatedById that does not match any employee crashes with an
-        // unhandled NullReferenceException instead of a domain-level error - flagged
-        // to the project owner rather than fixed here.
         SetRoles(ApplicationRole.WarehouseManager);
         _currentUserService.Setup(u => u.WarehouseId).Returns(_warehouseId.ToString());
         var missingId = Guid.NewGuid();
         _employeeRepository.Setup(r => r.GetEmployee(missingId)).ReturnsAsync((ApplicationUser)null!);
 
-        await Assert.ThrowsAsync<NullReferenceException>(() => _handler.Handle(Request(createdById: missingId.ToString()), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(createdById: missingId.ToString()), CancellationToken.None));
+
+        Assert.Equal("Employee not found.", exception.Message);
     }
 
     [Fact]
-    public async Task Handle_DirectorFilteringByNonExistentCreator_DoesNotCrash()
+    public async Task Handle_DirectorFilteringByNonExistentCreator_DoesNotThrow()
     {
         // The manager-only check is skipped entirely for directors, so a
-        // non-existent CreatedById does not trigger the null-reference path above.
+        // non-existent CreatedById does not trigger the guard above at all.
         SetRoles(ApplicationRole.LogisticDirector);
         var missingId = Guid.NewGuid();
         _employeeRepository.Setup(r => r.GetEmployee(missingId)).ReturnsAsync((ApplicationUser)null!);
