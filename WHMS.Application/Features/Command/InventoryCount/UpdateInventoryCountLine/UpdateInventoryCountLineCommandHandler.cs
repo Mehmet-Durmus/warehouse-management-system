@@ -10,12 +10,14 @@ public class UpdateInventoryCountLineCommandHandler : IRequestHandler<UpdateInve
     private readonly IInventoryCountRepository _inventoryCountRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IStockStateRepository _stockStateRepository;
 
-    public UpdateInventoryCountLineCommandHandler(IInventoryCountRepository inventoryCountRepository, IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
+    public UpdateInventoryCountLineCommandHandler(IInventoryCountRepository inventoryCountRepository, IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IStockStateRepository stockStateRepository)
     {
         _inventoryCountRepository = inventoryCountRepository;
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
+        _stockStateRepository = stockStateRepository;
     }
 
     public async Task<UpdateInventoryCountLineCommandResponse> Handle(UpdateInventoryCountLineCommandRequest request, CancellationToken cancellationToken)
@@ -64,7 +66,10 @@ public class UpdateInventoryCountLineCommandHandler : IRequestHandler<UpdateInve
         inventoryCountLine.InventoryCountId = Guid.Parse(request.InventoryCountId!);
         inventoryCountLine.SkuId = Guid.Parse(request.SkuId!);
         inventoryCountLine.Quantity = request.Quantity;
-        
+
+        int currentStock = await _stockStateRepository.GetStockQuantity(newInventoryCount.WarehouseId, inventoryCountLine.SkuId);
+        inventoryCountLine.Variance = inventoryCountLine.Quantity - currentStock;
+
         await _unitOfWork.CommitAsync();
         return new()
         {   InventoryCountId = inventoryCountLine.InventoryCountId.ToString(),

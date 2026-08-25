@@ -36,7 +36,8 @@ public class GetWasteRecordsQueryHandler : IRequestHandler<GetWasteRecordsQueryR
         if (request.CreatedById is not null)
         {
             var employee = await _employeeRepository.GetEmployee(Guid.Parse(request.CreatedById!));
-            if (roles!.Contains(ApplicationRole.WarehouseManager) && employee.WarehouseId.ToString() != _currentUserService.WarehouseId)
+            if (roles!.Contains(ApplicationRole.WarehouseManager)
+                && (employee is null || employee.WarehouseId.ToString() != _currentUserService.WarehouseId))
                 throw new Exception("Employee not found.");
         }
 

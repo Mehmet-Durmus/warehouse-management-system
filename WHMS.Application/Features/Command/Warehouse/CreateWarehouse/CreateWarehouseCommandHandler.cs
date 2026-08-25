@@ -52,6 +52,8 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
             NormalizedName = normalizedName
         };
 
+        await _warehouseRepository.CreateWarehouse(warehouse);
+
         CreateWarehouseCommandResponse response = new() { Warnings = [] };
         if (!string.IsNullOrWhiteSpace(request.ManagerId))
         {
@@ -95,7 +97,6 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
                 
             }
 
-        await _warehouseRepository.CreateWarehouse(warehouse);
         await _unitOfWork.CommitAsync();
 
         response.ResultDto = new()
