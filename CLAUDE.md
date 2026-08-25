@@ -104,13 +104,12 @@ Revised list, agreed with the user after that pass:
    `GetDeliveryItems`, `GetEmployee`, `GetInventoryCount`, `GetInventoryCountLines`,
    `GetShipment`, `GetShipmentItem`, `GetShipmentItems`, `GetStore`, `GetWarehouse`,
    `GetWasteRecords`. Same guard-focused coverage style as command handlers.
-2. **Authorization handlers**: `PasswordChangedHandler`
-   (`WHMS.Application/Authorization/PasswordChanged/`), `WarehouseAssignedHandler`
-   (`WHMS.Application/Authorization/WarehouseAssigned/`).
 
 Explicitly out of scope (decided after the command-handler pass, not just
 deprioritized): `ValidationBehavior`, all `WHMS.Application/Validators/**`,
-`WHMS.Application/Common/Filtering/Extensions/*`, and `PasswordCreator`. Also out of
+`WHMS.Application/Common/Filtering/Extensions/*`, `PasswordCreator`, and the two
+authorization handlers (`PasswordChangedHandler`, `WarehouseAssignedHandler`) under
+`WHMS.Application/Authorization/`. Also out of
 scope: query handlers with no guard/throw branch (pure list/count/lookup
 pass-throughs — e.g. `GetCatalogData`, `GetAllEmployees`, `GetLocationData`, the
 `*Count` queries) — not enough behavior to characterize.
