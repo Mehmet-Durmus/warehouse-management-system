@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using WHMS.Api.Common.ExceptionHandling;
 using WHMS.Application.Authorization.PasswordChanged;
 using WHMS.Application.Authorization.WarehouseAssigned;
 using WHMS.Application.Common.Constants;
@@ -19,7 +20,9 @@ public static class PresentationDependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        
+        services.AddExceptionHandler<ApiExceptionHandler>();
+        services.AddProblemDetails();
+
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
 

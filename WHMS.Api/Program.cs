@@ -20,6 +20,8 @@ var app = builder.Build();
 await app.SeedEssentialDataAsync();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
