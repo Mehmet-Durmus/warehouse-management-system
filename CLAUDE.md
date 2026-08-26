@@ -15,9 +15,16 @@ Commit messages produced during AI-assisted work keep their `Co-Authored-By: Cla
 trailer — it is the audit trail that makes the split between handwritten and
 AI-assisted work verifiable in `git log`. Do not strip it.
 
-## Current phase: Phase 1 — characterization tests
+## Phase 1 — characterization tests (complete, merged to `main`)
 
-We are adding a single test project, `WHMS.Tests`, at the solution root, with
+Merged via PR #1 on the `ai-assisted/test-project-setup` branch (kept, not deleted,
+for reference). 256 tests across every Command handler and every Query handler with
+guard logic. Six real bugs were found and fixed along the way, each in its own `fix:`
+commit separate from the `test:` commit that first characterized the buggy behavior
+— see that branch's history for the details. Kept below for reference; do not restart
+this phase.
+
+We added a single test project, `WHMS.Tests`, at the solution root, with
 subfolders mirroring the existing projects (`Domain/`, `Application/`, `Api/`,
 `Infrastructure/` as needed) — **not** one test project per layer.
 
@@ -46,35 +53,100 @@ subfolders mirroring the existing projects (`Domain/`, `Application/`, `Api/`,
   `WHMS.Persistence` — those are out of scope for unit testing and are not part of
   this phase.
 
-## Phase 2 (later, requires separate go-ahead): moving business rules to Domain
+## Current phase: Phase 2 — moving business rules to Domain
 
-Once Phase 1 tests are green for a given area, business rules move into the
-corresponding domain entity one aggregate at a time (e.g. `Delivery`, then
-`Shipment`, then `InventoryCount`, ...). For each aggregate:
+Branch: `ai-assisted/move-business-rules-to-domain`, branched from `main` (not from
+the old `ai-assisted/test-project-setup` branch — that one is a frozen, merged
+snapshot; `main` is the live base).
 
-1. Add the behavior method(s) to the entity (e.g. `Delivery.Receive(...)`), replacing
-   public setters with `private set` where the invariant requires it.
-2. Write new domain-level unit tests for that method directly (no mocks needed).
-3. Update the corresponding Application handler to call the new domain method instead
-   of inlining the check, and update/adjust its existing Phase-1 test only as much as
-   the new call shape requires — the observable behavior (return value / exception /
-   error message) should not change unless that change was explicitly agreed with the
-   user first.
-4. Rules that require querying another aggregate or the database (e.g. SKU name
-   uniqueness) do not move into a single entity method — model them as a domain
-   service interface (defined in `WHMS.Domain`, implemented in
-   `WHMS.Infrastructure`/`WHMS.Persistence`) instead. Ask before introducing a new
-   interface if it's not obvious which project should implement it.
+A full catalog of every business rule found in every Command/Query handler — which
+entity/entities each concerns, and whether it's genuinely cross-aggregate or just an
+aggregate-root-plus-child check — was worked out with the user before starting this
+phase. Reference that discussion in conversation history if the shape of a rule is
+unclear; it is not duplicated here.
 
-Do not start Phase 2 for an aggregate until its Phase 1 tests exist and pass.
+### Structure
+
+- `WHMS.Domain/BusinessRules/<Aggregate>/` mirroring the folder names already used
+  under `WHMS.Application/Features/Command/` (`Catalog`, `Store`, `WasteRecord`,
+  `Employee`, `Warehouse`, `Delivery`, `Shipment`, `InventoryCount`).
+- `WHMS.Domain/BusinessRules/Shared/` for rules that don't belong to a single
+  aggregate — e.g. `AddressRules`, since `Address` is a value object used by both
+  `Warehouse` and `Store`, not owned by either.
+- **Naming principle:** a Rules class is named after the aggregate the rule is
+  fundamentally *about*, not the handler that happens to call it. E.g.
+  `WarehouseRules.EnsureExists(...)` lives under `BusinessRules/Warehouse/` even
+  though `Delivery`/`Shipment`/`Employee` handlers call into it. A single handler may
+  call into more than one aggregate's Rules class when a check is a composite of
+  checks about different aggregates (e.g. manager assignment: `WarehouseRules` for
+  "no manager yet", `EmployeeRules` for "has the Manager role").
+- **Rule classes are static, pure, and synchronous — no repository/DB access, ever.**
+  The Application handler keeps doing the I/O (repository calls) to gather whatever
+  the rule needs (a bool, a count, an already-fetched entity); the Rule method
+  receives that data and either throws a typed domain exception or returns a computed
+  value (e.g. `InventoryCountRules.CalculateVariance(quantity, currentStock)` returns
+  an `int`, no throw). This is what makes Rule methods testable with zero mocks.
+
+### Exception hierarchy (`WHMS.Domain/Exceptions/`)
+
+Start minimal, split further only when a real case demands it:
+
+- `DomainException` — abstract base.
+- `NotFoundException` — a referenced aggregate/entity doesn't exist (or isn't visible
+  to the caller — cross-warehouse access denial reuses this, matching existing
+  "hide as not-found" behavior).
+- `BusinessRuleViolationException` — everything else: uniqueness conflicts, invalid
+  state transitions (already sent/received/completed), insufficient stock, etc.
+
+### Global exception handling (`WHMS.Api`, new — deliberately in scope for this branch)
+
+Typed domain exceptions are only useful once something converts them to a proper HTTP
+response — today nothing does (verified: no `UseExceptionHandler`, no exception
+filters, no try/catch anywhere in `WHMS.Api`; every thrown exception, including
+FluentValidation's `ValidationException`, currently reaches the client as a raw
+unhandled-exception response). Added via `IExceptionHandler`
+(`AddExceptionHandler<T>()` + `app.UseExceptionHandler()` in `Program.cs`), mapping:
+
+- `NotFoundException` → 404
+- `BusinessRuleViolationException` → 400 (revisit to 409 for conflict-shaped cases if
+  it turns out to matter)
+- FluentValidation `ValidationException` → 400
+- anything else → 500
+
+All responses wrapped in the existing `ApiResponse`/`ApiResponse<T>`
+(`WHMS.Api/Common/Models/`) shape via `ApiResponse.Failure(...)`.
+
+### Per-aggregate migration steps
+
+Once the exception hierarchy and global handler exist (first commits on this branch),
+migrate one aggregate at a time:
+
+1. Write the `<Aggregate>Rules` class with one method per rule, plus a Domain-level
+   unit test per rule (no mocks — that's the point).
+2. Update the Application handler(s) to call the Rule method instead of inlining the
+   check; the repository call(s) that gather input data stay in the handler.
+3. Update the handler's existing Phase 1 test: assert the new exception *type*
+   (`NotFoundException`/`BusinessRuleViolationException`) instead of a bare
+   `Exception`. Message text may also change if the Rule class phrases it
+   differently — this is a deliberate, already-agreed change, not a silent one.
+4. Genuinely cross-aggregate rules (e.g. Shipment's projected-stock calculation) take
+   multiple already-fetched parameters; they still never call a repository directly.
+
+Do not start an aggregate's migration until its Rule class + Domain test exist and its
+handler test has been updated to match. Do not start Phase 2 work on an aggregate
+whose Phase 1 characterization tests don't already exist and pass (they all do, as of
+the merge above).
 
 ## Always stop and ask before
 
 - Any git operation that touches shared/remote state: push, merge to `main`, tag,
   force-push, branch deletion.
 - Any change to `WHMS.Persistence` (migrations, DbContext, repository
-  implementations) or to API contracts (routes, request/response DTO shapes, status
-  codes) — these are outside the current phases entirely.
+  implementations) or to API contracts (routes, request/response DTO shapes) — these
+  are outside the current phases entirely. The one deliberate exception is the global
+  exception-handling middleware described under Phase 2 above (error-path status
+  codes and response shape only) — everything else about `WHMS.Api` still requires
+  asking first, including success-path status codes and any controller/route change.
 - "Fixing" a bug encountered while writing a characterization test, instead of just
   documenting the current behavior in the test and reporting it.
 - Any change to `appsettings.json`, secrets, or Docker/CI configuration.
