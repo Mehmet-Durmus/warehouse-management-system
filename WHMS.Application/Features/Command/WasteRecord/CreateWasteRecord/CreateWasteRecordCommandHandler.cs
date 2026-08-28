@@ -1,6 +1,8 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Catalog;
+using WHMS.Domain.BusinessRules.WasteRecord;
 
 namespace WHMS.Application.Features.Command.WasteRecord.CreateWasteRecord;
 
@@ -23,9 +25,7 @@ public class CreateWasteRecordCommandHandler : IRequestHandler<CreateWasteRecord
 
     public async Task<CreateWasteRecordCommandResponse> Handle(CreateWasteRecordCommandRequest request, CancellationToken cancellationToken)
     {
-        var sku = await _catalogRepository.GetSku(Guid.Parse(request.SkuId!));
-        if (sku is null)
-            throw new Exception("Sku not found.");
+        var sku = SkuRules.EnsureExists(await _catalogRepository.GetSku(Guid.Parse(request.SkuId!)));
 
         Domain.Entities.WasteRecord wasteRecord = new()
         {
@@ -37,8 +37,7 @@ public class CreateWasteRecordCommandHandler : IRequestHandler<CreateWasteRecord
 
         await _wasteRecordRepository.CreateWasteRecord(wasteRecord);
         var affectedRow = await _stockStateRepository.UpdateQuantity(wasteRecord.WarehouseId, wasteRecord.SkuId, -wasteRecord.Quantity);
-        if (affectedRow == 0)
-            throw new Exception("Insufficient stock exception.");
+        WasteRecordRules.EnsureSufficientStock(affectedRow != 0);
         await _unitOfWork.CommitAsync();
 
         return new()

@@ -3,6 +3,7 @@ using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.WasteRecord.CreateWasteRecord;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.WasteRecord.CreateWasteRecord;
 
@@ -32,7 +33,7 @@ public class CreateWasteRecordCommandHandlerTests
 
         var request = new CreateWasteRecordCommandRequest { SkuId = _skuId.ToString(), Quantity = 5 };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Sku not found.", exception.Message);
         _wasteRecordRepository.Verify(r => r.CreateWasteRecord(It.IsAny<WHMS.Domain.Entities.WasteRecord>()), Times.Never);
@@ -66,7 +67,7 @@ public class CreateWasteRecordCommandHandlerTests
 
         var request = new CreateWasteRecordCommandRequest { SkuId = _skuId.ToString(), Quantity = 5 };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Insufficient stock exception.", exception.Message);
         // The record is added to the repository before the stock check runs; only
