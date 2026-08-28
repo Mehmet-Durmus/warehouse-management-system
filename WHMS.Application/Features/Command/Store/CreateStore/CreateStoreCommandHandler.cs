@@ -1,6 +1,8 @@
 using System.Security.Cryptography.X509Certificates;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Shared;
+using WHMS.Domain.BusinessRules.Store;
 using WHMS.Domain.ValueObjects;
 using WHMS.Domain.Entities;
 using System.Globalization;
@@ -30,12 +32,10 @@ public class CreateStoreCommandHandler : IRequestHandler<CreateStoreCommandReque
             request.AddressLine!
         );
 
-        if (!await _locationRepository.IsAddressValid(address))
-            throw new Exception("Address data is invalid.");
+        AddressRules.EnsureIsValid(await _locationRepository.IsAddressValid(address));
 
         string normalizedName = request.StoreName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
-        if (await _storeRepository.StoreNameExists(normalizedName))
-            throw new Exception("This name is being used for another store.");
+        StoreRules.EnsureNameIsUnique(await _storeRepository.StoreNameExists(normalizedName));
 
         Domain.Entities.Store  store = new()
         {

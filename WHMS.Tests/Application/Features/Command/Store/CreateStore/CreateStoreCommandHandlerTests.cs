@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Store.CreateStore;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 using WHMS.Domain.ValueObjects;
 
 namespace WHMS.Tests.Application.Features.Command.Store.CreateStore;
@@ -58,7 +59,7 @@ public class CreateStoreCommandHandlerTests
     {
         _locationRepository.Setup(r => r.IsAddressValid(It.IsAny<Address>())).ReturnsAsync(false);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(ValidRequest(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(ValidRequest(), CancellationToken.None));
 
         Assert.Equal("Address data is invalid.", exception.Message);
         _storeRepository.Verify(r => r.StoreNameExists(It.IsAny<string>()), Times.Never);
@@ -72,7 +73,7 @@ public class CreateStoreCommandHandlerTests
         _locationRepository.Setup(r => r.IsAddressValid(It.IsAny<Address>())).ReturnsAsync(true);
         _storeRepository.Setup(r => r.StoreNameExists("MARKET")).ReturnsAsync(true);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(ValidRequest(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(ValidRequest(), CancellationToken.None));
 
         Assert.Equal("This name is being used for another store.", exception.Message);
         _storeRepository.Verify(r => r.CreateStore(It.IsAny<WHMS.Domain.Entities.Store>()), Times.Never);
