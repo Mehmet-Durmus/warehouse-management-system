@@ -3,6 +3,7 @@ using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
+using WHMS.Domain.BusinessRules.WasteRecord;
 
 namespace WHMS.Application.Features.Command.WasteRecord.DeleteWasteRecord;
 
@@ -25,31 +26,22 @@ public class DeleteWasteRecordCommandHandler : IRequestHandler<DeleteWasteRecord
 
     public async Task Handle(DeleteWasteRecordCommandRequest request, CancellationToken cancellationToken)
     {
-        var wasteRecord = await _wasteRecordRepository.GetWasteRecord(Guid.Parse(request.WasteRecordId!));
-        
-        bool notFound = wasteRecord switch
-        {
-            null => true,
-            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseManager) 
-                && wasteRecord.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
-                && (wasteRecord.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) 
-                || wasteRecord.CreatedById != _currentUserService.UserId) => true,
-            _ => false
-        };
-        
-        if (notFound)
-            throw new Exception("Waste record not found.");
+        bool currentUserIsManager = _currentUserService.Roles?.Contains(ApplicationRole.WarehouseManager) ?? false;
+        bool currentUserIsStaff = _currentUserService.Roles?.Contains(ApplicationRole.WarehouseStaff) ?? false;
+        Guid? currentUserWarehouseId = _currentUserService.WarehouseId is null ? null : Guid.Parse(_currentUserService.WarehouseId);
+
+        var wasteRecord = WasteRecordRules.EnsureAccessible(
+            await _wasteRecordRepository.GetWasteRecord(Guid.Parse(request.WasteRecordId!)),
+            currentUserIsManager, currentUserIsStaff, currentUserWarehouseId, _currentUserService.UserId);
 
         InventoryCountFilter uncompletedFilter = new()
         {
             WarehouseId = _currentUserService.WarehouseId,
             IsDone = false,
-            CreatedAfter = wasteRecord!.CreatedAt
+            CreatedAfter = wasteRecord.CreatedAt
         };
         var uncompletedCounts = await _inventoryCountRepository.GetInventoryCounts(uncompletedFilter, applyPagination: false);
-        if (uncompletedCounts.Count > 0)
-            throw new Exception("Cannot delete waste record while an active inventory count exists after its creation date.");
+        WasteRecordRules.EnsureNoActiveInventoryCountBlocksDeletion(uncompletedCounts.Count > 0);
 
         InventoryCountFilter completedFilter = new()
         {
@@ -59,8 +51,7 @@ public class DeleteWasteRecordCommandHandler : IRequestHandler<DeleteWasteRecord
             CreatedAfter = wasteRecord.CreatedAt
         };
         var completedCounts = await _inventoryCountRepository.GetInventoryCounts(completedFilter, applyPagination: false);
-        if (completedCounts.Count > 0)
-            throw new Exception("Waste record cannot be deleted because a completed inventory count including this SKU exists after its creation date.");
+        WasteRecordRules.EnsureNoCompletedInventoryCountWithSkuBlocksDeletion(completedCounts.Count > 0);
 
 
         await _wasteRecordRepository.Delete(Guid.Parse(request.WasteRecordId!));

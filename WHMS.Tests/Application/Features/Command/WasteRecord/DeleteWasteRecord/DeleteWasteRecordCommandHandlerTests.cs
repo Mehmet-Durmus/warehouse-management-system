@@ -4,6 +4,7 @@ using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.Features.Command.WasteRecord.DeleteWasteRecord;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.WasteRecord.DeleteWasteRecord;
 
@@ -59,7 +60,7 @@ public class DeleteWasteRecordCommandHandlerTests
     {
         _wasteRecordRepository.Setup(r => r.GetWasteRecord(_wasteRecordId)).ReturnsAsync((WHMS.Domain.Entities.WasteRecord)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Waste record not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -76,7 +77,7 @@ public class DeleteWasteRecordCommandHandlerTests
         _wasteRecordRepository.Setup(r => r.GetWasteRecord(_wasteRecordId)).ReturnsAsync(record);
         SetCurrentUser(role, _warehouseId.ToString());
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Waste record not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -92,7 +93,7 @@ public class DeleteWasteRecordCommandHandlerTests
             .Setup(r => r.GetInventoryCounts(It.Is<InventoryCountFilter>(f => f.IsDone == false), false))
             .ReturnsAsync([new() { Id = Guid.NewGuid() }]);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Cannot delete waste record while an active inventory count exists after its creation date.", exception.Message);
         _wasteRecordRepository.Verify(r => r.Delete(It.IsAny<Guid>()), Times.Never);
@@ -113,7 +114,7 @@ public class DeleteWasteRecordCommandHandlerTests
                 f.IsDone == true && f.SkuIds!.Single() == record.SkuId.ToString()), false))
             .ReturnsAsync([new() { Id = Guid.NewGuid() }]);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Waste record cannot be deleted because a completed inventory count including this SKU exists after its creation date.", exception.Message);
         _wasteRecordRepository.Verify(r => r.Delete(It.IsAny<Guid>()), Times.Never);
