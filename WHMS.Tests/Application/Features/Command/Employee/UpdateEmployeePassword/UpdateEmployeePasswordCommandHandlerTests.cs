@@ -4,6 +4,7 @@ using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Employee.UpdateEmployeePassword;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Employee.UpdateEmployeePassword;
 
@@ -30,7 +31,7 @@ public class UpdateEmployeePasswordCommandHandlerTests
     {
         _authService.Setup(s => s.FindByIdAsync(_employeeId.ToString())).ReturnsAsync((ApplicationUser?)null);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Employee not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -44,7 +45,7 @@ public class UpdateEmployeePasswordCommandHandlerTests
 
         var request = new UpdateEmployeePasswordCommandRequest { EmployeeId = _currentUserId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Employee not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);

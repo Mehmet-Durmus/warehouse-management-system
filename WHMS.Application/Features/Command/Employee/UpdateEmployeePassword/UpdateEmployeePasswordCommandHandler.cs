@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Employee;
 
 namespace WHMS.Application.Features.Command.Employee.UpdateEmployeePassword;
 
@@ -21,9 +22,7 @@ public class UpdateEmployeePasswordCommandHandler : IRequestHandler<UpdateEmploy
 
     public async Task<UpdateEmployeePasswordCommandResponse> Handle(UpdateEmployeePasswordCommandRequest request, CancellationToken cancellationToken)
     {
-        var employee = await _authService.FindByIdAsync(request.EmployeeId!);
-        if (employee is null || employee.Id == _currentUserService.UserId)
-            throw new Exception("Employee not found.");
+        var employee = EmployeeRules.EnsureCanResetPassword(await _authService.FindByIdAsync(request.EmployeeId!), _currentUserService.UserId);
             
         string tempPassword = await _passwordCreator.CreateTempPassword();
         var token = await _authService.GeneratePasswordResetTokenAsync(employee);
