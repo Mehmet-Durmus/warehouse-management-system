@@ -1,5 +1,6 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Employee;
 
 namespace WHMS.Application.Features.Command.Employee.DeleteEmployee;
 
@@ -19,9 +20,8 @@ public class DeleteEmployeeCommandHandler : IRequestHandler<DeleteEmployeeComman
         var employee = await _employeeRepository.GetManager(Guid.Parse(request.EmployeeId!));
         if (employee is null)
             employee = await _employeeRepository.GetStaffMember(Guid.Parse(request.EmployeeId!));
-        
-        if (employee is null)
-            throw new Exception("Employee not found.");
+
+        employee = EmployeeRules.EnsureExists(employee);
 
         employee.IsActive = false;
         await _unitOfWork.CommitAsync();

@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Employee.DeleteEmployee;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Employee.DeleteEmployee;
 
@@ -51,7 +52,7 @@ public class DeleteEmployeeCommandHandlerTests
         _employeeRepository.Setup(r => r.GetManager(_employeeId)).ReturnsAsync((ApplicationUser)null!);
         _employeeRepository.Setup(r => r.GetStaffMember(_employeeId)).ReturnsAsync((ApplicationUser)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Employee not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
