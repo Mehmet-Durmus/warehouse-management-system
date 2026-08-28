@@ -3,6 +3,7 @@ using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
 using WHMS.Application.Features.Command.Warehouse.CreateWarehouse;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 using WHMS.Domain.ValueObjects;
 
 namespace WHMS.Tests.Application.Features.Command.Warehouse.CreateWarehouse;
@@ -58,7 +59,7 @@ public class CreateWarehouseCommandHandlerTests
     {
         _locationRepository.Setup(r => r.IsAddressValid(It.IsAny<Address>())).ReturnsAsync(false);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Address data is invalid.", exception.Message);
         _warehouseRepository.Verify(r => r.WarehouseNameExists(It.IsAny<string>()), Times.Never);
@@ -71,7 +72,7 @@ public class CreateWarehouseCommandHandlerTests
         _locationRepository.Setup(r => r.IsAddressValid(It.IsAny<Address>())).ReturnsAsync(true);
         _warehouseRepository.Setup(r => r.WarehouseNameExists("MARKET")).ReturnsAsync(true);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("This warehouse name is being used for another warehouse.", exception.Message);
         _warehouseRepository.Verify(r => r.CreateWarehouse(It.IsAny<WHMS.Domain.Entities.Warehouse>()), Times.Never);

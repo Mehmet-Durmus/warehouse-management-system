@@ -1,8 +1,7 @@
-using FluentValidation.Validators;
 using MediatR;
-using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
+using WHMS.Domain.BusinessRules.Warehouse;
 
 namespace WHMS.Application.Features.Command.Warehouse.AssignEmployees;
 
@@ -23,43 +22,26 @@ public class AssignEmployeesCommandHandler : IRequestHandler<AssignEmployeesComm
         if (request.ManagerId is not null)
         {
             var user = await _authService.FindByIdAsync(request.ManagerId);
-            if (user is null)
-                response.Warnings.Add($"'{request.ManagerId}' is invalid. Manager not found.");
+            bool hasManagerRole = user is not null && (await _authService.GetRolesAsync(user)).Contains(ApplicationRole.WarehouseManager);
+
+            var warning = WarehouseRules.ValidateManagerAssignment(user, hasManagerRole, request.ManagerId);
+            if (warning is not null)
+                response.Warnings.Add(warning);
             else
-            {
-                var roles = await _authService.GetRolesAsync(user);
-                if (!roles.Contains(ApplicationRole.WarehouseManager))
-                    response.Warnings.Add($"{user.FullName} is not a manager.");
-                else
-                {
-                    if (user.WarehouseId is not null)
-                        response.Warnings.Add($"{user.FullName} works at a different warehouse.");
-                    else
-                        user.WarehouseId = Guid.Parse(request.WarehouseId);
-                }
-            }
+                user!.WarehouseId = Guid.Parse(request.WarehouseId);
         }
 
         if (request.StaffIds is not null && request.StaffIds.Count > 0)
             foreach (var staffId in request.StaffIds)
             {
                 var user = await _authService.FindByIdAsync(staffId);
-                if (user is null)
-                    response.Warnings.Add($"'{staffId}' is invalid. Staff member not found.");
+                bool hasStaffRole = user is not null && (await _authService.GetRolesAsync(user)).Contains(ApplicationRole.WarehouseStaff);
+
+                var warning = WarehouseRules.ValidateStaffAssignment(user, hasStaffRole, staffId);
+                if (warning is not null)
+                    response.Warnings.Add(warning);
                 else
-                {
-                    var roles = await _authService.GetRolesAsync(user);
-                    if (!roles.Contains(ApplicationRole.WarehouseStaff))
-                        response.Warnings.Add($"{user.FullName} is not a staff member.");
-                    else
-                    {
-                        if (user.WarehouseId is not null)
-                            response.Warnings.Add($"{user.FullName} works at a different warehouse.");
-                        else
-                            user.WarehouseId = Guid.Parse(request.WarehouseId);
-                    }
-                }
-                
+                    user!.WarehouseId = Guid.Parse(request.WarehouseId);
             }
 
         await _unitOfWork.CommitAsync();
