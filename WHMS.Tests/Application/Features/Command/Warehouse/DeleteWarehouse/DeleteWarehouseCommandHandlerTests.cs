@@ -3,6 +3,7 @@ using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Warehouse.DeleteWarehouse;
 
@@ -30,7 +31,7 @@ public class DeleteWarehouseCommandHandlerTests
             .Setup(r => r.GetDeliveriesCount(It.Is<DeliveryFilter>(f => f.WarehouseId == _warehouseId.ToString() && f.IsReceived == false)))
             .ReturnsAsync(2);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Warehouse cannot be deleted because there are pending deliveries assigned to it.", exception.Message);
         _employeeRepository.Verify(r => r.GetEmployeesByWarehouse(It.IsAny<Guid>()), Times.Never);

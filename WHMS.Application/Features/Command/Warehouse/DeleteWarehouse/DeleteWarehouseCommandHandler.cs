@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Filters;
+using WHMS.Domain.BusinessRules.Warehouse;
 
 namespace WHMS.Application.Features.Command.Warehouse.DeleteWarehouse;
 
@@ -23,8 +24,7 @@ public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseComm
     {
         DeliveryFilter filter = new() { WarehouseId = request.WarehouseId, IsReceived = false };
         int count = await _deliveryRepository.GetDeliveriesCount(filter);
-        if (count > 0)
-            throw new Exception("Warehouse cannot be deleted because there are pending deliveries assigned to it.");
+        WarehouseRules.EnsureCanBeDeleted(count > 0);
         
         var employees = await _employeeRepository.GetEmployeesByWarehouse(Guid.Parse(request.WarehouseId));
         foreach (var employee in employees)
