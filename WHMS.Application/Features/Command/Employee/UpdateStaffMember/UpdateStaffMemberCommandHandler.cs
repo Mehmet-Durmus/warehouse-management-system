@@ -1,5 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Employee;
+using WHMS.Domain.BusinessRules.Warehouse;
 
 namespace WHMS.Application.Features.Command.Employee.UpdateStaffMember;
 
@@ -18,17 +20,13 @@ public class UpdateStaffMemberCommandHandler : IRequestHandler<UpdateStaffMember
 
     public async Task<UpdateStaffMemberCommandResponse> Handle(UpdateStaffMemberCommandRequest request, CancellationToken cancellationToken)
     {
-        var staffMember = await _employeeRepository.GetStaffMember(Guid.Parse(request.UserId!));
-        if (staffMember is null)
-            throw new Exception("Staff member not found.");
+        var staffMember = EmployeeRules.EnsureStaffMemberExists(await _employeeRepository.GetStaffMember(Guid.Parse(request.UserId!)));
 
         if (!string.IsNullOrWhiteSpace(request.WarehouseId))
         {
-            bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
-            if (!isWarehouseExists)
-                throw new Exception("Warehouse not found.");
+            WarehouseRules.EnsureExists(await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!)));
             staffMember.WarehouseId = Guid.Parse(request.WarehouseId);
-        } 
+        }
         staffMember.FullName = request.FullName!;
 
         await _unitOfWork.CommitAsync();
