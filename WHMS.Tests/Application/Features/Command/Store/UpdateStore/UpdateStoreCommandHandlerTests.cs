@@ -1,6 +1,7 @@
 using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Store.UpdateStore;
+using WHMS.Domain.Exceptions;
 using WHMS.Domain.ValueObjects;
 
 namespace WHMS.Tests.Application.Features.Command.Store.UpdateStore;
@@ -46,7 +47,7 @@ public class UpdateStoreCommandHandlerTests
     {
         _storeRepository.Setup(r => r.GetStore(_storeId)).ReturnsAsync((WHMS.Domain.Entities.Store)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(RequestWithName("market"), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(RequestWithName("market"), CancellationToken.None));
 
         Assert.Equal("Store not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -58,7 +59,7 @@ public class UpdateStoreCommandHandlerTests
         _storeRepository.Setup(r => r.GetStore(_storeId)).ReturnsAsync(ExistingStore());
         _locationRepository.Setup(r => r.IsAddressValid(It.IsAny<Address>())).ReturnsAsync(false);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(RequestWithName("market"), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(RequestWithName("market"), CancellationToken.None));
 
         Assert.Equal("Address data is invalid.", exception.Message);
         _storeRepository.Verify(r => r.StoreNameExists(It.IsAny<string>()), Times.Never);
@@ -92,11 +93,12 @@ public class UpdateStoreCommandHandlerTests
         _locationRepository.Setup(r => r.IsAddressValid(It.IsAny<Address>())).ReturnsAsync(true);
         _storeRepository.Setup(r => r.StoreNameExists("MAGAZA")).ReturnsAsync(true);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(RequestWithName("magaza"), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(RequestWithName("magaza"), CancellationToken.None));
 
-        // Note: unlike CreateStore's equivalent message, this one has no trailing
-        // period - documenting the current, inconsistent text as-is.
-        Assert.Equal("This name is being used for another store", exception.Message);
+        // Now routed through StoreRules.EnsureNameIsUnique, so the message matches
+        // CreateStore's - the previous inconsistency (missing trailing period) is
+        // gone as a side effect of this migration.
+        Assert.Equal("This name is being used for another store.", exception.Message);
         Assert.Equal("market", store.StoreName);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
     }

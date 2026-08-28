@@ -1,6 +1,8 @@
 using System.Globalization;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Shared;
+using WHMS.Domain.BusinessRules.Store;
 using WHMS.Domain.ValueObjects;
 
 namespace WHMS.Application.Features.Command.Store.UpdateStore;
@@ -20,9 +22,7 @@ public class UpdateStoreCommandHandler : IRequestHandler<UpdateStoreCommandReque
 
     public async Task<UpdateStoreCommandResponse> Handle(UpdateStoreCommandRequest request, CancellationToken cancellationToken)
     {
-        var store = await _storeRepository.GetStore(Guid.Parse(request.StoreId!));
-        if (store is null)
-            throw new Exception("Store not found.");
+        var store = StoreRules.EnsureExists(await _storeRepository.GetStore(Guid.Parse(request.StoreId!)));
 
         Address address = new(
             Guid.Parse(request.CityId!),
@@ -32,13 +32,12 @@ public class UpdateStoreCommandHandler : IRequestHandler<UpdateStoreCommandReque
             request.AddressLine!
         );
 
-        if (!await _locationRepository.IsAddressValid(address))
-            throw new Exception("Address data is invalid.");
+        AddressRules.EnsureIsValid(await _locationRepository.IsAddressValid(address));
 
         string normalizedName = request.StoreName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
         bool isNameUsed = await _storeRepository.StoreNameExists(normalizedName);
-        if (!store.NormalizedName.Equals(normalizedName) && isNameUsed)
-            throw new Exception("This name is being used for another store");
+        if (!store.NormalizedName.Equals(normalizedName))
+            StoreRules.EnsureNameIsUnique(isNameUsed);
 
         store.StoreName = request.StoreName;
         store.NormalizedName = normalizedName;
