@@ -1,5 +1,6 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Catalog;
 
 namespace WHMS.Application.Features.Command.Catalog.DeleteCategory;
 
@@ -19,9 +20,7 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 
     public async Task<DeleteCategoryCommandResponse> Handle(DeleteCategoryCommandRequest request, CancellationToken cancellationToken)
     {
-        var category = await _catalogRepository.GetCategory(Guid.Parse(request.CategoryId!));
-        if (category is null)
-            throw new Exception("Category not found.");
+        var category = CategoryRules.EnsureExists(await _catalogRepository.GetCategory(Guid.Parse(request.CategoryId!)));
 
         bool inStock = false;
         bool inDelivery = false;
@@ -33,8 +32,7 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
                 if (inStock || inDelivery)
                     break;
             }
-        if (inStock || inDelivery)
-            throw new Exception("This category cannot be deleted because it contains SKUs that exist in stock or pending deliveries.");
+        CategoryRules.EnsureCanBeDeleted(inStock || inDelivery);
 
         await _catalogRepository.DeleteCategory(Guid.Parse(request.CategoryId!));
         await _catalogRepository.DeleteSkusByCategory(Guid.Parse(request.CategoryId!));

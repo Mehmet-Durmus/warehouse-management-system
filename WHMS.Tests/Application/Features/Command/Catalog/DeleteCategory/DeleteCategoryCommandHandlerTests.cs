@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Catalog.DeleteCategory;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Catalog.DeleteCategory;
 
@@ -75,7 +76,7 @@ public class DeleteCategoryCommandHandlerTests
 
         var request = new DeleteCategoryCommandRequest { CategoryId = _categoryId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("This category cannot be deleted because it contains SKUs that exist in stock or pending deliveries.", exception.Message);
         _catalogRepository.Verify(r => r.DeleteCategory(It.IsAny<Guid>()), Times.Never);
@@ -93,7 +94,7 @@ public class DeleteCategoryCommandHandlerTests
 
         var request = new DeleteCategoryCommandRequest { CategoryId = _categoryId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("This category cannot be deleted because it contains SKUs that exist in stock or pending deliveries.", exception.Message);
         _catalogRepository.Verify(r => r.DeleteCategory(It.IsAny<Guid>()), Times.Never);
@@ -118,7 +119,7 @@ public class DeleteCategoryCommandHandlerTests
 
         var request = new DeleteCategoryCommandRequest { CategoryId = _categoryId.ToString() };
 
-        await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         _stockStateRepository.Verify(r => r.HasStockInAnyWarehouse(neverCheckedSku.Id), Times.Never);
         _deliveryRepository.Verify(r => r.HasIncomingDeliveriesWithSku(neverCheckedSku.Id), Times.Never);
@@ -131,7 +132,7 @@ public class DeleteCategoryCommandHandlerTests
 
         var request = new DeleteCategoryCommandRequest { CategoryId = _categoryId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Category not found.", exception.Message);
         _catalogRepository.Verify(r => r.DeleteCategory(It.IsAny<Guid>()), Times.Never);
