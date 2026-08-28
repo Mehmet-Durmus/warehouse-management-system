@@ -1,6 +1,7 @@
 using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Catalog.DeleteSku;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Catalog.DeleteSku;
 
@@ -41,7 +42,7 @@ public class DeleteSkuCommandHandlerTests
 
         var request = new DeleteSkuCommandRequest { SkuId = _skuId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Cannot delete SKU because it exists in stock or pending deliveries.", exception.Message);
         _catalogRepository.Verify(r => r.DeleteSku(It.IsAny<Guid>()), Times.Never);
@@ -56,7 +57,7 @@ public class DeleteSkuCommandHandlerTests
 
         var request = new DeleteSkuCommandRequest { SkuId = _skuId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Cannot delete SKU because it exists in stock or pending deliveries.", exception.Message);
         _catalogRepository.Verify(r => r.DeleteSku(It.IsAny<Guid>()), Times.Never);

@@ -1,5 +1,6 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Catalog;
 
 namespace WHMS.Application.Features.Command.Catalog.DeleteSku;
 
@@ -22,8 +23,7 @@ public class DeleteSkuCommandHandler : IRequestHandler<DeleteSkuCommandRequest, 
     {
         bool hasStockInAnyWarehouse = await _stockStateRepository.HasStockInAnyWarehouse(Guid.Parse(request.SkuId!));
         bool hasIncomingDeliveriesWithSku = await _deliveryRepository.HasIncomingDeliveriesWithSku(Guid.Parse(request.SkuId!));
-        if (hasStockInAnyWarehouse || hasIncomingDeliveriesWithSku)
-            throw new Exception("Cannot delete SKU because it exists in stock or pending deliveries.");
+        SkuRules.EnsureCanBeDeleted(hasStockInAnyWarehouse || hasIncomingDeliveriesWithSku);
         
         await _catalogRepository.DeleteSku(Guid.Parse(request.SkuId!));
         await _unitOfWork.CommitAsync();
