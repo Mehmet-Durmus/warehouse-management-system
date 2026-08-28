@@ -6,6 +6,7 @@ using WHMS.Application.Common.Constants;
 using WHMS.Application.Features.Command.Employee.CreateEmployee;
 using WHMS.Application.Features.Command.Employee.CreateManager;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Employee.CreateManager;
 
@@ -48,7 +49,7 @@ public class CreateManagerCommandHandlerTests
 
         var request = new CreateManagerCommandRequest { FullName = "Test Manager", WarehouseId = _warehouseId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Warehouse not found.", exception.Message);
         _employeeRepository.Verify(r => r.HasWarehouseAnyManager(It.IsAny<Guid>()), Times.Never);
@@ -63,7 +64,7 @@ public class CreateManagerCommandHandlerTests
 
         var request = new CreateManagerCommandRequest { FullName = "Test Manager", WarehouseId = _warehouseId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("The warehouse has already a manager.", exception.Message);
         _authService.Verify(s => s.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Never);
@@ -91,7 +92,7 @@ public class CreateManagerCommandHandlerTests
 
         var request = new CreateManagerCommandRequest { FullName = "Test Manager" };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Manager could not be created.", exception.Message);
         _authService.Verify(s => s.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Never);

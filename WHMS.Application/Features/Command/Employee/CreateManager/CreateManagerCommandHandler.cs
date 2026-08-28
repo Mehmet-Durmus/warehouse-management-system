@@ -3,6 +3,8 @@ using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
 using WHMS.Application.Features.Command.Employee.CreateEmployee;
+using WHMS.Domain.BusinessRules.Employee;
+using WHMS.Domain.BusinessRules.Warehouse;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Command.Employee.CreateManager;
@@ -35,23 +37,16 @@ public class CreateManagerCommandHandler : IRequestHandler<CreateManagerCommandR
 
         if (!string.IsNullOrWhiteSpace(request.WarehouseId))
         {
-            bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
-            if (!isWarehouseExists)
-                throw new Exception("Warehouse not found.");
-                
-            bool hasWarehouseAnyManager = await _employeeRepository.HasWarehouseAnyManager(Guid.Parse(request.WarehouseId!));
-            if (hasWarehouseAnyManager)
-                throw new Exception("The warehouse has already a manager.");
-            
+            WarehouseRules.EnsureExists(await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!)));
+            WarehouseRules.EnsureNoManagerAssigned(await _employeeRepository.HasWarehouseAnyManager(Guid.Parse(request.WarehouseId!)));
+
             manager.WarehouseId = Guid.Parse(request.WarehouseId);
         }
 
         var tempPassword = await _passwordCreator.CreateTempPassword();
         var result = await _authService.CreateAsync(manager, tempPassword);
-        if (result.Succeeded)
-            await _authService.AddToRoleAsync(manager, ApplicationRole.WarehouseManager);
-        else
-            throw new Exception("Manager could not be created.");
+        EmployeeRules.EnsureManagerWasCreated(result.Succeeded);
+        await _authService.AddToRoleAsync(manager, ApplicationRole.WarehouseManager);
         return new()
         {
             UserId = manager.Id.ToString(),
