@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Employee.UpdateManager;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Employee.UpdateManager;
 
@@ -28,7 +29,7 @@ public class UpdateManagerCommandHandlerTests
 
         var request = new UpdateManagerCommandRequest { UserId = _userId.ToString(), FullName = "Yeni Isim" };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Manager not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -60,7 +61,7 @@ public class UpdateManagerCommandHandlerTests
 
         var request = new UpdateManagerCommandRequest { UserId = _userId.ToString(), FullName = "Yeni Isim", WarehouseId = _warehouseId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Warehouse not found.", exception.Message);
         Assert.Equal("Eski Isim", manager.FullName);

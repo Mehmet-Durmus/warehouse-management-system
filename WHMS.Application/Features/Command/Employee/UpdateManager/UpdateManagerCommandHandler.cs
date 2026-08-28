@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Employee;
+using WHMS.Domain.BusinessRules.Warehouse;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Command.Employee.UpdateManager;
@@ -20,16 +22,12 @@ public class UpdateManagerCommandHandler : IRequestHandler<UpdateManagerCommandR
 
     public async Task<UpdateManagerCommandResponse> Handle(UpdateManagerCommandRequest request, CancellationToken cancellationToken)
     {
-        var manager = await _employeeRepository.GetManager(Guid.Parse(request.UserId!));
-        if (manager is null)
-            throw new Exception("Manager not found.");
-        
+        var manager = EmployeeRules.EnsureManagerExists(await _employeeRepository.GetManager(Guid.Parse(request.UserId!)));
+
         if (!string.IsNullOrWhiteSpace(request.WarehouseId))
         {
-            bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
-            if (!isWarehouseExists)
-                throw new Exception("Warehouse not found.");
-            manager.WarehouseId = Guid.Parse(request.WarehouseId!);;
+            WarehouseRules.EnsureExists(await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!)));
+            manager.WarehouseId = Guid.Parse(request.WarehouseId!);
         }
         manager.FullName = request.FullName!;
 
