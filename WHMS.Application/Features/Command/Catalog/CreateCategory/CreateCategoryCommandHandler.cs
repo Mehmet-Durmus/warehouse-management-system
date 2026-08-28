@@ -1,6 +1,7 @@
 using System.Globalization;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Catalog;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Command.Catalog.CreateCategory;
@@ -20,8 +21,7 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
     {
         var normalizedCategoryName = request.CategoryName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
         bool isCategoryNameExists = await _catalogRepository.IsCategoryNameExists(normalizedCategoryName);
-        if (isCategoryNameExists)
-            throw new Exception("Category already exists.");
+        CategoryRules.EnsureNameIsUnique(isCategoryNameExists);
         
         var category = new Category
         {

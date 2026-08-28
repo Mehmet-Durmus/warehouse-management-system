@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Catalog.CreateCategory;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Catalog.CreateCategory;
 
@@ -57,7 +58,7 @@ public class CreateCategoryCommandHandlerTests
 
         var request = new CreateCategoryCommandRequest { CategoryName = "oyuncak" };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Category already exists.", exception.Message);
         _catalogRepository.Verify(r => r.AddCategory(It.IsAny<Category>()), Times.Never);
