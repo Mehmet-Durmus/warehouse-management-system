@@ -1,6 +1,8 @@
 using System.Globalization;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Shared;
+using WHMS.Domain.BusinessRules.Warehouse;
 using WHMS.Domain.ValueObjects;
 
 namespace WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
@@ -20,10 +22,7 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
 
     public async Task<UpdateWarehouseCommandResponse> Handle(UpdateWarehouseCommandRequest request, CancellationToken cancellationToken)
     {
-        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
-        
-        if (warehouse is null)
-            throw new Exception("Warehouse not found.");
+        var warehouse = WarehouseRules.EnsureExists(await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!)));
 
         Address address = new(
             Guid.Parse(request.CityId!),
@@ -32,14 +31,12 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
             request.PostalCode!,
             request.AddressLine!);
 
-        bool isAddressValid = await _locationRepository.IsAddressValid(address);
-        if (!isAddressValid)
-            throw new Exception("Address data is invalid.");
+        AddressRules.EnsureIsValid(await _locationRepository.IsAddressValid(address));
 
         var normalizedName = request.WarehouseName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
         bool isNameUsed = await _warehouseRepository.WarehouseNameExists(normalizedName);
-        if (!warehouse.NormalizedName.Equals(normalizedName) && isNameUsed)
-            throw new Exception("This warehouse name is being used for another warehouse.");
+        if (!warehouse.NormalizedName.Equals(normalizedName))
+            WarehouseRules.EnsureNameIsUnique(isNameUsed);
         
         warehouse.Address = address;
         warehouse.NormalizedName = normalizedName;

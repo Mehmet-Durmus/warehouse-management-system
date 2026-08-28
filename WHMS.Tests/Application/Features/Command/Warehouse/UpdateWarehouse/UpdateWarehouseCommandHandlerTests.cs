@@ -1,6 +1,7 @@
 using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Warehouse.UpdateWarehouse;
+using WHMS.Domain.Exceptions;
 using WHMS.Domain.ValueObjects;
 
 namespace WHMS.Tests.Application.Features.Command.Warehouse.UpdateWarehouse;
@@ -46,7 +47,7 @@ public class UpdateWarehouseCommandHandlerTests
     {
         _warehouseRepository.Setup(r => r.GetWarehouse(_warehouseId)).ReturnsAsync((WHMS.Domain.Entities.Warehouse)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(RequestWithName("market"), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(RequestWithName("market"), CancellationToken.None));
 
         Assert.Equal("Warehouse not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -58,7 +59,7 @@ public class UpdateWarehouseCommandHandlerTests
         _warehouseRepository.Setup(r => r.GetWarehouse(_warehouseId)).ReturnsAsync(ExistingWarehouse());
         _locationRepository.Setup(r => r.IsAddressValid(It.IsAny<Address>())).ReturnsAsync(false);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(RequestWithName("market"), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(RequestWithName("market"), CancellationToken.None));
 
         Assert.Equal("Address data is invalid.", exception.Message);
         _warehouseRepository.Verify(r => r.WarehouseNameExists(It.IsAny<string>()), Times.Never);
@@ -92,7 +93,7 @@ public class UpdateWarehouseCommandHandlerTests
         _locationRepository.Setup(r => r.IsAddressValid(It.IsAny<Address>())).ReturnsAsync(true);
         _warehouseRepository.Setup(r => r.WarehouseNameExists("MAGAZA")).ReturnsAsync(true);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(RequestWithName("magaza"), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(RequestWithName("magaza"), CancellationToken.None));
 
         Assert.Equal("This warehouse name is being used for another warehouse.", exception.Message);
         Assert.Equal("market", warehouse.WarehouseName);
