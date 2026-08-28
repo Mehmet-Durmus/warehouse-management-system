@@ -5,6 +5,7 @@ using WHMS.Application.Common.Constants;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.Features.Command.WasteRecord.UpdateWasteRecord;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.WasteRecord.UpdateWasteRecord;
 
@@ -72,7 +73,7 @@ public class UpdateWasteRecordCommandHandlerTests
     {
         _wasteRecordRepository.Setup(r => r.GetWasteRecord(_wasteRecordId)).ReturnsAsync((WHMS.Domain.Entities.WasteRecord)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Waste record not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -89,7 +90,7 @@ public class UpdateWasteRecordCommandHandlerTests
         _wasteRecordRepository.Setup(r => r.GetWasteRecord(_wasteRecordId)).ReturnsAsync(record);
         SetCurrentUser(role, _warehouseId.ToString());
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Waste record not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -105,7 +106,7 @@ public class UpdateWasteRecordCommandHandlerTests
             .Setup(r => r.GetInventoryCounts(It.Is<InventoryCountFilter>(f => f.IsDone == false), false))
             .ReturnsAsync([new() { Id = Guid.NewGuid() }]);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Cannot update waste record while an active inventory count exists after its creation date.", exception.Message);
         Assert.Equal("eski", record.Description);
@@ -128,7 +129,7 @@ public class UpdateWasteRecordCommandHandlerTests
                 f.IsDone == true && f.SkuIds!.Single() == _newSkuId.ToString()), false))
             .ReturnsAsync([new() { Id = Guid.NewGuid() }]);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Waste record cannot be updated because a completed inventory count including this SKU exists after its creation date.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -144,7 +145,7 @@ public class UpdateWasteRecordCommandHandlerTests
         SetNoConflictingCounts();
         _catalogRepository.Setup(r => r.GetSku(_newSkuId)).ReturnsAsync((SKU)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Sku not found.", exception.Message);
         Assert.Equal(originalSkuId, record.SkuId);
