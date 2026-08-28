@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Catalog.UpdateCategory;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Catalog.UpdateCategory;
 
@@ -24,7 +25,7 @@ public class UpdateCategoryCommandHandlerTests
 
         var request = new UpdateCategoryCommandRequest { CategoryId = _categoryId.ToString(), CategoryName = "oyuncak" };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Category not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -56,7 +57,7 @@ public class UpdateCategoryCommandHandlerTests
 
         var request = new UpdateCategoryCommandRequest { CategoryId = _categoryId.ToString(), CategoryName = "market" };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Category already exists.", exception.Message);
         Assert.Equal("oyuncak", category.CategoryName);
