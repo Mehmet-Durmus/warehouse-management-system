@@ -1,6 +1,7 @@
 using System.Globalization;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Catalog;
 
 namespace WHMS.Application.Features.Command.Catalog.UpdateSku;
 
@@ -17,21 +18,16 @@ public class UpdateSkuCommandHandler : IRequestHandler<UpdateSkuCommandRequest, 
 
     public async Task<UpdateSkuCommandResponse> Handle(UpdateSkuCommandRequest request, CancellationToken cancellationToken)
     {
-        var sku = await _catalogRepository.GetSku(Guid.Parse(request.SkuId!));
-        if (sku is null)
-            throw new Exception("Sku not found.");
+        var sku = SkuRules.EnsureExists(await _catalogRepository.GetSku(Guid.Parse(request.SkuId!)));
 
         var normalizedSkuName = request.SkuName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
         if (!sku.NormalizedSKUName.Equals(normalizedSkuName))
         {
             bool isSkuNameExists = await _catalogRepository.IsSkuNameExists(normalizedSkuName);
-            if (isSkuNameExists)
-                throw new Exception("Sku already exists.");
+            SkuRules.EnsureNameIsUnique(isSkuNameExists);
         }
-        
-        var category = await _catalogRepository.GetCategory(Guid.Parse(request.CategoryId!));
-        if (category is null)
-            throw new Exception("Category not found");
+
+        var category = CategoryRules.EnsureExists(await _catalogRepository.GetCategory(Guid.Parse(request.CategoryId!)));
         
         sku.SKUName = request.SkuName;
         sku.NormalizedSKUName = normalizedSkuName;

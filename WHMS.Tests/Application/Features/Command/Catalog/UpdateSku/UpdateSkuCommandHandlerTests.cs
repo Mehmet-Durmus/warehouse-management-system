@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Catalog.UpdateSku;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Catalog.UpdateSku;
 
@@ -35,7 +36,7 @@ public class UpdateSkuCommandHandlerTests
 
         var request = new UpdateSkuCommandRequest { SkuId = _skuId.ToString(), SkuName = "kola", CategoryId = _categoryId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Sku not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -86,7 +87,7 @@ public class UpdateSkuCommandHandlerTests
             CategoryId = _categoryId.ToString()
         };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Sku already exists.", exception.Message);
         _catalogRepository.Verify(r => r.GetCategory(It.IsAny<Guid>()), Times.Never);
@@ -136,11 +137,12 @@ public class UpdateSkuCommandHandlerTests
             CategoryId = _categoryId.ToString()
         };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
-        // Note: unlike every other guard message in this codebase, this one has no
-        // trailing period - documenting the current, inconsistent text as-is.
-        Assert.Equal("Category not found", exception.Message);
+        // Now routed through CategoryRules.EnsureExists, so the message matches
+        // every other "Category not found." guard - the previous inconsistency
+        // (missing trailing period) is gone as a side effect of this migration.
+        Assert.Equal("Category not found.", exception.Message);
         Assert.Equal("kola", sku.SKUName);
         _catalogRepository.Verify(r => r.UpdateSku(It.IsAny<SKU>()), Times.Never);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
