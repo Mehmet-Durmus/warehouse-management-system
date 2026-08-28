@@ -2,6 +2,8 @@ using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
+using WHMS.Domain.BusinessRules.Employee;
+using WHMS.Domain.BusinessRules.Warehouse;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Command.Employee.CreateStaffMember;
@@ -36,18 +38,14 @@ public class CreateStaffMemberCommandHandler : IRequestHandler<CreateStaffMember
 
         if (!string.IsNullOrWhiteSpace(request.WarehouseId))
         {
-            bool isWarehouseExists = await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!));
-            if (!isWarehouseExists)
-                throw new Exception("Watehouse not found.");
+            WarehouseRules.EnsureExists(await _warehouseRepository.WarehouseExists(Guid.Parse(request.WarehouseId!)));
             staff.WarehouseId = Guid.Parse(request.WarehouseId);
         }
 
         string tempPassword = await _passwordCreator.CreateTempPassword();
         var result = await _authService.CreateAsync(staff, tempPassword);
-        if (result.Succeeded)
-            await _authService.AddToRoleAsync(staff, ApplicationRole.WarehouseStaff);
-        else
-            throw new Exception("Staff member could not be created.");
+        EmployeeRules.EnsureStaffMemberWasCreated(result.Succeeded);
+        await _authService.AddToRoleAsync(staff, ApplicationRole.WarehouseStaff);
         
         return new()
         {

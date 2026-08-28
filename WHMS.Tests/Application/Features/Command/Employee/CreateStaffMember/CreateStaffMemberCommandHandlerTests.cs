@@ -5,6 +5,7 @@ using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
 using WHMS.Application.Features.Command.Employee.CreateStaffMember;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Employee.CreateStaffMember;
 
@@ -41,16 +42,17 @@ public class CreateStaffMemberCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WarehouseIdDoesNotExist_ThrowsWithTypoMessageWithoutCreatingUser()
+    public async Task Handle_WarehouseIdDoesNotExist_ThrowsWithoutCreatingUser()
     {
         _warehouseRepository.Setup(r => r.WarehouseExists(_warehouseId)).ReturnsAsync(false);
 
         var request = new CreateStaffMemberCommandRequest { FullName = "Test Staff", WarehouseId = _warehouseId.ToString() };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
-        // Note: "Watehouse" is a typo already present in the source; preserved as-is.
-        Assert.Equal("Watehouse not found.", exception.Message);
+        // Now routed through WarehouseRules.EnsureExists, so the message no longer
+        // has the "Watehouse" typo that was previously here - a deliberate cleanup.
+        Assert.Equal("Warehouse not found.", exception.Message);
         _authService.Verify(s => s.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Never);
     }
 
@@ -75,7 +77,7 @@ public class CreateStaffMemberCommandHandlerTests
 
         var request = new CreateStaffMemberCommandRequest { FullName = "Test Staff" };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Staff member could not be created.", exception.Message);
         _authService.Verify(s => s.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Never);
