@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Catalog.CreateSku;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Catalog.CreateSku;
 
@@ -61,7 +62,7 @@ public class CreateSkuCommandHandlerTests
             CategoryId = _categoryId.ToString()
         };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Sku already exists.", exception.Message);
         _catalogRepository.Verify(r => r.GetCategory(It.IsAny<Guid>()), Times.Never);
@@ -83,7 +84,7 @@ public class CreateSkuCommandHandlerTests
             CategoryId = _categoryId.ToString()
         };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Category not found.", exception.Message);
         _catalogRepository.Verify(r => r.AddSku(It.IsAny<SKU>()), Times.Never);

@@ -1,6 +1,7 @@
 using System.Globalization;
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Catalog;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Command.Catalog.CreateSku;
@@ -20,12 +21,9 @@ public class CreateSkuCommandHandler : IRequestHandler<CreateSkuCommandRequest, 
     {
         string normalizedSkuName = request.SkuName!.ToUpper(CultureInfo.GetCultureInfo("tr-TR"));
         bool isSkuNameExists = await _catalogRepository.IsSkuNameExists(normalizedSkuName);
-        if(isSkuNameExists)
-            throw new Exception("Sku already exists.");
-        
-        var category = await _catalogRepository.GetCategory(Guid.Parse(request.CategoryId!));
-        if (category is null)
-            throw new Exception("Category not found.");
+        SkuRules.EnsureNameIsUnique(isSkuNameExists);
+
+        var category = CategoryRules.EnsureExists(await _catalogRepository.GetCategory(Guid.Parse(request.CategoryId!)));
 
         var sku = new SKU
         {
