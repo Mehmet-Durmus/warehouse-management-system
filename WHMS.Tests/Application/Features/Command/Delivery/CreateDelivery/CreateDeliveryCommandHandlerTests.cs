@@ -1,6 +1,7 @@
 using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Delivery.CreateDelivery;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Delivery.CreateDelivery;
 
@@ -24,7 +25,7 @@ public class CreateDeliveryCommandHandlerTests
 
         var request = new CreateDeliveryCommandRequest { WarehouseId = _warehouseId.ToString(), ExpectedArrivalDate = new DateTime(2026, 1, 1) };
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(request, CancellationToken.None));
 
         Assert.Equal("Warehouse not found.", exception.Message);
         _deliveryRepository.Verify(r => r.CreateDelivery(It.IsAny<WHMS.Domain.Entities.Delivery>()), Times.Never);

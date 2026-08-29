@@ -1,5 +1,6 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Warehouse;
 
 namespace WHMS.Application.Features.Command.Delivery.CreateDelivery;
 
@@ -18,9 +19,7 @@ public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryComman
 
     public async Task<CreateDeliveryCommandResponse> Handle(CreateDeliveryCommandRequest request, CancellationToken cancellationToken)
     {
-        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
-        if (warehouse is null)
-            throw new Exception("Warehouse not found.");
+        var warehouse = WarehouseRules.EnsureExists(await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!)));
 
         var delivery = new Domain.Entities.Delivery
         {
