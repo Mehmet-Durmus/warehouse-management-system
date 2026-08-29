@@ -2,6 +2,7 @@ using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
+using WHMS.Domain.BusinessRules.InventoryCount;
 
 namespace WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCountLine;
 
@@ -22,45 +23,22 @@ public class UpdateInventoryCountLineCommandHandler : IRequestHandler<UpdateInve
 
     public async Task<UpdateInventoryCountLineCommandResponse> Handle(UpdateInventoryCountLineCommandRequest request, CancellationToken cancellationToken)
     {
-        var newInventoryCount = await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!));
-        bool notFoundNewInventoryCount = newInventoryCount switch
-        {
-            null => true,
-            not null when newInventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            _ => false
-        };
-        if (notFoundNewInventoryCount)
-            throw new Exception("Inventory count not found.");
+        var newInventoryCount = InventoryCountRules.EnsureAccessibleForWarehouse(
+            await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!)),
+            Guid.Parse(_currentUserService.WarehouseId!));
+        InventoryCountRules.EnsureNotCompletedForLineUpdate(newInventoryCount.IsCompleted, Guid.Parse(request.InventoryCountId!));
 
-        if (newInventoryCount!.IsCompleted)
-            throw new Exception($"{request.InventoryCountId}: Inventory count has already been completed.");
-        
-        var inventoryCountLine = await _inventoryCountRepository.GetInventoryCountLine(Guid.Parse(request.InventoryCountLineId!));
-        bool notFoundInventoryCountLine = inventoryCountLine switch
-        {
-            null => true,
-            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
-                && inventoryCountLine.CreatedById != _currentUserService.UserId => true,
-            _ => false
-        };
-        
-        if (notFoundInventoryCountLine)
-            throw new Exception("Inventory count line not found.");
+        bool restrictedToOwnLines = _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff);
+        var inventoryCountLine = InventoryCountRules.EnsureLineAccessible(
+            await _inventoryCountRepository.GetInventoryCountLine(Guid.Parse(request.InventoryCountLineId!)),
+            restrictedToOwnLines, _currentUserService.UserId);
 
-        if (inventoryCountLine!.InventoryCountId != Guid.Parse(request.InventoryCountId!))
+        if (inventoryCountLine.InventoryCountId != Guid.Parse(request.InventoryCountId!))
         {
-            var oldInventoryCount = await _inventoryCountRepository.GetInventoryCount(inventoryCountLine.InventoryCountId);
-            bool notFoundOldInventoryCount = oldInventoryCount switch
-            {
-                null => true,
-                not null when oldInventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-                _ => false
-            };
-            if (notFoundOldInventoryCount)
-                throw new Exception("Inventory count not found.");
-
-            if (oldInventoryCount!.IsCompleted)
-                throw new Exception($"{inventoryCountLine.InventoryCountId}: Inventory count has already been completed.");
+            var oldInventoryCount = InventoryCountRules.EnsureAccessibleForWarehouse(
+                await _inventoryCountRepository.GetInventoryCount(inventoryCountLine.InventoryCountId),
+                Guid.Parse(_currentUserService.WarehouseId!));
+            InventoryCountRules.EnsureNotCompletedForLineUpdate(oldInventoryCount.IsCompleted, inventoryCountLine.InventoryCountId);
         }
 
         inventoryCountLine.InventoryCountId = Guid.Parse(request.InventoryCountId!);
@@ -68,7 +46,7 @@ public class UpdateInventoryCountLineCommandHandler : IRequestHandler<UpdateInve
         inventoryCountLine.Quantity = request.Quantity;
 
         int currentStock = await _stockStateRepository.GetStockQuantity(newInventoryCount.WarehouseId, inventoryCountLine.SkuId);
-        inventoryCountLine.Variance = inventoryCountLine.Quantity - currentStock;
+        inventoryCountLine.Variance = InventoryCountRules.CalculateVariance(inventoryCountLine.Quantity, currentStock);
 
         await _unitOfWork.CommitAsync();
         return new()

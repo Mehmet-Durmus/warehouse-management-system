@@ -4,6 +4,7 @@ using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
 using WHMS.Application.Features.Command.InventoryCount.UpdateInventoryCountLine;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.InventoryCount.UpdateInventoryCountLine;
 
@@ -41,7 +42,7 @@ public class UpdateInventoryCountLineCommandHandlerTests
     {
         _inventoryCountRepository.Setup(r => r.GetInventoryCount(_inventoryCountId)).ReturnsAsync((WHMS.Domain.Entities.InventoryCount)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
 
         Assert.Equal("Inventory count not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -53,7 +54,7 @@ public class UpdateInventoryCountLineCommandHandlerTests
         var completed = new WHMS.Domain.Entities.InventoryCount { Id = _inventoryCountId, WarehouseId = _warehouseId, IsCompleted = true };
         _inventoryCountRepository.Setup(r => r.GetInventoryCount(_inventoryCountId)).ReturnsAsync(completed);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
 
         Assert.Equal($"{_inventoryCountId}: Inventory count has already been completed.", exception.Message);
     }
@@ -64,7 +65,7 @@ public class UpdateInventoryCountLineCommandHandlerTests
         _inventoryCountRepository.Setup(r => r.GetInventoryCount(_inventoryCountId)).ReturnsAsync(OpenInventoryCount(_inventoryCountId));
         _inventoryCountRepository.Setup(r => r.GetInventoryCountLine(_lineId)).ReturnsAsync((InventoryCountLine)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
 
         Assert.Equal("Inventory count line not found.", exception.Message);
     }
@@ -77,7 +78,7 @@ public class UpdateInventoryCountLineCommandHandlerTests
         var line = new InventoryCountLine { Id = _lineId, InventoryCountId = _inventoryCountId, SkuId = _skuId, CreatedById = Guid.NewGuid() };
         _inventoryCountRepository.Setup(r => r.GetInventoryCountLine(_lineId)).ReturnsAsync(line);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
 
         Assert.Equal("Inventory count line not found.", exception.Message);
     }
@@ -92,7 +93,7 @@ public class UpdateInventoryCountLineCommandHandlerTests
         var oldCount = new WHMS.Domain.Entities.InventoryCount { Id = oldCountId, WarehouseId = _warehouseId, IsCompleted = true };
         _inventoryCountRepository.Setup(r => r.GetInventoryCount(oldCountId)).ReturnsAsync(oldCount);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(_inventoryCountId, 5), CancellationToken.None));
 
         Assert.Equal($"{oldCountId}: Inventory count has already been completed.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
