@@ -3,6 +3,7 @@ using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.Features.Command.Shipment.UpdateShipmentItem;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Shipment.UpdateShipmentItem;
 
@@ -55,7 +56,7 @@ public class UpdateShipmentItemCommandHandlerTests
     {
         _shipmentRepository.Setup(r => r.GetShipmentItem(_shipmentItemId)).ReturnsAsync((ShipmentItem)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(1), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(1), CancellationToken.None));
 
         Assert.Equal("Shipment item not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -67,7 +68,7 @@ public class UpdateShipmentItemCommandHandlerTests
         _shipmentRepository.Setup(r => r.GetShipmentItem(_shipmentItemId)).ReturnsAsync(ExistingItem());
         _shipmentRepository.Setup(r => r.GetShipment(_shipmentId)).ReturnsAsync((WHMS.Domain.Entities.Shipment)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(1), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(1), CancellationToken.None));
 
         Assert.Equal("Shipment not found.", exception.Message);
     }
@@ -80,7 +81,7 @@ public class UpdateShipmentItemCommandHandlerTests
         shipment.SendingDate = DateTime.Now;
         _shipmentRepository.Setup(r => r.GetShipment(_shipmentId)).ReturnsAsync(shipment);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(1), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(1), CancellationToken.None));
 
         Assert.Equal("Shipment has alread been sent.", exception.Message);
         _stockStateRepository.Verify(r => r.GetStockQuantity(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
@@ -93,7 +94,7 @@ public class UpdateShipmentItemCommandHandlerTests
         _shipmentRepository.Setup(r => r.GetShipment(_shipmentId)).ReturnsAsync(ExistingShipment());
         SetProjectedStock(currentStock: 10, incomingForThisSku: 5, alreadyPlannedForThisSku: 3);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(13), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(13), CancellationToken.None));
 
         Assert.Equal("Insufficient stock in warehouse for the scheduled shipment date.", exception.Message);
         _catalogRepository.Verify(r => r.GetSku(It.IsAny<Guid>()), Times.Never);
@@ -109,9 +110,10 @@ public class UpdateShipmentItemCommandHandlerTests
         SetProjectedStock(currentStock: 10, incomingForThisSku: 5, alreadyPlannedForThisSku: 3);
         _catalogRepository.Setup(r => r.GetSku(_skuId)).ReturnsAsync((SKU)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(12), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(12), CancellationToken.None));
 
-        Assert.Equal("SKU not found.", exception.Message);
+        // Message now sourced from the shared SkuRules.EnsureExists ("Sku not found.", not "SKU not found.").
+        Assert.Equal("Sku not found.", exception.Message);
         Assert.Equal(originalSkuId, item.SkuId);
         Assert.Equal(4, item.Quantity);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);

@@ -1,6 +1,8 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Filters;
+using WHMS.Domain.BusinessRules.Catalog;
+using WHMS.Domain.BusinessRules.Shipment;
 
 namespace WHMS.Application.Features.Command.Shipment.UpdateShipmentItem;
 
@@ -23,16 +25,10 @@ public class UpdateShipmentItemCommandHandler : IRequestHandler<UpdateShipmentIt
 
     public async Task<UpdateShipmentItemCommandResponse> Handle(UpdateShipmentItemCommandRequest request, CancellationToken cancellationToken)
     {
-        var shipmentItem = await _shipmentRepository.GetShipmentItem(Guid.Parse(request.ShipmentItemId!));
-        if (shipmentItem is null)
-            throw new Exception("Shipment item not found.");
+        var shipmentItem = ShipmentRules.EnsureItemExists(await _shipmentRepository.GetShipmentItem(Guid.Parse(request.ShipmentItemId!)));
 
-        var shipment = await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!));
-        if (shipment is null)
-            throw new Exception("Shipment not found.");
-        
-        if (shipment.SendingDate is not null)
-            throw new Exception("Shipment has alread been sent.");
+        var shipment = ShipmentRules.EnsureExists(await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!)));
+        ShipmentRules.EnsureNotSentForItemChange(shipment.SendingDate is not null);
 
         int stock = await _stockStateRepository.GetStockQuantity(shipment.WarehouseId, Guid.Parse(request.SkuId!));
         List<string> skuId = new() {request.SkuId!};
@@ -58,14 +54,10 @@ public class UpdateShipmentItemCommandHandler : IRequestHandler<UpdateShipmentIt
             .SelectMany(s => s.ShipmentItems ?? [])
             .Where(si => si.SkuId == Guid.Parse(request.SkuId!))
             .Sum(si => si.Quantity);            
-        int expectedStock = stock + deliveryQuantity - shipmentQuantity;
+        int expectedStock = ShipmentRules.CalculateExpectedStock(stock, deliveryQuantity, shipmentQuantity);
+        ShipmentRules.EnsureSufficientProjectedStock(expectedStock, request.Quantity);
 
-        if (expectedStock < request.Quantity)
-            throw new Exception("Insufficient stock in warehouse for the scheduled shipment date.");
-        
-        var sku = await _catalogRepository.GetSku(Guid.Parse(request.SkuId!));
-        if (sku is null)
-            throw new Exception("SKU not found.");
+        var sku = SkuRules.EnsureExists(await _catalogRepository.GetSku(Guid.Parse(request.SkuId!)));
         
         shipmentItem.ShipmentId = Guid.Parse(request.ShipmentId!);
         shipmentItem.SkuId = Guid.Parse(request.SkuId!);
