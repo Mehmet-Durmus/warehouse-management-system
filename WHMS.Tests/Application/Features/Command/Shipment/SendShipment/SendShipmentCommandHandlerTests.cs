@@ -3,6 +3,7 @@ using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Shipment.SendShipment;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Shipment.SendShipment;
 
@@ -31,7 +32,7 @@ public class SendShipmentCommandHandlerTests
     {
         _shipmentRepository.Setup(r => r.GetShipment(_shipmentId)).ReturnsAsync((WHMS.Domain.Entities.Shipment)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Shipment not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -43,7 +44,7 @@ public class SendShipmentCommandHandlerTests
         var shipment = new WHMS.Domain.Entities.Shipment { Id = _shipmentId, WarehouseId = Guid.NewGuid() };
         _shipmentRepository.Setup(r => r.GetShipment(_shipmentId)).ReturnsAsync(shipment);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Shipment not found.", exception.Message);
     }
@@ -54,7 +55,7 @@ public class SendShipmentCommandHandlerTests
         var shipment = new WHMS.Domain.Entities.Shipment { Id = _shipmentId, WarehouseId = _warehouseId, SendingDate = DateTime.Now };
         _shipmentRepository.Setup(r => r.GetShipment(_shipmentId)).ReturnsAsync(shipment);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Shipment already sent.", exception.Message);
         _stockStateRepository.Verify(r => r.UpdateQuantity(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<int>()), Times.Never);

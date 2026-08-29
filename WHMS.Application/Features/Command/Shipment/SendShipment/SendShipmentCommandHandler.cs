@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Shipment;
 
 namespace WHMS.Application.Features.Command.Shipment.SendShipment;
 
@@ -22,12 +23,8 @@ public class SendShipmentCommandHandler : IRequestHandler<SendShipmentCommandReq
     public async Task<SendShipmentCommandResponse> Handle(SendShipmentCommandRequest request, CancellationToken cancellationToken)
     {
         var warehouseId =  Guid.Parse(_currentUserService.WarehouseId!);
-        var shipment = await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!));
-        if (shipment is null || warehouseId != shipment.WarehouseId)
-            throw new Exception("Shipment not found.");
-
-        if (shipment.SendingDate is not null)
-            throw new Exception("Shipment already sent.");
+        var shipment = ShipmentRules.EnsureAccessibleForSending(await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!)), warehouseId);
+        ShipmentRules.EnsureNotAlreadySent(shipment.SendingDate is not null);
         shipment.SendingDate = DateTime.Now;
         shipment.SentById = _currentUserService.UserId;
 
@@ -38,8 +35,9 @@ public class SendShipmentCommandHandler : IRequestHandler<SendShipmentCommandReq
             foreach (var item in shipment.ShipmentItems)
             {
                 affectedRow = await _stockStateRepository.UpdateQuantity(shipment.WarehouseId, item.SkuId, -item.Quantity);
-                if (affectedRow == 0)
-                    errors.Add($"Insufficient stock for {item.SKU!.SKUName}.");
+                var warning = affectedRow == 0 ? ShipmentRules.ValidateStockForSending(affectedRow, item.SKU!.SKUName) : null;
+                if (warning is not null)
+                    errors.Add(warning);
             }
             if (errors.Count > 0) return new() {Errors = errors};
         }
