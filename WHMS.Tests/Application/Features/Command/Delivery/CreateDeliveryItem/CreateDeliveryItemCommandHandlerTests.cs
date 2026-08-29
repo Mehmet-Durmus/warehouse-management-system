@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Delivery.CreateDeliveryItem;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Delivery.CreateDeliveryItem;
 
@@ -26,7 +27,7 @@ public class CreateDeliveryItemCommandHandlerTests
     {
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync((WHMS.Domain.Entities.Delivery)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery not found.", exception.Message);
         _deliveryRepository.Verify(r => r.AddDeliveryItem(It.IsAny<DeliveryItem>()), Times.Never);
@@ -38,7 +39,7 @@ public class CreateDeliveryItemCommandHandlerTests
         var delivery = new WHMS.Domain.Entities.Delivery { Id = _deliveryId, ReceivedAt = DateTime.Now };
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync(delivery);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery has already been received.", exception.Message);
         _deliveryRepository.Verify(r => r.AddDeliveryItem(It.IsAny<DeliveryItem>()), Times.Never);

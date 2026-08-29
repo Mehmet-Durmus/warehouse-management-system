@@ -1,5 +1,6 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Delivery;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Command.Delivery.CreateDeliveryItem;
@@ -19,12 +20,8 @@ public class CreateDeliveryItemCommandHandler : IRequestHandler<CreateDeliveryIt
 
     public async Task<CreateDeliveryItemCommandResponse> Handle(CreateDeliveryItemCommandRequest request, CancellationToken cancellationToken)
     {
-        var delivery = await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!));
-        if (delivery is null)
-            throw new Exception("Delivery not found.");
-        
-        if (delivery.ReceivedAt is not null)
-            throw new Exception("Delivery has already been received.");
+        var delivery = DeliveryRules.EnsureExists(await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!)));
+        DeliveryRules.EnsureNotReceived(delivery.ReceivedAt is not null);
         
         var deliveryItem = new DeliveryItem
         {
