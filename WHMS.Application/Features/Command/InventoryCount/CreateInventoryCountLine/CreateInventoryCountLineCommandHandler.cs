@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.InventoryCount;
 using WHMS.Domain.Entities;
 
 namespace WHMS.Application.Features.Command.InventoryCount.CreateInventoryCountLine;
@@ -23,21 +24,17 @@ public class CreateInventoryCountLineCommandHandler : IRequestHandler<CreateInve
     public async Task<CreateInventoryCountLineCommandResponse> Handle(CreateInventoryCountLineCommandRequest request, CancellationToken cancellationToken)
     {
         Guid warehouseId = Guid.Parse(_currentUserService.WarehouseId!);
-        var inventoryCount = await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!));
-        if (inventoryCount is null || warehouseId != inventoryCount.WarehouseId)
-            throw new Exception("Inventory count not found.");
-        
-        if (inventoryCount.IsCompleted)
-            throw new Exception("This inventory count already completed.");
+        var inventoryCount = InventoryCountRules.EnsureAccessibleForWarehouse(await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!)), warehouseId);
+        InventoryCountRules.EnsureNotCompletedForLineCreation(inventoryCount.IsCompleted);
 
         int currentStock = await _stockStateRepository.GetStockQuantity(warehouseId, Guid.Parse(request.SkuId!));
-        
+
         InventoryCountLine inventoryCountLine = new()
         {
             InventoryCountId = Guid.Parse(request.InventoryCountId!),
             SkuId = Guid.Parse(request.SkuId!),
             Quantity = request.Quantity,
-            Variance = request.Quantity - currentStock
+            Variance = InventoryCountRules.CalculateVariance(request.Quantity, currentStock)
         };
         await _inventoryCountRepository.CreateInventoryCounLine(inventoryCountLine);
         await _unitOfWork.CommitAsync();

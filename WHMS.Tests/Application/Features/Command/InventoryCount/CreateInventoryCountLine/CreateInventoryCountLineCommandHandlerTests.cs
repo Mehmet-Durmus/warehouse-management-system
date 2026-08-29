@@ -3,6 +3,7 @@ using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCountLine;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.InventoryCount.CreateInventoryCountLine;
 
@@ -34,7 +35,7 @@ public class CreateInventoryCountLineCommandHandlerTests
     {
         _inventoryCountRepository.Setup(r => r.GetInventoryCount(_inventoryCountId)).ReturnsAsync((WHMS.Domain.Entities.InventoryCount)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(10), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(10), CancellationToken.None));
 
         Assert.Equal("Inventory count not found.", exception.Message);
         _inventoryCountRepository.Verify(r => r.CreateInventoryCounLine(It.IsAny<InventoryCountLine>()), Times.Never);
@@ -46,7 +47,7 @@ public class CreateInventoryCountLineCommandHandlerTests
         var inventoryCount = new WHMS.Domain.Entities.InventoryCount { Id = _inventoryCountId, WarehouseId = Guid.NewGuid() };
         _inventoryCountRepository.Setup(r => r.GetInventoryCount(_inventoryCountId)).ReturnsAsync(inventoryCount);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(10), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(10), CancellationToken.None));
 
         Assert.Equal("Inventory count not found.", exception.Message);
     }
@@ -57,7 +58,7 @@ public class CreateInventoryCountLineCommandHandlerTests
         var inventoryCount = new WHMS.Domain.Entities.InventoryCount { Id = _inventoryCountId, WarehouseId = _warehouseId, IsCompleted = true };
         _inventoryCountRepository.Setup(r => r.GetInventoryCount(_inventoryCountId)).ReturnsAsync(inventoryCount);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(10), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(10), CancellationToken.None));
 
         Assert.Equal("This inventory count already completed.", exception.Message);
         _inventoryCountRepository.Verify(r => r.CreateInventoryCounLine(It.IsAny<InventoryCountLine>()), Times.Never);
