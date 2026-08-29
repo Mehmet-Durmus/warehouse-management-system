@@ -1,5 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Store;
+using WHMS.Domain.BusinessRules.Warehouse;
 
 namespace WHMS.Application.Features.Command.Shipment.CreateShipment;
 
@@ -20,13 +22,8 @@ public class CreateShipmentCommandHandler : IRequestHandler<CreateShipmentComman
 
     public async Task<CreateShipmentCommandResponse> Handle(CreateShipmentCommandRequest request, CancellationToken cancellationToken)
     {
-        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
-        if (warehouse is null)
-            throw new Exception("Warehouse not found");
-
-        var store = await _storeRepository.GetStore(Guid.Parse(request.StoreId!));
-        if (store is null)
-            throw new Exception("Store not found.");
+        WarehouseRules.EnsureExists(await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!)));
+        StoreRules.EnsureExists(await _storeRepository.GetStore(Guid.Parse(request.StoreId!)));
 
         var shipment = new Domain.Entities.Shipment
         {

@@ -1,6 +1,7 @@
 using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Shipment.CreateShipment;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Shipment.CreateShipment;
 
@@ -31,9 +32,10 @@ public class CreateShipmentCommandHandlerTests
     {
         _warehouseRepository.Setup(r => r.GetWarehouse(_warehouseId)).ReturnsAsync((WHMS.Domain.Entities.Warehouse)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
-        Assert.Equal("Warehouse not found", exception.Message);
+        // Message now includes a trailing period, sourced from the shared WarehouseRules.EnsureExists.
+        Assert.Equal("Warehouse not found.", exception.Message);
         _storeRepository.Verify(r => r.GetStore(It.IsAny<Guid>()), Times.Never);
     }
 
@@ -47,7 +49,7 @@ public class CreateShipmentCommandHandlerTests
         });
         _storeRepository.Setup(r => r.GetStore(_storeId)).ReturnsAsync((WHMS.Domain.Entities.Store)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Store not found.", exception.Message);
         _shipmentRepository.Verify(r => r.CreateShipment(It.IsAny<WHMS.Domain.Entities.Shipment>()), Times.Never);
