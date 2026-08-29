@@ -3,6 +3,7 @@ using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Delivery.ReceiveDelivery;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Delivery.ReceiveDelivery;
 
@@ -31,7 +32,7 @@ public class ReceiveDeliveryCommandHandlerTests
     {
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync((WHMS.Domain.Entities.Delivery)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery not found", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -43,7 +44,7 @@ public class ReceiveDeliveryCommandHandlerTests
         var delivery = new WHMS.Domain.Entities.Delivery { Id = _deliveryId, WarehouseId = Guid.NewGuid() };
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync(delivery);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery not found", exception.Message);
     }
@@ -54,7 +55,7 @@ public class ReceiveDeliveryCommandHandlerTests
         var delivery = new WHMS.Domain.Entities.Delivery { Id = _deliveryId, WarehouseId = _warehouseId, ReceivedAt = DateTime.Now };
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync(delivery);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery already received", exception.Message);
         _stockStateRepository.Verify(r => r.UpdateQuantity(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<int>()), Times.Never);

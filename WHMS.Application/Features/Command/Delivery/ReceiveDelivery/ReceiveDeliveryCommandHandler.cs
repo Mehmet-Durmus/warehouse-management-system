@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Delivery;
 
 namespace WHMS.Application.Features.Command.Delivery.ReceiveDelivery;
 
@@ -23,12 +24,8 @@ public class ReceiveDeliveryCommandHandler : IRequestHandler<ReceiveDeliveryComm
     public async Task<ReceiveDeliveryCommandResponse> Handle(ReceiveDeliveryCommandRequest request, CancellationToken cancellationToken)
     {
         var warehouseId = Guid.Parse(_currentUserService.WarehouseId!);
-        var delivery = await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!));
-        if (delivery is null || warehouseId != delivery.WarehouseId) 
-            throw new Exception("Delivery not found");
-        
-        if (delivery.ReceivedAt is not null)
-            throw new Exception("Delivery already received");
+        var delivery = DeliveryRules.EnsureAccessibleForReceipt(await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!)), warehouseId);
+        DeliveryRules.EnsureNotAlreadyReceived(delivery.ReceivedAt is not null);
         delivery.ReceivedAt = DateTime.Now;
         delivery.ReceivedById = _currentUserService.UserId;
 
