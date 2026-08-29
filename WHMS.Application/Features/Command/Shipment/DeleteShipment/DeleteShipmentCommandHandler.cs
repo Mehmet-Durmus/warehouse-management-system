@@ -1,5 +1,6 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Shipment;
 
 namespace WHMS.Application.Features.Command.Shipment.DeleteShipment;
 
@@ -16,12 +17,8 @@ public class DeleteShipmentCommandHandler : IRequestHandler<DeleteShipmentComman
 
     public async Task Handle(DeleteShipmentCommandRequest request, CancellationToken cancellationToken)
     {
-        var shipment = await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!));
-        if (shipment is null)
-            throw new Exception("Shipment not found.");
-
-        if (shipment.SendingDate is not null)
-            throw new Exception("Shipment has already been sent.");
+        var shipment = ShipmentRules.EnsureExists(await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!)));
+        ShipmentRules.EnsureNotSent(shipment.SendingDate is not null);
 
         if (shipment.ShipmentItems is not null)
             foreach (var item in shipment.ShipmentItems)
