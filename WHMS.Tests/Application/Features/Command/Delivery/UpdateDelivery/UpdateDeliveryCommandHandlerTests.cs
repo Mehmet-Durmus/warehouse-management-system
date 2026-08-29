@@ -1,6 +1,7 @@
 using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Delivery.UpdateDelivery;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Delivery.UpdateDelivery;
 
@@ -30,7 +31,7 @@ public class UpdateDeliveryCommandHandlerTests
     {
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync((WHMS.Domain.Entities.Delivery)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(DateTime.Today), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(DateTime.Today), CancellationToken.None));
 
         Assert.Equal("Delivery not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -42,7 +43,7 @@ public class UpdateDeliveryCommandHandlerTests
         var delivery = new WHMS.Domain.Entities.Delivery { Id = _deliveryId, ReceivedAt = DateTime.Now };
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync(delivery);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(DateTime.Today), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(DateTime.Today), CancellationToken.None));
 
         Assert.Equal("Delivery has already been received.", exception.Message);
         _warehouseRepository.Verify(r => r.GetWarehouse(It.IsAny<Guid>()), Times.Never);
@@ -56,7 +57,7 @@ public class UpdateDeliveryCommandHandlerTests
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync(delivery);
         _warehouseRepository.Setup(r => r.GetWarehouse(_warehouseId)).ReturnsAsync((WHMS.Domain.Entities.Warehouse)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(DateTime.Today), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(DateTime.Today), CancellationToken.None));
 
         Assert.Equal("Warehouse not found.", exception.Message);
         Assert.Equal(originalWarehouseId, delivery.WarehouseId);

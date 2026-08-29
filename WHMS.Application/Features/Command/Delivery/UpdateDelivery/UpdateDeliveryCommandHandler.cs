@@ -1,6 +1,8 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Extensions;
+using WHMS.Domain.BusinessRules.Delivery;
+using WHMS.Domain.BusinessRules.Warehouse;
 
 namespace WHMS.Application.Features.Command.Delivery.UpdateDelivery;
 
@@ -19,16 +21,10 @@ public class UpdateDeliveryCommandHandler : IRequestHandler<UpdateDeliveryComman
 
     public async Task<UpdateDeliveryCommandResponse> Handle(UpdateDeliveryCommandRequest request, CancellationToken cancellationToken)
     {
-        var delivery = await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!));
-        if (delivery is null)
-            throw new Exception("Delivery not found.");
-        
-        if (delivery.ReceivedAt is not null)
-            throw new Exception("Delivery has already been received.");
-        
-        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
-        if (warehouse is null)
-            throw new Exception("Warehouse not found.");
+        var delivery = DeliveryRules.EnsureExists(await _deliveryRepository.GetDelivery(Guid.Parse(request.DeliveryId!)));
+        DeliveryRules.EnsureNotReceived(delivery.ReceivedAt is not null);
+
+        var warehouse = WarehouseRules.EnsureExists(await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!)));
 
         delivery.WarehouseId = Guid.Parse(request.WarehouseId!);
         delivery.ExpectedArrivalDate = request.ExpectedArrivalDate;
