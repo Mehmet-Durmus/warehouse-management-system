@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Constants;
+using WHMS.Domain.BusinessRules.InventoryCount;
 
 namespace WHMS.Application.Features.Command.InventoryCount.DeleteInventoryCountLine;
 
@@ -21,33 +22,17 @@ public class DeleteInventoryCountLineCommandHandler : IRequestHandler<DeleteInve
 
     public async Task Handle(DeleteInventoryCountLineCommandRequest request, CancellationToken cancellationToken)
     {
-        var inventoryCountLine = await _inventoryCountRepository.GetInventoryCountLine(Guid.Parse(request.InventoryCountLineId!));
-        bool notFoundInventoryCountLine = inventoryCountLine switch
-        {
-            null => true,
-            not null when _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff)
-                && inventoryCountLine.CreatedById != _currentUserService.UserId => true,
-            _ => false
-        };
-        
-        if (notFoundInventoryCountLine)
-            throw new Exception("Inventory count line not found.");
+        bool restrictedToOwnLines = _currentUserService.Roles!.Contains(ApplicationRole.WarehouseStaff);
+        var inventoryCountLine = InventoryCountRules.EnsureLineAccessible(
+            await _inventoryCountRepository.GetInventoryCountLine(Guid.Parse(request.InventoryCountLineId!)),
+            restrictedToOwnLines, _currentUserService.UserId);
 
-        var inventoryCount = await _inventoryCountRepository.GetInventoryCount(inventoryCountLine!.InventoryCountId);
-        bool notFoundInventoryCount = inventoryCount switch
-        {
-            null => true,
-            not null when inventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            _ => false
-        };
+        var inventoryCount = InventoryCountRules.EnsureAccessibleForWarehouse(
+            await _inventoryCountRepository.GetInventoryCount(inventoryCountLine.InventoryCountId),
+            Guid.Parse(_currentUserService.WarehouseId!));
+        InventoryCountRules.EnsureNotCompleted(inventoryCount.IsCompleted);
 
-        if (notFoundInventoryCount)
-            throw new Exception("Inventory count not found.");
-
-        if (inventoryCount!.IsCompleted)
-            throw new Exception("Inventory count has already been completed.");
-
-        _inventoryCountRepository.DeleteInventoryCountLine(inventoryCountLine!);
+        _inventoryCountRepository.DeleteInventoryCountLine(inventoryCountLine);
         await _unitOfWork.CommitAsync();
 
     }
