@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.InventoryCount;
 
 namespace WHMS.Application.Features.Command.InventoryCount.CreateInventoryCount;
 
@@ -22,8 +23,7 @@ public class CreateInventoryCountCommandHandler : IRequestHandler<CreateInventor
     {
         bool isThereUncompletedInventoryCount = await _inventoryCountRepository
             .IsThereUncompletedInventoryCount(Guid.Parse(_currentUserService.WarehouseId!));
-        if (isThereUncompletedInventoryCount)
-            throw new Exception("There is uncomplated inventory count.");
+        InventoryCountRules.EnsureCreationAllowed(isThereUncompletedInventoryCount);
 
         Domain.Entities.InventoryCount inventoryCount = new() 
         { 

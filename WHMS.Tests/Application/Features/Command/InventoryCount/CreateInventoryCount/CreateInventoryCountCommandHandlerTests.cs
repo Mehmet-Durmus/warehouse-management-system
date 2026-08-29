@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.InventoryCount.CreateInventoryCount;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.InventoryCount.CreateInventoryCount;
 
@@ -25,7 +26,7 @@ public class CreateInventoryCountCommandHandlerTests
         _inventoryCountRepository.Setup(r => r.IsThereUncompletedInventoryCount(_warehouseId)).ReturnsAsync(true);
 
         // Note: "uncomplated" is a typo already present in the source; preserved as-is.
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(new(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(new(), CancellationToken.None));
 
         Assert.Equal("There is uncomplated inventory count.", exception.Message);
         _inventoryCountRepository.Verify(r => r.CreateInventoryCount(It.IsAny<WHMS.Domain.Entities.InventoryCount>()), Times.Never);
