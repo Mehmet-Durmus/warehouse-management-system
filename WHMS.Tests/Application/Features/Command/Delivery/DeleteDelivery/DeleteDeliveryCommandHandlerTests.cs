@@ -3,6 +3,7 @@ using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Common.Filtering.Filters;
 using WHMS.Application.Features.Command.Delivery.DeleteDelivery;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Delivery.DeleteDelivery;
 
@@ -27,7 +28,7 @@ public class DeleteDeliveryCommandHandlerTests
     {
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync((WHMS.Domain.Entities.Delivery)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -39,7 +40,7 @@ public class DeleteDeliveryCommandHandlerTests
         var delivery = new WHMS.Domain.Entities.Delivery { Id = _deliveryId, ReceivedAt = DateTime.Now };
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync(delivery);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery has already been received.", exception.Message);
         _deliveryRepository.Verify(r => r.DeleteDelivery(It.IsAny<Guid>()), Times.Never);
