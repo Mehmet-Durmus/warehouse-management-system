@@ -1,5 +1,8 @@
 using MediatR;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.Shipment;
+using WHMS.Domain.BusinessRules.Store;
+using WHMS.Domain.BusinessRules.Warehouse;
 
 namespace WHMS.Application.Features.Command.Shipment.UpdateShipment;
 
@@ -20,20 +23,11 @@ public class UpdateShipmentCommandHandler : IRequestHandler<UpdateShipmentComman
 
     public async Task<UpdateShipmentCommandResponse> Handle(UpdateShipmentCommandRequest request, CancellationToken cancellationToken)
     {
-        var shipment = await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!));
-        if (shipment is null)
-            throw new Exception("Shipment not found.");
+        var shipment = ShipmentRules.EnsureExists(await _shipmentRepository.GetShipment(Guid.Parse(request.ShipmentId!)));
+        ShipmentRules.EnsureNotSent(shipment.SendingDate is not null);
 
-        if (shipment.SendingDate is not null)
-            throw new Exception("Shipment has already been sent.");
-
-        var warehouse = await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!))!;
-        if (warehouse is null)
-            throw new Exception("Warehouse not found.");
-
-        var store = await _storeRepository.GetStore(Guid.Parse(request.StoreId!));
-        if (store is null)
-            throw new Exception("Store not found.");
+        WarehouseRules.EnsureExists(await _warehouseRepository.GetWarehouse(Guid.Parse(request.WarehouseId!)));
+        StoreRules.EnsureExists(await _storeRepository.GetStore(Guid.Parse(request.StoreId!)));
 
         shipment.WarehouseId = Guid.Parse(request.WarehouseId!);
         shipment.StoreId = Guid.Parse(request.StoreId!);

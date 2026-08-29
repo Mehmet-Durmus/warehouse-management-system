@@ -1,6 +1,7 @@
 using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Shipment.UpdateShipment;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Shipment.UpdateShipment;
 
@@ -33,7 +34,7 @@ public class UpdateShipmentCommandHandlerTests
     {
         _shipmentRepository.Setup(r => r.GetShipment(_shipmentId)).ReturnsAsync((WHMS.Domain.Entities.Shipment)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Shipment not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -45,7 +46,7 @@ public class UpdateShipmentCommandHandlerTests
         var shipment = new WHMS.Domain.Entities.Shipment { Id = _shipmentId, SendingDate = DateTime.Now };
         _shipmentRepository.Setup(r => r.GetShipment(_shipmentId)).ReturnsAsync(shipment);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Shipment has already been sent.", exception.Message);
         _warehouseRepository.Verify(r => r.GetWarehouse(It.IsAny<Guid>()), Times.Never);
@@ -58,7 +59,7 @@ public class UpdateShipmentCommandHandlerTests
         _shipmentRepository.Setup(r => r.GetShipment(_shipmentId)).ReturnsAsync(shipment);
         _warehouseRepository.Setup(r => r.GetWarehouse(_warehouseId)).ReturnsAsync((WHMS.Domain.Entities.Warehouse)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Warehouse not found.", exception.Message);
         _storeRepository.Verify(r => r.GetStore(It.IsAny<Guid>()), Times.Never);
@@ -77,7 +78,7 @@ public class UpdateShipmentCommandHandlerTests
         });
         _storeRepository.Setup(r => r.GetStore(_storeId)).ReturnsAsync((WHMS.Domain.Entities.Store)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Store not found.", exception.Message);
         Assert.Equal(originalWarehouseId, shipment.WarehouseId);
