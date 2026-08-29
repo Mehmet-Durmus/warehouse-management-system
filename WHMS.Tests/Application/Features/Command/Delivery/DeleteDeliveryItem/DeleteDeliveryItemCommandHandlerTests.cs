@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Delivery.DeleteDeliveryItem;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Delivery.DeleteDeliveryItem;
 
@@ -25,7 +26,7 @@ public class DeleteDeliveryItemCommandHandlerTests
     {
         _deliveryRepository.Setup(r => r.GetDeliveryItem(_deliveryItemId)).ReturnsAsync((DeliveryItem)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery item not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -38,7 +39,7 @@ public class DeleteDeliveryItemCommandHandlerTests
         _deliveryRepository.Setup(r => r.GetDeliveryItem(_deliveryItemId)).ReturnsAsync(item);
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync((WHMS.Domain.Entities.Delivery)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -52,7 +53,7 @@ public class DeleteDeliveryItemCommandHandlerTests
         _deliveryRepository.Setup(r => r.GetDeliveryItem(_deliveryItemId)).ReturnsAsync(item);
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync(delivery);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery has already been received.", exception.Message);
         _deliveryRepository.Verify(r => r.DeleteDeliveryItem(It.IsAny<Guid>()), Times.Never);
