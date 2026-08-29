@@ -2,6 +2,7 @@ using System.ComponentModel;
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.InventoryCount;
 
 namespace WHMS.Application.Features.Command.InventoryCount.CompleteInventoryCount;
 
@@ -23,10 +24,8 @@ public class CompleteInventoryCountCommandHandler : IRequestHandler<CompleteInve
     public async Task Handle(CompleteInventoryCountCommandRequest request, CancellationToken cancellationToken)
     {
         Guid warehouseId = Guid.Parse(_currentUserService.WarehouseId!);
-        var inventoryCount = await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!));
-        if (inventoryCount is null || warehouseId != inventoryCount.WarehouseId)
-            throw new Exception("Inventory count not found.");
-        
+        var inventoryCount = InventoryCountRules.EnsureAccessibleForWarehouse(await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!)), warehouseId);
+
         inventoryCount.IsCompleted = true;
 
         if (inventoryCount.InventoryCountLines is not null)
