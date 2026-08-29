@@ -2,6 +2,7 @@ using Moq;
 using WHMS.Application.Abstractions.Persistence;
 using WHMS.Application.Features.Command.Delivery.UpdateDeliveryItem;
 using WHMS.Domain.Entities;
+using WHMS.Domain.Exceptions;
 
 namespace WHMS.Tests.Application.Features.Command.Delivery.UpdateDeliveryItem;
 
@@ -33,7 +34,7 @@ public class UpdateDeliveryItemCommandHandlerTests
     {
         _deliveryRepository.Setup(r => r.GetDeliveryItem(_deliveryItemId)).ReturnsAsync((DeliveryItem)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery item not found.", exception.Message);
         _unitOfWork.Verify(u => u.CommitAsync(), Times.Never);
@@ -46,7 +47,7 @@ public class UpdateDeliveryItemCommandHandlerTests
         _deliveryRepository.Setup(r => r.GetDeliveryItem(_deliveryItemId)).ReturnsAsync(item);
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync((WHMS.Domain.Entities.Delivery)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery not found.", exception.Message);
     }
@@ -59,7 +60,7 @@ public class UpdateDeliveryItemCommandHandlerTests
         _deliveryRepository.Setup(r => r.GetDeliveryItem(_deliveryItemId)).ReturnsAsync(item);
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync(delivery);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<BusinessRuleViolationException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Delivery has already been received.", exception.Message);
         _catalogRepository.Verify(r => r.GetSku(It.IsAny<Guid>()), Times.Never);
@@ -75,7 +76,7 @@ public class UpdateDeliveryItemCommandHandlerTests
         _deliveryRepository.Setup(r => r.GetDelivery(_deliveryId)).ReturnsAsync(delivery);
         _catalogRepository.Setup(r => r.GetSku(_skuId)).ReturnsAsync((SKU)null!);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(Request(), CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(Request(), CancellationToken.None));
 
         Assert.Equal("Sku not found.", exception.Message);
         Assert.Equal(originalSkuId, item.SkuId);
