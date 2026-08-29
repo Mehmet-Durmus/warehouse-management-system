@@ -1,6 +1,7 @@
 using MediatR;
 using WHMS.Application.Abstractions.Infrastructure;
 using WHMS.Application.Abstractions.Persistence;
+using WHMS.Domain.BusinessRules.InventoryCount;
 
 namespace WHMS.Application.Features.Command.InventoryCount.DeleteInventoryCount;
 
@@ -19,23 +20,14 @@ public class DeleteInventoryCountCommandHandler : IRequestHandler<DeleteInventor
 
     public async Task Handle(DeleteInventoryCountCommandRequest request, CancellationToken cancellationToken)
     {
-        var inventoryCount = await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!));
-        bool notFound = inventoryCount switch
-        {
-            null => true,
-            not null when inventoryCount.WarehouseId != Guid.Parse(_currentUserService.WarehouseId!) => true,
-            _ => false
-        };
-        
-        if (notFound)
-            throw new Exception("Inventory count not found.");
+        var inventoryCount = InventoryCountRules.EnsureAccessibleForWarehouse(
+            await _inventoryCountRepository.GetInventoryCount(Guid.Parse(request.InventoryCountId!)),
+            Guid.Parse(_currentUserService.WarehouseId!));
+        InventoryCountRules.EnsureNotCompleted(inventoryCount.IsCompleted);
 
-        if (inventoryCount!.IsCompleted)
-            throw new Exception("Inventory count has already been completed.");
-        
-        _inventoryCountRepository.DeleteInventoryCount(inventoryCount!);
+        _inventoryCountRepository.DeleteInventoryCount(inventoryCount);
 
-        if (inventoryCount!.InventoryCountLines is not null)
+        if (inventoryCount.InventoryCountLines is not null)
             foreach (var inventoryCountLine in inventoryCount.InventoryCountLines)
                 _inventoryCountRepository.DeleteInventoryCountLine(inventoryCountLine);
 
