@@ -2,7 +2,7 @@
 
 A RESTful backend API designed for a multi-location clothing retail chain operating across different regions of Turkey. The system focuses specifically on warehouse management and product transfer operations — tracking inbound deliveries from suppliers, outbound shipments to stores, physical inventory counts, stock levels, and waste records.
 
-> **Note:** This project is under active development. Business rules currently handled inside command/query handlers are planned to be moved into the domain layer.
+> **Note:** This project is under active development. As a second phase, Claude Code was used to write characterization and domain-level unit tests, standardize API response formats through global exception handling, and move business rules out of command handlers into the domain layer. Query handlers' role-based data visibility — split between filter construction and post-fetch checks — was intentionally left in the application layer for now and will be revisited in a later pass.
 
 ---
 
@@ -36,6 +36,8 @@ The innermost layer with no dependencies on other projects.
 - Entity definitions and domain abstractions
 - Value objects (e.g. `Address`)
 - `IAuditable` and `ISoftDeletable` interfaces
+- Business rules, one static class per aggregate under `BusinessRules/`
+- Domain exception hierarchy (`DomainException`, `NotFoundException`, `BusinessRuleViolationException`)
 
 **WHMS.Application**
 
@@ -68,6 +70,7 @@ The entry point and composition root.
 - Dependency injection wiring for all layers
 - Swagger configuration
 - Authentication and authorization setup
+- Global exception handling mapping domain exceptions to a consistent `ApiResponse` format
 
 --- 
 
